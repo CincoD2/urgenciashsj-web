@@ -78,7 +78,7 @@ export default function DietasYRecomendaciones() {
   }
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper escala-full" style={{ padding: 24 }}>
       <div className="buscador-wrapper buscador-dietas">
         <span className="buscador-icon" aria-hidden>
           <svg

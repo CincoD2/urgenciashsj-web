@@ -14,6 +14,10 @@ body {
   overflow-x: hidden;
 }
 
+.escala-full {
+  max-width: none;
+}
+
 .escala-footer {
   margin-top: 24px;
   display: flex;

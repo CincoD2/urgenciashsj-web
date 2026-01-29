@@ -2,7 +2,7 @@
 // @ts-nocheck
 
 import { useState, useMemo } from 'react';
-import InformeCopiable from '../../components/InformeCopiable';
+import InformeCopiable from '@/components/InformeCopiable';
 
 const reset = () => {
   setSeleccion({});

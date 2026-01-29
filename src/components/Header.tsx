@@ -4,10 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import SearchModal from "./SearchModal";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -17,14 +19,14 @@ export default function Header() {
   const toolsMenuClass = `ml-2 grid grid-cols-2 gap-1 text-sm overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
     toolsOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
   }`;
+  const closeMenus = () => {
+    setToolsOpen(false);
+    setOpen(false);
+  };
 
   return (
     <header
-      className={`border-b border-[#dfe9eb] ${
-        isHome
-          ? "absolute inset-x-0 top-0 z-50 bg-white/45 backdrop-blur-md border-white/40"
-          : "bg-white"
-      }`}
+      className={`border-b border-[#dfe9eb] sticky top-0 z-50 bg-white/45 backdrop-blur-md border-white/40`}
     >
       <nav className="mx-auto flex max-w-7xl items-center px-4 py-2 text-[#2b5d68]">
         <Link href="/" className="flex items-center gap-3">
@@ -66,75 +68,109 @@ export default function Header() {
         </button>
 
         <div className="ml-auto hidden items-center gap-6 md:flex">
-          <div className="relative group">
-            <Link href="/escalas" className="inline-flex items-center gap-1">
+          <div
+            className="relative"
+            onMouseEnter={() => setToolsOpen(true)}
+            onMouseLeave={() => setToolsOpen(false)}
+          >
+            <Link
+              href="/escalas"
+              className="inline-flex items-center gap-1 rounded px-2 py-1 hover:bg-[#dfe9eb]/60"
+              onClick={closeMenus}
+            >
               Herramientas
               <span aria-hidden className="text-xs">▾</span>
             </Link>
-            <div className="absolute left-0 top-full z-50 hidden w-64 rounded-md border border-white/40 bg-white/80 p-2 shadow-lg backdrop-blur-md group-hover:block group-focus-within:block">
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/depuradorTtos">
+            <div
+              className={`absolute left-0 top-full z-50 w-64 rounded-md border border-white/40 bg-white/85 p-2 shadow-lg backdrop-blur-lg ${
+                toolsOpen ? "block" : "hidden"
+              }`}
+            >
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/depuradorTtos" onClick={closeMenus}>
                 Depurador SIA
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/inhaladores">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/inhaladores" onClick={closeMenus}>
                 Inhaladores
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/anion-gap">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/anion-gap" onClick={closeMenus}>
                 Anion GAP
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/chads2vasc">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/chads2vasc" onClick={closeMenus}>
                 CHA2DS2-VASc
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/curb65">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/curb65" onClick={closeMenus}>
                 CURB-65
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/glasgow">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/glasgow" onClick={closeMenus}>
                 Glasgow
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/gradiente-aa-o2">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/gradiente-aa-o2" onClick={closeMenus}>
                 Gradiente A-a O2
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/hasbled">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/hasbled" onClick={closeMenus}>
                 HAS-BLED
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/hiperNa">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/hiperNa" onClick={closeMenus}>
                 Hipernatremia
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/hiponatremia">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/hiponatremia" onClick={closeMenus}>
                 Hiponatremia
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/idsa">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/idsa" onClick={closeMenus}>
                 IDSA/ATS
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/pafi">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/pafi" onClick={closeMenus}>
                 PaFi
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/psi">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/psi" onClick={closeMenus}>
                 PSI
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/qsofa">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/qsofa" onClick={closeMenus}>
                 qSOFA
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/safi">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/safi" onClick={closeMenus}>
                 SaFi
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/tam">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/tam" onClick={closeMenus}>
                 TAm (PAM)
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/timi-scacest">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/timi-scacest" onClick={closeMenus}>
                 TIMI SCACEST
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/timi-scasest">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/timi-scasest" onClick={closeMenus}>
                 TIMI SCASEST
               </Link>
-              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/wells-tvp">
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/wells-tvp" onClick={closeMenus}>
                 Wells – TVP
               </Link>
             </div>
           </div>
-          <Link href="/protocolos">Protocolos</Link>
-          <Link href="/sesiones">Sesiones</Link>
-          <Link href="/dietas">Dietas</Link>
-          <Link href="/formacion">Formación</Link>
+          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/protocolos">
+            Protocolos
+          </Link>
+          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/sesiones">
+            Sesiones
+          </Link>
+          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/dietas">
+            Dietas
+          </Link>
+          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/formacion">
+            Formación
+          </Link>
+          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/eventos">
+            Eventos
+          </Link>
+          <button
+            type="button"
+            aria-label="Buscar"
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" />
+            </svg>
+          </button>
         </div>
       </nav>
 
@@ -155,61 +191,194 @@ export default function Header() {
               </button>
 
               <div className={toolsMenuClass}>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/depuradorTtos">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/depuradorTtos"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Depurador SIA
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/inhaladores">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/inhaladores"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Inhaladores
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/anion-gap">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/anion-gap"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Anion GAP
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/chads2vasc">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/chads2vasc"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   CHA2DS2-VASc
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/curb65">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/curb65"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   CURB-65
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/glasgow">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/glasgow"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Glasgow
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/gradiente-aa-o2">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/gradiente-aa-o2"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Gradiente A-a O2
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/hasbled">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/hasbled"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   HAS-BLED
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/hiperNa">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/hiperNa"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Hipernatremia
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/hiponatremia">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/hiponatremia"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Hiponatremia
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/idsa">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/idsa"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   IDSA/ATS
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/pafi">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/pafi"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   PaFi
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/psi">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/psi"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   PSI
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/qsofa">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/qsofa"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   qSOFA
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/safi">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/safi"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   SaFi
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/tam">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/tam"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   TAm (PAM)
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/timi-scacest">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/timi-scacest"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   TIMI SCACEST
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/timi-scasest">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/timi-scasest"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   TIMI SCASEST
                 </Link>
-                <Link className="rounded px-2 py-1 hover:bg-slate-100" href="/escalas/wells-tvp">
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/wells-tvp"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setOpen(false);
+                  }}
+                >
                   Wells – TVP
                 </Link>
               </div>
@@ -227,10 +396,21 @@ export default function Header() {
               <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/formacion">
                 Formación
               </Link>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/eventos">
+                Eventos
+              </Link>
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="block w-full rounded px-3 py-2 text-left hover:bg-slate-100"
+              >
+                Buscar
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

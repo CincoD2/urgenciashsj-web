@@ -91,7 +91,7 @@ function getInterpretacion(puntuacion, soloMujer) {
 }
 
 export default function Chads2vasc() {
-  const [edad, setEdad] = useState(EDADES[0]);
+  const [edad, setEdad] = useState(null);
   const [seleccion, setSeleccion] = useState({});
 
   const puntuacionBase = useMemo(() => {
@@ -123,6 +123,8 @@ export default function Chads2vasc() {
       .map((c) => `- ${c.texto}`)
       .join('\n');
 
+    if (!criteriosEdad && !criteriosSeleccionados) return null;
+
     return `CHA2DS2-VASc
 ${[criteriosEdad, criteriosSeleccionados].filter(Boolean).join('\n')}
 
@@ -135,13 +137,13 @@ ${interpretacion.texto}`;
   };
 
   const reset = () => {
-    setEdad(EDADES[0]);
+    setEdad(null);
     setSeleccion({});
   };
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
-      <div className="input-group">
+      <div className="input-group" style={{ marginBottom: 16 }}>
         <label>Edad</label>
         <div className="selector-botones">
           {EDADES.map((opt) => (
