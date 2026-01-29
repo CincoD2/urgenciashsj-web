@@ -1,30 +1,42 @@
-"use client"
-// @ts-nocheck
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import InformeCopiable from '@/components/InformeCopiable';
+import { useEffect, useMemo, useState } from "react";
+import InformeCopiable from "@/components/InformeCopiable";
 
-function norm(s = '') {
+type ItemCatalogo = {
+  id: string;
+  titulo: string;
+  ruta: string;
+  tags?: string[];
+  sistemas?: string[];
+};
+
+function norm(s = "") {
   return s
     .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // quita tildes
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 export default function DietasYRecomendaciones() {
-  const [catalogo, setCatalogo] = useState([]);
-  const [q, setQ] = useState('');
-  const [fSistema, setFSistema] = useState('');
-  const [seleccion, setSeleccion] = useState(null);
-  const [texto, setTexto] = useState('');
+  const [catalogo, setCatalogo] = useState<ItemCatalogo[]>([]);
+  const [q, setQ] = useState("");
+  const [fSistema, setFSistema] = useState("");
+  const [seleccion, setSeleccion] = useState<ItemCatalogo | null>(null);
+  const [texto, setTexto] = useState("");
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
-    fetch('/dietas_recom/index.json')
+    fetch("/dietas_recom/index.json")
       .then((r) => r.json())
-      .then((data) => setCatalogo(Array.isArray(data) ? data : []))
+      .then((data: unknown) =>
+        setCatalogo(Array.isArray(data) ? (data as ItemCatalogo[]) : [])
+      )
       .catch(() => setCatalogo([]));
   }, []);
+
+  // ... el resto igual
+}
 
   const filtrados = useMemo(() => {
     const nq = norm(q).trim();
