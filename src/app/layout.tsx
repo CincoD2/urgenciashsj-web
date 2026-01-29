@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Encode_Sans, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const encodeSans = Encode_Sans({
+  variable: '--font-encode-sans',
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
 });
 
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-slate-900`}
+        className={`${encodeSans.variable} ${geistMono.variable} antialiased bg-white text-slate-900`}
       >
         <Header />
         <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>

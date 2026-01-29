@@ -1,0 +1,480 @@
+/* ===============================
+   TABLA INHALADORES – ESTILO INTRANET
+   Ajustada a ancho máximo ~1106px
+================================ */
+
+/* CONTENEDOR */
+.tabla-wrapper {
+  max-width: 100%;
+  overflow-x: hidden;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* TABLA BASE */
+.tabla-intranet {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+/* CABECERA */
+.tabla-intranet thead th {
+  background-color: #4f7f8a;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 6px 6px;
+  border-bottom: 2px solid #3f6973;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.tabla-intranet thead th.sortable:hover {
+  background-color: #3f6973;
+}
+
+/* CELDAS */
+.tabla-intranet td {
+  padding: 6px 6px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+  color: #111827;
+  white-space: normal;
+}
+
+/* HOVER */
+.tabla-intranet tbody tr:hover {
+  background-color: #e3edef;
+}
+
+/* ===============================
+   ANCHOS Y ALINEACIÓN DE COLUMNAS
+   (suman ~100%)
+================================ */
+
+.col-nombre {
+  width: 28%;
+  text-align: left;
+}
+
+.col-pa {
+  width: 16%;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.col-dispositivo {
+  width: 8%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.col-indicacion {
+  width: 15%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.col-tipo {
+  width: 8%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.col-lab {
+  width: 25%;
+  text-align: left;
+  line-height: 1.3;
+}
+
+/* ===============================
+   NOMBRE (2 líneas máx)
+================================ */
+
+.nombre-cell {
+  overflow: hidden;
+}
+
+.nombre-wrapper {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.nombre-marca {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.nombre-resto {
+  font-weight: 400;
+  text-transform: lowercase;
+}
+
+/* ===============================
+   BADGES
+================================ */
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  margin-right: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Indicaciones */
+.badge-asma {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.badge-epoc {
+  background: #fff4e5;
+  color: #92400e;
+}
+
+/* Tipo tratamiento */
+.badge-mono {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.badge-dual {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.badge-triple {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ===============================
+   FILTROS (BOTONES)
+================================ */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtro-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.filtro-botones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filtro-btn {
+  min-width: 90px;
+  padding: 8px 14px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #374151;
+  border: 2px solid #5a7f8a;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filtro-btn:hover {
+  background: #eef5f7;
+}
+
+.filtro-btn.activo {
+  background: #5a7f8a;
+  color: #ffffff;
+}
+
+/* BOTÓN BORRAR FILTROS */
+.filtro-reset-btn {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.filtro-reset-btn:hover {
+  background: #fecaca;
+}
+
+/* ESTILO DE PAGINACIÓN */
+.paginacion {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+/* Barra de carga */
+.barra-carga {
+  width: 100%;
+  max-width: 420px;
+  height: 8px;
+  margin-top: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.cargando-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.barra-carga-progreso {
+  height: 100%;
+  background: #5a7f8a;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.barra-carga-ind .barra-carga-progreso {
+  width: 40%;
+  animation: carga 1.2s ease-in-out infinite;
+}
+
+@keyframes carga {
+  0% {
+    transform: translateX(-60%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+.barra-carga-texto {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.paginacion button {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.paginacion button.activo {
+  background: #4f7f8a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.paginacion button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== Cabecera tabla + paginación ===== */
+
+.tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0 8px 0;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tabla-info {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* ===== Paginación ===== */
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paginacion button {
+  min-width: 32px;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.paginacion button:hover:not(:disabled) {
+  background: #eef5f7;
+}
+
+.paginacion button.activo {
+  background: #5a7f8a;
+  color: #ffffff;
+  border-color: #5a7f8a;
+  font-weight: 600;
+}
+
+.paginacion button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Separador "..." de paginación */
+.paginacion-separador {
+  padding: 0 6px;
+  color: #6b7280;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* ===== BUSCADOR TEXTO LIBRE ===== */
+
+.buscador-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #ffffff;
+  margin: 12px 0 16px 0;
+}
+
+/* Icono lupa */
+.buscador-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.buscador-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.buscador-input {
+  flex: 1;
+  padding: 0;
+  font-size: 14px;
+  border: none;
+  outline: none;
+  background: #ffffff;
+}
+
+.buscador-input::placeholder {
+  color: #9ca3af;
+}
+
+.buscador-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable:hover {
+  background-color: #3f6973;
+}
+
+th.sortable span {
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+/* ===== MÓVIL ===== */
+@media (max-width: 768px) {
+  .tabla-intranet {
+    display: none;
+  }
+
+  .cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .inhalador-card {
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 12px;
+    background: #ffffff;
+    cursor: pointer;
+  }
+
+  .inhalador-card:hover {
+    background: #f9fafb;
+  }
+
+  .card-header {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .card-pa {
+    font-size: 13px;
+    color: #374151;
+    margin-bottom: 8px;
+  }
+
+  .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+
+  .card-row .label {
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .card-lab {
+    font-size: 12px;
+    color: #4b5563;
+    margin-top: 8px;
+    text-align: right;
+  }
+
+  /* filtros más compactos */
+  .filters {
+    gap: 12px;
+  }
+
+  .filtro-btn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
