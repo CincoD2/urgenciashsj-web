@@ -1,4 +1,4 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -318,7 +318,9 @@ export default function DepuradorTtos() {
       download: true,
       header: true,
       skipEmptyLines: true,
-      complete: (results: { data?: Array<{ patron?: string; reemplazo?: string; tipo?: string; flags?: string }> }) => {
+      complete: (results: {
+        data?: Array<{ patron?: string; reemplazo?: string; tipo?: string; flags?: string }>;
+      }) => {
         const rows = (results.data || [])
           .map((r) => ({
             patron: (r.patron || '').trim(),
@@ -450,10 +452,13 @@ export default function DepuradorTtos() {
 
   if (!reglasListas && !reglasCargando) return <p>Cargando reglas…</p>;
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">Depurador Ttos</h1>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">Depurador Tratamientos SIA - Orion Clínic</h1>
+      <p className="text-slate-600">
+        Macro para dar formato a los tratamientos de SIA desde Orion Clinic
+      </p>
       <div className="input-group">
-        <label>Texto original</label>
+        <label>Listado de medicación - Origen Tratamientos SIA en Orion Clinic</label>
         <textarea
           className="depurador-textarea"
           value={texto}

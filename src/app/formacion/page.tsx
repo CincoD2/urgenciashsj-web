@@ -63,8 +63,8 @@ const bloques = [
 
 export default function FormacionPage() {
   return (
-    <div className="space-y-8">
-      <header className="space-y-2">
+    <div className="space-y-6">
+      <header className="space-y-3">
         <h1 className="text-2xl font-semibold">Formación</h1>
         <p className="text-slate-600">
           A continuación se relacionan algunos de los cursos y masters que complementan la formación recibida a través

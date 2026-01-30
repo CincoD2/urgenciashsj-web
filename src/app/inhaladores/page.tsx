@@ -344,8 +344,16 @@ export default function Home() {
 
   /* ===== RENDER ===== */
   return (
-    <main style={{ padding: 24 }}>
+    <main style={{ padding: 24 }} className="space-y-6">
       <h1 className="text-2xl font-semibold">Inhaladores</h1>
+      <p className="text-slate-600">
+        La siguiente tabla recoge los tratamientos broncodilatadores comercializados en España. Se actualiza
+        automáticamente en caso de existir cambios (está conectada al Nomenclator de CIMA) filtrando por ATC de los
+        grupos R03A y R03B.
+      </p>
+      <p className="text-slate-600">
+        Al hacer clic en cada uno, se abre la ficha técnica por el apartado Posología.
+      </p>
       {/* FILTROS */}
       <div className="filters">
         {/* Tipo tratamiento */}

@@ -31,14 +31,17 @@ export async function generateMetadata({
 export async function generateStaticParams() {
   const dir = path.join(process.cwd(), 'content/protocolos');
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.mdx'));
+  const isProd = process.env.NODE_ENV === 'production';
 
-  return files.map((file) => ({
-    slug: file.replace(/\.mdx$/, ''),
-  }));
+  return files
+    .map((file) => file.replace(/\.mdx$/, ''))
+    .filter((slug) => !(isProd && slug === 'sepsis'))
+    .map((slug) => ({ slug }));
 }
 
 export default async function ProtocoloPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (process.env.NODE_ENV === 'production' && slug === 'sepsis') notFound();
   const filePath = path.join(process.cwd(), 'content/protocolos', `${slug}.mdx`);
 
   if (!fs.existsSync(filePath)) notFound();
