@@ -86,6 +86,7 @@ export default function Hiponatremia() {
 
     const nuevoNaDeseado = String(na + 4);
     if (!naDeseado) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNaDeseado(nuevoNaDeseado);
     }
     if (!horas) {

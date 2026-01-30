@@ -186,7 +186,7 @@ function limpiarPosologia(raw) {
 
   const qty = m[1].replace('.', ',');
   const unit = m[2];
-  let rest = (m[3] || '').trim();
+  const rest = (m[3] || '').trim();
 
   // Si no hay frecuencia clara, devolver simplificado
   if (!rest) return `${qty} ${unit}`.trim();
@@ -334,6 +334,7 @@ export default function DepuradorTtos() {
   }, [resultado]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     cargarReglas();
   }, [cargarReglas]);
 
@@ -412,6 +413,7 @@ export default function DepuradorTtos() {
 
   useEffect(() => {
     if (!texto || !texto.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMedicamentos([]);
       setSeleccion({});
       setResultado('');
@@ -429,6 +431,7 @@ export default function DepuradorTtos() {
   useEffect(() => {
     if (!reglasListas) return;
     if (!texto || !texto.trim()) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onDepurar(texto, variasLineas);
   }, [seleccion, texto, variasLineas, reglasListas, reglasCompiladas]);
 

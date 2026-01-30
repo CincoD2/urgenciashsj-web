@@ -35,9 +35,6 @@ export default function DietasYRecomendaciones() {
       .catch(() => setCatalogo([]));
   }, []);
 
-  // ... el resto igual
-}
-
   const filtrados = useMemo(() => {
     const nq = norm(q).trim();
     const base = fSistema
@@ -47,14 +44,14 @@ export default function DietasYRecomendaciones() {
 
     return base.filter((it) => {
       const hay = norm(
-        `${it.titulo || ''} ${(it.tags || []).join(' ')} ${(it.sistemas || []).join(' ')}`
+        `${it.titulo || ""} ${(it.tags || []).join(" ")} ${(it.sistemas || []).join(" ")}`
       );
       return hay.includes(nq);
     });
   }, [catalogo, q, fSistema]);
 
   const sistemas = useMemo(() => {
-    const set = new Set();
+    const set = new Set<string>();
     catalogo.forEach((it) => {
       (it.sistemas || []).forEach((t) => set.add(t));
     });
@@ -62,7 +59,7 @@ export default function DietasYRecomendaciones() {
   }, [catalogo]);
 
   const agrupados = useMemo(() => {
-    const grupos = {};
+    const grupos: Record<string, ItemCatalogo[]> = {};
     sistemas.forEach((s) => {
       grupos[s] = filtrados.filter((it) => (it.sistemas || []).includes(s));
     });
@@ -73,17 +70,17 @@ export default function DietasYRecomendaciones() {
     return grupos;
   }, [filtrados, sistemas]);
 
-  async function cargar(it) {
+  async function cargar(it: ItemCatalogo) {
     setSeleccion(it);
     setCargando(true);
-    setTexto('');
+    setTexto("");
 
     try {
-      const r = await fetch(it.ruta, { cache: 'no-store' });
+      const r = await fetch(it.ruta, { cache: "no-store" });
       const t = await r.text();
       setTexto(t.trim());
-    } catch (e) {
-      setTexto('No se pudo cargar el texto.');
+    } catch {
+      setTexto("No se pudo cargar el texto.");
     } finally {
       setCargando(false);
     }
@@ -120,7 +117,7 @@ export default function DietasYRecomendaciones() {
           className="buscador-input"
         />
         {q && (
-          <button type="button" className="buscador-clear" onClick={() => setQ('')}>
+          <button type="button" className="buscador-clear" onClick={() => setQ("")}>
             Limpiar
           </button>
         )}
@@ -130,16 +127,16 @@ export default function DietasYRecomendaciones() {
         <span className="filtro-titulo">Sistema</span>
         <div className="filtro-botones">
           <button
-            className={`filtro-btn ${!fSistema ? 'activo' : ''}`}
-            onClick={() => setFSistema('')}
+            className={`filtro-btn ${!fSistema ? "activo" : ""}`}
+            onClick={() => setFSistema("")}
           >
             Todos
           </button>
           {sistemas.map((s) => (
             <button
               key={s}
-              className={`filtro-btn ${fSistema === s ? 'activo' : ''}`}
-              onClick={() => setFSistema(fSistema === s ? '' : s)}
+              className={`filtro-btn ${fSistema === s ? "activo" : ""}`}
+              onClick={() => setFSistema(fSistema === s ? "" : s)}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
             </button>
@@ -152,15 +149,15 @@ export default function DietasYRecomendaciones() {
           {Object.keys(agrupados).map((grupo) => (
             <div key={grupo} className="dietas-grupo">
               <div className="dietas-grupo-titulo">
-                {grupo === 'otros' ? 'Otros' : grupo.charAt(0).toUpperCase() + grupo.slice(1)}
+                {grupo === "otros" ? "Otros" : grupo.charAt(0).toUpperCase() + grupo.slice(1)}
               </div>
               {agrupados[grupo].map((it) => (
                 <button
                   key={it.id}
                   type="button"
-                  className={`selector-btn dietas-item ${seleccion?.id === it.id ? 'activo' : ''}`}
+                  className={`selector-btn dietas-item ${seleccion?.id === it.id ? "activo" : ""}`}
                   onClick={() => cargar(it)}
-                  title={(it.tags || []).join(', ')}
+                  title={(it.tags || []).join(", ")}
                 >
                   {it.titulo}
                 </button>
@@ -174,7 +171,7 @@ export default function DietasYRecomendaciones() {
         <div className="dietas-visor">
           {seleccion?.titulo ? (
             <div className="muted" style={{ marginBottom: 8 }}>
-              {cargando ? 'Cargando…' : seleccion.titulo}
+              {cargando ? "Cargando…" : seleccion.titulo}
             </div>
           ) : (
             <div className="muted" style={{ marginBottom: 8 }}>

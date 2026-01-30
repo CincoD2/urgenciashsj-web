@@ -9,13 +9,17 @@ type Row = {
   link: string;
 };
 
-function parseGviz(text: string): any {
+type GvizCell = { v?: unknown; f?: unknown } | null;
+type GvizRow = { c?: GvizCell[] } | null;
+type GvizResponse = { table?: { rows?: GvizRow[] } } | null;
+
+function parseGviz(text: string): GvizResponse {
   // Google gviz devuelve: "/*O_o*/\ngoogle.visualization.Query.setResponse({...});"
   const json = text.substring(47).slice(0, -2);
-  return JSON.parse(json);
+  return JSON.parse(json) as GvizResponse;
 }
 
-function cellToString(cell: any): string {
+function cellToString(cell: GvizCell): string {
   if (!cell) return '';
   return (cell.f ?? cell.v ?? '').toString();
 }
@@ -37,7 +41,7 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
         const text = await res.text();
         const gviz = parseGviz(text);
 
-        const out: Row[] = (gviz?.table?.rows ?? []).map((r: any) => {
+        const out: Row[] = (gviz?.table?.rows ?? []).map((r) => {
           const c = r?.c ?? [];
           // Asumo columnas: Especialidad | Título | Tags | Link (última)
           const especialidad = cellToString(c[0]);
@@ -48,8 +52,10 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
         });
 
         if (!cancelled) setRows(out);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? 'Error cargando datos');
+      } catch (e: unknown) {
+        if (cancelled) return;
+        const message = e instanceof Error ? e.message : 'Error cargando datos';
+        setError(message);
       }
     }
 
