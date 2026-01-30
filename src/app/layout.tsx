@@ -16,8 +16,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'urgenciashsj.es (beta)',
+  title: 'urgenciashsj.es',
   description: 'Herramientas y protocolos para Urgencias',
+  icons: {
+    icon: '/logourg.png',
+  },
 };
 
 export default function RootLayout({
