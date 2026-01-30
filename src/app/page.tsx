@@ -1,4 +1,6 @@
-const observacion = [
+type LinkItem = { label: string; href: string; icon?: IconKey };
+
+const observacion: LinkItem[] = [
   {
     label: 'Relevo Observación',
     href: 'https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing',
@@ -23,7 +25,7 @@ type IconKey =
   | 'drop'
   | 'agenda';
 
-const enlacesCorporativos = {
+const enlacesCorporativos: Record<string, LinkItem[]> = {
   Personal: [
     { label: 'Portal del Empleado GVA', href: 'https://vvd17portalempleado.cs.san.gva.es/', icon: 'person' },
     { label: 'Nóminas San Juan', href: 'https://nomina.san.gva.es/es/', icon: 'money' },
@@ -59,7 +61,7 @@ const enlacesCorporativos = {
   ],
 };
 
-const documentosInteres = [
+const documentosInteres: LinkItem[] = [
   {
     label: 'Solicitudes Personal',
     href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL',
@@ -88,7 +90,7 @@ const documentosInteres = [
   },
 ];
 
-const enlacesInteres = [
+const enlacesInteres: LinkItem[] = [
   { label: 'AEMPS', href: 'http://www.aemps.gob.es/cima/fichasTecnicas.do?metodo=detalleForm' },
   { label: 'Fármacos Lactancia', href: 'http://e-lactancia.org/' },
   {

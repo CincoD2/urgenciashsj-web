@@ -4,7 +4,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const SUEROS = [
+type Suero = {
+  id: string;
+  label: string;
+  mEqPorLitro: number;
+};
+
+const SUEROS: Suero[] = [
   { id: 'ssf', label: 'SSF 0,9%', mEqPorLitro: 154 },
   { id: 'ssh3', label: 'SSH 3%', mEqPorLitro: 494 },
   { id: 'ssh5', label: 'SSH 5%', mEqPorLitro: 834 },
@@ -34,7 +40,7 @@ export default function Hiponatremia() {
     return na < 115 || sintomasGraves;
   }, [parsed.naActual, sintomasGraves]);
 
-  const suero = useMemo(() => {
+  const suero = useMemo<Suero | null>(() => {
     return SUEROS.find((s) => s.id === sueroId) || null;
   }, [sueroId]);
 
@@ -130,7 +136,7 @@ export default function Hiponatremia() {
         ? `El Na deseado (${parsed.naDeseado} mEq/L) no puede ser menor que el Na actual (${parsed.naActual} mEq/L).`
         : '';
 
-    if (!calculo) {
+    if (!calculo || !suero) {
       if (avisoNaDeseadoInvalido) return avisoNaDeseadoInvalido;
       if (!faltantes.length) return '';
       return `Especifica el ${faltantes.join(' / ')} del paciente`;

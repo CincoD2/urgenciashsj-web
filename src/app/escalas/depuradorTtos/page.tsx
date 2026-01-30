@@ -7,6 +7,19 @@ import Papa from 'papaparse';
 
 /* Añado el estado para reglas y la URL del csv */
 
+type Regla = {
+  patron: string;
+  reemplazo: string;
+  tipo: string;
+  flags: string;
+};
+
+type Medicamento = {
+  id: string;
+  nombre: string;
+  bloque: string[];
+};
+
 const REGLAS_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-HP_OCXjtFN6cCrpBgViv59ufFzUBerAK5jvTSLoT27zC_ux_3YTpX4oQcmCNIZg7blWaBANXtUkF/pub?output=csv';
 
@@ -287,9 +300,9 @@ export default function DepuradorTtos() {
   const [texto, setTexto] = useState('');
   const [variasLineas, setVariasLineas] = useState(false);
   const [resultado, setResultado] = useState('');
-  const [medicamentos, setMedicamentos] = useState([]);
-  const [seleccion, setSeleccion] = useState({});
-  const [reglas, setReglas] = useState([]); // [{ patron, reemplazo, tipo, flags }]
+  const [medicamentos, setMedicamentos] = useState<Medicamento[]>([]);
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
+  const [reglas, setReglas] = useState<Regla[]>([]); // [{ patron, reemplazo, tipo, flags }]
   const [reglasListas, setReglasListas] = useState(false);
 
   const [reglasCargando, setReglasCargando] = useState(false);
@@ -319,7 +332,7 @@ export default function DepuradorTtos() {
         setReglasListas(true);
         setReglasCargando(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Error cargando reglas:', err);
         setReglas([]);
         setReglasListas(true);
@@ -365,9 +378,9 @@ export default function DepuradorTtos() {
       .filter(Boolean);
   }, [reglas]);
 
-  function extraerMedicamentos(textoOriginal: string) {
+  function extraerMedicamentos(textoOriginal: string): Medicamento[] {
     const lineas = textoOriginal.split('\n');
-    const lista = [];
+    const lista: Medicamento[] = [];
     for (let i = 0; i < lineas.length; i += 1) {
       const linea = lineas[i];
       if (linea.startsWith('Terapia/Medicamento:')) {
@@ -421,7 +434,7 @@ export default function DepuradorTtos() {
     }
     const lista = extraerMedicamentos(texto);
     setMedicamentos(lista);
-    const nuevaSeleccion = {};
+    const nuevaSeleccion: Record<string, boolean> = {};
     lista.forEach((m) => {
       nuevaSeleccion[m.id] = true;
     });

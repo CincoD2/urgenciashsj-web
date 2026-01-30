@@ -72,12 +72,21 @@ function getSofa(ratio: number) {
   return 0;
 }
 
+type CalculoOk = {
+  spfi: number;
+  paFi: number;
+  gravedad: { texto: string; color: string };
+  sofa: number;
+};
+
+type CalculoError = { error: string };
+
 export default function Safi() {
   const [spo2, setSpo2] = useState('');
   const [fio2, setFio2] = useState('');
   const [oxigeno, setOxigeno] = useState<Oxigeno>(OXIGENO[0]);
 
-  const calculo = useMemo(() => {
+  const calculo = useMemo<CalculoOk | CalculoError | null>(() => {
     const SpO2 = parseFloat(spo2);
     const FiO2 = parseFloat(fio2);
     if (!SpO2 || !FiO2) return null;
@@ -97,7 +106,7 @@ export default function Safi() {
   }, [spo2, fio2]);
 
   const textoInforme = useMemo(() => {
-    if (!calculo || calculo.error) return null;
+    if (!calculo || 'error' in calculo) return null;
     return `SpFi / PaFi
 - SpO2: ${spo2} %
 - FiO2: ${fio2} %
@@ -156,13 +165,13 @@ ${calculo.gravedad.texto}`;
         Borrar datos
       </button>
 
-      {calculo?.error && (
+      {calculo && 'error' in calculo && (
         <div className="resultado rojo">
           <div className="puntos-total">{calculo.error}</div>
         </div>
       )}
 
-      {calculo && !calculo.error && (
+      {calculo && !('error' in calculo) && (
         <div className={`resultado ${calculo.gravedad.color}`}>
           <div className="puntos-total">PaFi {calculo.paFi} mmHg</div>
           <div className="interpretacion">

@@ -4,12 +4,14 @@
 import { useState, useMemo } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const reset = () => {
-  setSeleccion({});
+type Criterio = {
+  id: string;
+  label: string;
+  puntos: number;
+  negativo?: boolean;
 };
 
-
-const CRITERIOS = [
+const CRITERIOS: Criterio[] = [
   { id: 'cancer', label: 'Cáncer activo', puntos: 1 },
   { id: 'paralisis', label: 'Parálisis, paresia o inmovilización EEII', puntos: 1 },
   { id: 'encamado', label: 'Encamado >3 días o cirugía mayor <12 semanas', puntos: 1 },
@@ -29,10 +31,10 @@ const CRITERIOS = [
 
 
 export default function WellsTVP() {
-  const [seleccion, setSeleccion] = useState({});
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
   const haySeleccion = Object.values(seleccion).some(Boolean);
-  const toggle = id => {
-    setSeleccion(prev => ({
+  const toggle = (id: string) => {
+    setSeleccion((prev) => ({
       ...prev,
       [id]: !prev[id]
     }));
@@ -63,9 +65,9 @@ export default function WellsTVP() {
     };
   }, [puntuacion]);
 
-function resetEscala() {
-  setSeleccion({});
-}
+  function resetEscala() {
+    setSeleccion({});
+  }
 const textoInforme = useMemo(() => {
   if (!haySeleccion) return null;
 

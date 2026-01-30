@@ -12,7 +12,7 @@ const CSV_URL =
 ========================= */
 // Detectar vista móvil (React)
 
-function useIsMobile(breakpoint = 768) {
+function useIsMobile(breakpoint: number = 768) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function useIsMobile(breakpoint = 768) {
 }
 
 // Tipo Título
-function toTitleCase(text) {
+function toTitleCase(text: string) {
   if (!text) return '';
   return text
     .toLowerCase()
@@ -36,7 +36,7 @@ function toTitleCase(text) {
 }
 
 // Formato del nombre
-function formatearNombre(nombre) {
+function formatearNombre(nombre: string) {
   if (!nombre) return { marca: '', resto: '', completo: '' };
 
   const original = nombre.trim();
@@ -65,7 +65,26 @@ export default function Home() {
   const isMobile = useIsMobile();
   const [sortBy, setSortBy] = useState('nombre');
   const [sortDir, setSortDir] = useState('asc'); // 'asc' | 'desc'
-  const [data, setData] = useState([]);
+  type ClaseKey = 'SABA' | 'SAMA' | 'LABA' | 'LAMA' | 'CI';
+  type InhaladorRow = {
+    nombre?: string;
+    vtm?: string;
+    DISPOSITIVO?: string;
+    DISPOSITIVO_INHALACION?: string;
+    TIPO_TRATAMIENTO?: string;
+    labcomercializador?: string;
+    POSOLOGIA_FT_4_2_URL?: string;
+    'ASMA (FT 4.1)'?: string;
+    'EPOC (FT 4.1)'?: string;
+    SABA?: string;
+    SAMA?: string;
+    LABA?: string;
+    LAMA?: string;
+    CI?: string;
+    [key: string]: string | undefined;
+  };
+
+  const [data, setData] = useState<InhaladorRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [hasTotal, setHasTotal] = useState(false);
@@ -80,7 +99,7 @@ export default function Home() {
   const [fTipoInhalador, setFTipoInhalador] = useState('');
   const [fAsma, setFAsma] = useState(false);
   const [fEpoc, setFEpoc] = useState(false);
-  const [fClases, setFClases] = useState({
+  const [fClases, setFClases] = useState<Record<ClaseKey, boolean>>({
     SABA: false,
     SAMA: false,
     LABA: false,
@@ -104,7 +123,7 @@ export default function Home() {
   }
 
   /* ====== Función para manejar el clic en cabeceras ===== */
-  function onSort(col) {
+  function onSort(col: string) {
     if (sortBy === col) {
       setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     } else {
@@ -145,17 +164,17 @@ export default function Home() {
         Papa.parse(textoCSV, {
           header: true,
           skipEmptyLines: true,
-          complete: (results) => {
+          complete: (results: { data?: InhaladorRow[] }) => {
             if (cancelled) return;
             setData(results.data || []);
             setLoading(false);
           },
-          error: (err) => {
+          error: (err: unknown) => {
             console.error('Error parseando CSV:', err);
             if (!cancelled) setLoading(false);
           },
         });
-      } catch (err) {
+      } catch (err: unknown) {
         if (cancelled) return;
         console.error('Error cargando CSV:', err);
         setLoading(false);
@@ -209,7 +228,7 @@ export default function Home() {
           if (!okAsma && !okEpoc) return false;
         }
 
-        for (const c in fClases) {
+        for (const c of Object.keys(fClases) as ClaseKey[]) {
           if (fClases[c] && d[c] !== 'Sí') return false;
         }
 
@@ -233,8 +252,8 @@ export default function Home() {
     setPage(1);
   }, [search, fTipoTratamiento, fTipoInhalador, fAsma, fEpoc, fClases]);
 
-  function getPaginationPages(current, total) {
-    const pages = [];
+  function getPaginationPages(current: number, total: number): Array<number | '...'> {
+    const pages: Array<number | '...'> = [];
 
     if (total <= 7) {
       // pocas páginas → mostrar todas
@@ -359,7 +378,7 @@ export default function Home() {
         <div className="filtro-grupo">
           <span className="filtro-titulo">Clases</span>
           <div className="filtro-botones">
-            {Object.keys(fClases).map((c) => (
+            {(Object.keys(fClases) as ClaseKey[]).map((c) => (
               <button
                 key={c}
                 className={`filtro-btn ${fClases[c] ? 'activo' : ''}`}
@@ -446,7 +465,7 @@ export default function Home() {
       {isMobile ? (
         <div className="cards-list">
           {paginatedData.map((d, i) => {
-            const n = formatearNombre(d.nombre);
+            const n = formatearNombre(d.nombre ?? '');
 
             return (
               <div
@@ -461,7 +480,7 @@ export default function Home() {
                   {n.resto && <span> {n.resto}</span>}
                 </div>
 
-                <div className="card-pa">{toTitleCase(d.vtm)}</div>
+                <div className="card-pa">{toTitleCase(d.vtm ?? '')}</div>
 
                 <div className="card-row">
                   <span className="label">Dispositivo</span>
@@ -520,7 +539,7 @@ export default function Home() {
 
             <tbody>
               {paginatedData.map((d, i) => {
-                const n = formatearNombre(d.nombre);
+                const n = formatearNombre(d.nombre ?? '');
                 return (
                   <tr
                     key={i}
@@ -536,7 +555,7 @@ export default function Home() {
                       </span>
                     </td>
 
-                    <td className="col-pa">{toTitleCase(d.vtm)}</td>
+                    <td className="col-pa">{toTitleCase(d.vtm ?? '')}</td>
 
                     <td className="col-dispositivo">{d.DISPOSITIVO}</td>
 
