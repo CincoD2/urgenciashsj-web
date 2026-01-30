@@ -62,6 +62,20 @@ export default function Escalas() {
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Respiratorio</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a className="escala-link-btn" href="/inhaladores">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 3h8" />
+                <path d="M10 3v6" />
+                <path d="M6 9h12" />
+                <path d="M6 9v6" />
+                <path d="M18 9v6" />
+                <path d="M8 15h8" />
+                <path d="M10 15v6" />
+              </svg>
+            </span>
+            Inhaladores
+          </a>
           <a className="escala-link-btn" href="/escalas/curb65">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

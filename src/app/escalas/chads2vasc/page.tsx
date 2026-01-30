@@ -156,7 +156,7 @@ ${interpretacion.texto}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">CHA2DS2-VASc</h1>
       <div className="input-group" style={{ marginBottom: 16 }}>
         <label>Edad</label>
@@ -201,6 +201,43 @@ ${interpretacion.texto}`;
       </div>
 
       {textoInforme && <InformeCopiable texto={textoInforme} />}
+
+      <section className="mt-8 space-y-4 text-sm text-slate-700 leading-relaxed">
+        <p>
+          El CHADS2-VASc Score es la evolución de un instrumento muy utilizado con el fin de estimar, de una forma
+          relativamente sencilla el riesgo de sufrir un Accidente Cerebrovascular en el caso de los enfermos con
+          Fibrilación Auricular de origen no reumático, el CHADS2. Fundamentalmente se utilizan ambos para decidir
+          cuales de estos enfermos deberían tener tratamiento anticoagulante o antiagregante. Su resultado es una
+          puntuación, que indica el porcentaje de riesgo de sufrir un ACV por el enfermo en los siguientes doce meses.
+        </p>
+        <p>
+          A las siglas de CHADS2, que proceden de: Congestive Heart Failure, Hypertension, Age, Diabetes, Previous
+          Stroke, se añaden la evaluación de enfermedad cardiovascular previa, y el sexo, que son los parámetros en los
+          que se basa el sistema de evaluación.
+        </p>
+        <p>
+          CHADS2-VASc responde a la crítica que se hizo a su antecesor, de que no incluía algunos factores que también
+          podrían influir en la aparición de ACV, aunque es ligeramente más complejo. Su utilización es recomendada por
+          las Sociedades Europea y Canadiense de Cardiología.
+        </p>
+        <p>
+          Tanto el uso del CHADS2, como el CHADS2-VASc se aconseja en conjunción con otros sistemas de evaluación del
+          riesgo de sangrado (HAS-BLED, HEMORR2HAGES, ATRIA, y otros).
+        </p>
+        <div className="space-y-2">
+          <p className="font-semibold">Referencias:</p>
+          <p>
+            Lip GY, Nieuwlaat R, Pisters R, Lane DA, et al: Refining Clinical Risk Stratification for prediction stroke
+            and thromboembolism in atrial fibrillation using a novel risk factor-based approach: The Euroheart Survey
+            on atrial fibrillation. Chest 2010; 137(2):263-272
+          </p>
+          <p>
+            Lip GY, Frison L, Halperin JL, Lane DA; Identifying patients of high risk for stroke despite anticoagulation:
+            a comparison of contemporary stroke risk stratification schemes in an anticoagulates atrial fibrillation
+            cohort. Stroke 2010; 41(12):2731-8
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
