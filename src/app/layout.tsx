@@ -1,6 +1,7 @@
-import { GoogleAnalytics } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import { Encode_Sans, Geist_Mono } from 'next/font/google';
+import Script from 'next/script';
+
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -41,27 +42,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID ?? 'G-XG90E6LPT9';
+
   return (
     <html lang="es">
       <body
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
+        {gaId ? (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
+            <Script id="ga-setup" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}');`}
+            </Script>
+          </>
+        ) : null}
         <Header />
         <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>
         <Footer />
-      </body>
-    </html>
-  );
-}
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="es">
-      <body className="bg-white text-slate-900">
-        <Header />
-        <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
-        <Footer />
-
-        <GoogleAnalytics gaId="G-XG90E6LPT9" />
       </body>
     </html>
   );
