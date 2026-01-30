@@ -4,16 +4,24 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const UNIDADES = [
+type Unidad = {
+  id: string;
+  label: string;
+  factor: number;
+};
+
+type TipoIon = 'na' | 'k' | 'cl' | 'hco3';
+
+const UNIDADES: Unidad[] = [
   { id: 'uno', label: 'mEq/L', factor: 1 },
   { id: 'dos', label: 'mmol/L', factor: 1 },
   { id: 'tres', label: 'mEq/100 mL', factor: 10 },
   { id: 'cuatro', label: 'mmol/100 mL', factor: 10 },
   { id: 'cinco', label: 'mg/100 mL', factor: 1 },
-  { id: 'seis', label: 'mg/L', factor: 1 }
+  { id: 'seis', label: 'mg/L', factor: 1 },
 ];
 
-function convertir(valor, unidad, tipo) {
+function convertir(valor: string, unidad: Unidad, tipo: TipoIon): number | null {
   if (!valor || isNaN(valor)) return null;
   const base = parseFloat(valor);
   if (unidad.id === 'cinco') {
@@ -94,7 +102,10 @@ Interpretación: ${calculo.interpretacion}`;
         <div className="input-group">
           <label>Sodio (Na+)</label>
           <input type="number" min="0" value={na} onChange={(e) => setNa(e.target.value)} />
-          <select value={uNa.id} onChange={(e) => setUNa(UNIDADES.find((u) => u.id === e.target.value))}>
+          <select
+            value={uNa.id}
+            onChange={(e) => setUNa(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+          >
             {UNIDADES.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.label}
@@ -106,7 +117,10 @@ Interpretación: ${calculo.interpretacion}`;
         <div className="input-group">
           <label>Potasio (K+) (opcional)</label>
           <input type="number" min="0" value={k} onChange={(e) => setK(e.target.value)} />
-          <select value={uK.id} onChange={(e) => setUK(UNIDADES.find((u) => u.id === e.target.value))}>
+          <select
+            value={uK.id}
+            onChange={(e) => setUK(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+          >
             {UNIDADES.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.label}
@@ -118,7 +132,10 @@ Interpretación: ${calculo.interpretacion}`;
         <div className="input-group">
           <label>Cloro (Cl-)</label>
           <input type="number" min="0" value={cl} onChange={(e) => setCl(e.target.value)} />
-          <select value={uCl.id} onChange={(e) => setUCl(UNIDADES.find((u) => u.id === e.target.value))}>
+          <select
+            value={uCl.id}
+            onChange={(e) => setUCl(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+          >
             {UNIDADES.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.label}
@@ -132,7 +149,7 @@ Interpretación: ${calculo.interpretacion}`;
           <input type="number" min="0" value={hco3} onChange={(e) => setHco3(e.target.value)} />
           <select
             value={uHco3.id}
-            onChange={(e) => setUHco3(UNIDADES.find((u) => u.id === e.target.value))}
+            onChange={(e) => setUHco3(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
           >
             {UNIDADES.map((u) => (
               <option key={u.id} value={u.id}>
