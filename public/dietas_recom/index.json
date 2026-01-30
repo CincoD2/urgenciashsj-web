@@ -44,7 +44,7 @@
   {
     "id": "DIABÉTICOS",
     "titulo": "Dieta para diabéticos",
-    "ruta": "/dietas_recom/DIABÉTICOS.txt",
+    "ruta": "/dietas_recom/DIABETICOS.txt",
     "tags": ["dieta", "endocrino", "dm", "hiperglucemia", "glucemia"],
     "sistemas": ["endocrino"]
   },
@@ -97,7 +97,8 @@
       "diarrea",
       "cagalera",
       "sueroral",
-      "blanda"
+      "blanda",
+      "dieta blanda"
     ],
     "sistemas": ["digestivo"]
   },
@@ -105,7 +106,7 @@
     "id": "HTA",
     "titulo": "HTA",
     "ruta": "/dietas_recom/HTA.txt",
-    "tags": ["cardiovascular", "dieta", "endocrino", "recomendacion"],
+    "tags": ["cardiovascular", "dieta", "endocrino", "recomendacion", "hipertensión"],
     "sistemas": ["cardiovascular", "endocrino"]
   },
   {
@@ -119,21 +120,28 @@
     "id": "INSUFICIENCIA CARDIACA",
     "titulo": "Insuficiencia cardiaca",
     "ruta": "/dietas_recom/INSUFICIENCIA CARDIACA.txt",
-    "tags": ["cardiovascular", "recomendacion", "respiratorio"],
+    "tags": ["cardiovascular", "recomendacion", "respiratorio", "ICC"],
     "sistemas": ["cardiovascular", "respiratorio"]
   },
   {
     "id": "Inmovilización por vendas de Yeso",
     "titulo": "Inmovilización por Vendas de Yeso",
     "ruta": "/dietas_recom/Inmovilización por vendas de Yeso.txt",
-    "tags": ["trauma", "recomendacion"],
+    "tags": ["trauma", "recomendacion", "vendaje", "férula"],
     "sistemas": ["trauma"]
   },
   {
     "id": "Insuficiencia Venosa y Varices",
     "titulo": "Insuficiencia venosa y varices",
     "ruta": "/dietas_recom/Insuficiencia Venosa y Varices.txt",
-    "tags": ["cardiovascular", "dermatológico", "infeccioso", "recomendacion"],
+    "tags": [
+      "cardiovascular",
+      "dermatológico",
+      "infeccioso",
+      "recomendacion",
+      "Flebitis",
+      "tromboflebitis  "
+    ],
     "sistemas": ["cardiovascular", "dermatológico", "infeccioso"]
   },
   {
