@@ -305,7 +305,7 @@ export default function DepuradorTtos() {
       download: true,
       header: true,
       skipEmptyLines: true,
-      complete: (results) => {
+      complete: (results: { data?: Array<{ patron?: string; reemplazo?: string; tipo?: string; flags?: string }> }) => {
         const rows = (results.data || [])
           .map((r) => ({
             patron: (r.patron || '').trim(),
