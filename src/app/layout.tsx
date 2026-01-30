@@ -31,10 +31,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${encodeSans.variable} ${geistMono.variable} antialiased bg-white text-slate-900`}
+        className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
         <Header />
-        <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+        <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>
         <Footer />
       </body>
     </html>
