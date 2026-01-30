@@ -27,27 +27,59 @@ type IconKey =
 
 const enlacesCorporativos: Record<string, LinkItem[]> = {
   Personal: [
-    { label: 'Portal del Empleado GVA', href: 'https://vvd17portalempleado.cs.san.gva.es/', icon: 'person' },
+    {
+      label: 'Portal del Empleado GVA',
+      href: 'https://vvd17portalempleado.cs.san.gva.es/',
+      icon: 'person',
+    },
     { label: 'Nóminas San Juan', href: 'https://nomina.san.gva.es/es/', icon: 'money' },
     { label: 'Gestor Identidades (GVA)', href: 'https://idm.san.gva.es/sspr', icon: 'person' },
-    { label: 'Intranet Privada San Juan', href: 'https://intranet17.cs.san.gva.es/', icon: 'internet' },
+    {
+      label: 'Intranet Privada San Juan',
+      href: 'https://intranet17.cs.san.gva.es/',
+      icon: 'internet',
+    },
   ],
   Herramientas: [
     { label: 'Mail Corporativo', href: 'https://outlook.office365.com/', icon: 'mail' },
-    { label: 'Biblioteca', href: 'https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac', icon: 'book' },
-    { label: 'Portal Formación (EVES)', href: 'https://eves.san.gva.es/web/guest/home', icon: 'grad' },
+    {
+      label: 'Biblioteca',
+      href: 'https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac',
+      icon: 'book',
+    },
+    {
+      label: 'Portal Formación (EVES)',
+      href: 'https://eves.san.gva.es/web/guest/home',
+      icon: 'grad',
+    },
     {
       label: 'Informática',
       href: 'https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/',
       icon: 'computer',
     },
-    { label: 'Partes Mantenimiento', href: 'http://avisos.hribera.gim-web.com/PC/Inici.aspx', icon: 'wrench' },
+    {
+      label: 'Partes Mantenimiento',
+      href: 'http://avisos.hribera.gim-web.com/PC/Inici.aspx',
+      icon: 'wrench',
+    },
   ],
   Departamento: [
-    { label: 'GestLab', href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?', icon: 'flask' },
-    { label: 'Laboratorio (HSJ)', href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?', icon: 'flask' },
+    {
+      label: 'GestLab',
+      href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
+      icon: 'flask',
+    },
+    {
+      label: 'Laboratorio (HSJ)',
+      href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
+      icon: 'flask',
+    },
     { label: 'Visor RX (HSJ)', href: 'https://vvd17zfpa.cs.san.gva.es/ZFP/', icon: 'xray' },
-    { label: 'Taonet-Sintrom', href: 'http://10.192.176.103:8080/tao/servlet/KYNTAOController', icon: 'drop' },
+    {
+      label: 'Taonet-Sintrom',
+      href: 'http://10.192.176.103:8080/tao/servlet/KYNTAOController',
+      icon: 'drop',
+    },
     {
       label: 'Citas MAP',
       href: 'https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=4&login=a&idioma=es&idCatGuc=PR&idProcGuc=2888',
@@ -116,14 +148,26 @@ function Icon({ name }: { name: IconKey }) {
   switch (name) {
     case 'person':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="7" r="4" />
           <path d="M5 21c1.5-4 12.5-4 14 0" />
         </svg>
       );
     case 'money':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="3" y="7" width="18" height="10" rx="2" />
           <circle cx="12" cy="12" r="2.5" />
           <path d="M7 9v6M17 9v6" />
@@ -131,68 +175,128 @@ function Icon({ name }: { name: IconKey }) {
       );
     case 'internet':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="9" />
           <path d="M3 12h18M12 3a12 12 0 0 1 0 18M12 3a12 12 0 0 0 0 18" />
         </svg>
       );
     case 'mail':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="3" y="5" width="18" height="14" rx="2" />
           <path d="M3 7l9 6 9-6" />
         </svg>
       );
     case 'book':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M4 4h10a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3z" />
           <path d="M4 4v16a3 3 0 0 1 3-3h10" />
         </svg>
       );
     case 'grad':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M2 7l10-4 10 4-10 4-10-4z" />
           <path d="M6 10v5c0 2 4 3 6 3s6-1 6-3v-5" />
         </svg>
       );
     case 'computer':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="3" y="4" width="18" height="12" rx="2" />
           <path d="M8 20h8M10 16l-1 4M14 16l1 4" />
         </svg>
       );
     case 'wrench':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M14 7a4 4 0 0 0-5 5L4 17l3 3 5-5a4 4 0 0 0 5-5z" />
         </svg>
       );
     case 'flask':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M9 2h6" />
           <path d="M10 2v5l-5 9a3 3 0 0 0 3 4h8a3 3 0 0 0 3-4l-5-9V2" />
         </svg>
       );
     case 'xray':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="4" y="3" width="16" height="18" rx="2" />
           <path d="M9 8h6M9 12h6M9 16h6" />
         </svg>
       );
     case 'drop':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" />
         </svg>
       );
     case 'agenda':
       return (
-        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          className={common}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <rect x="3" y="4" width="18" height="16" rx="2" />
           <path d="M7 2v4M17 2v4M3 9h18" />
         </svg>
@@ -231,10 +335,10 @@ function LinkList({ items }: { items: { label: string; href: string; icon?: Icon
 export default function HomePage() {
   return (
     <div className="space-y-10">
-      <section className="relative -mx-4 h-[310px] overflow-hidden">
+      <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9">
         <div
           className="absolute inset-0 bg-cover"
-          style={{ backgroundImage: 'url(/urg-background.png)', backgroundPosition: 'center 20%' }}
+          style={{ backgroundImage: 'url(/urg-background.png)', backgroundPosition: 'center 18%' }}
         />
         <div className="absolute inset-0 bg-white/60" />
         <div className="relative z-10 flex h-full items-center">
@@ -251,7 +355,9 @@ export default function HomePage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {Object.entries(enlacesCorporativos).map(([grupo, items]) => (
             <div key={grupo} className="space-y-2">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-[#516f75]">{grupo}</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-[#516f75]">
+                {grupo}
+              </h3>
               <LinkList items={items} />
             </div>
           ))}

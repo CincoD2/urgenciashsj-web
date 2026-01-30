@@ -300,14 +300,35 @@ export default function Home() {
             className={`barra-carga ${hasTotal ? '' : 'barra-carga-ind'}`}
             aria-label="Cargando"
           >
-          <div
-            className="barra-carga-progreso"
-            style={{ width: `${progress}%` }}
-          />
+            <div
+              className={`barra-carga-progreso ${hasTotal ? '' : 'barra-carga-progreso-ind'}`}
+              style={hasTotal ? { width: `${progress}%` } : undefined}
+            />
           </div>
           {hasTotal && progress ? (
             <div className="barra-carga-texto">{progress}%</div>
           ) : null}
+          <style jsx>{`
+            .barra-carga {
+              position: relative;
+              overflow: hidden;
+            }
+            .barra-carga-progreso-ind {
+              width: 40%;
+              animation: barra-ind 1.2s ease-in-out infinite;
+            }
+            @keyframes barra-ind {
+              0% {
+                transform: translateX(-120%);
+              }
+              50% {
+                transform: translateX(10%);
+              }
+              100% {
+                transform: translateX(220%);
+              }
+            }
+          `}</style>
         </div>
       </main>
     );
@@ -384,7 +405,7 @@ export default function Home() {
                 className={`filtro-btn ${fClases[c] ? 'activo' : ''}`}
                 onClick={() => setFClases({ ...fClases, [c]: !fClases[c] })}
               >
-                {c}
+                {c === 'CI' ? 'ICS' : c}
               </button>
             ))}
           </div>
