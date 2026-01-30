@@ -262,7 +262,7 @@ function depurar(textoOriginal: string, multilinea: boolean) {
       if (!medL) return null;
       return { med: medL, poso: posoL };
     })
-    .filter(Boolean);
+    .filter((it): it is { med: string; poso: string } => it !== null);
 
   const header = `Tratamiento (por SIA a fecha ${fechaActual}):`;
 
