@@ -294,6 +294,7 @@ export default function Home() {
   if (loading) {
     return (
       <main style={{ padding: 24 }}>
+        <h1 className="text-2xl font-semibold">Inhaladores</h1>
         <div className="cargando-wrapper">
           <p>Cargando inhaladores…</p>
           <div
@@ -333,11 +334,18 @@ export default function Home() {
       </main>
     );
   }
-  if (!data.length) return <p>No se han cargado datos</p>;
+  if (!data.length)
+    return (
+      <main style={{ padding: 24 }}>
+        <h1 className="text-2xl font-semibold">Inhaladores</h1>
+        <p>No se han cargado datos</p>
+      </main>
+    );
 
   /* ===== RENDER ===== */
   return (
     <main style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">Inhaladores</h1>
       {/* FILTROS */}
       <div className="filters">
         {/* Tipo tratamiento */}

@@ -104,6 +104,7 @@ Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">TIMI-SCA CEST</h1>
       <div className="input-group">
         <label>Edad</label>
         <div className="selector-botones">

@@ -77,6 +77,7 @@ ${interpretacion.texto}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">Glasgow</h1>
       <div className="input-group">
         <label>Respuesta ocular ({ocular.puntos})</label>
         <div className="selector-botones">

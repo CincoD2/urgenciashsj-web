@@ -33,6 +33,7 @@ PAM: ${calculo.map} mmHg`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">TAM</h1>
       <div className="inputs-grid">
         <div className="input-group">
           <label>TAS</label>

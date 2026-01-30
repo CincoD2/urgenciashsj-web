@@ -451,6 +451,7 @@ export default function DepuradorTtos() {
   if (!reglasListas && !reglasCargando) return <p>Cargando reglas…</p>;
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">Depurador Ttos</h1>
       <div className="input-group">
         <label>Texto original</label>
         <textarea

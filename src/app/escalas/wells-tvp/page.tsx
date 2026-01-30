@@ -97,6 +97,7 @@ ${interpretacion.texto.toUpperCase()}${recomendacion}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">Wells - TVP</h1>
     
 
       <div className="criterios">

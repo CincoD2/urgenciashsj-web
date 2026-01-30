@@ -79,6 +79,7 @@ ${calculo.texto}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">PaFi</h1>
       <div className="inputs-grid">
         <div className="input-group">
           <label>pO2</label>

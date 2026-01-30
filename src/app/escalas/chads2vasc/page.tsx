@@ -157,6 +157,7 @@ ${interpretacion.texto}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">CHA2DS2-VASc</h1>
       <div className="input-group" style={{ marginBottom: 16 }}>
         <label>Edad</label>
         <div className="selector-botones">

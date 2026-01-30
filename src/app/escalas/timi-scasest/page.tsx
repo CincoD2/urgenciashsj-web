@@ -121,6 +121,7 @@ ${recomendacion}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">TIMI-SCASEST</h1>
       <div className="input-group">
         <label>Factores de riesgo cardiovascular ({frcvCount})</label>
         <div className="criterios">

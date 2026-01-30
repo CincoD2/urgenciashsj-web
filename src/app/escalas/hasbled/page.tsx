@@ -120,6 +120,7 @@ ${interpretacion.texto}`;
 
   return (
     <main className="escala-wrapper" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">HAS-BLED</h1>
       <div className="criterios">
         {CRITERIOS.map((c) => (
           <button

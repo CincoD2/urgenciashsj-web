@@ -87,7 +87,8 @@ export default function DietasYRecomendaciones() {
   }
 
   return (
-    <main className="escala-wrapper escala-full" style={{ padding: 24 }}>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Dietas</h1>
       <div className="buscador-wrapper buscador-dietas">
         <span className="buscador-icon" aria-hidden>
           <svg
@@ -182,6 +183,6 @@ export default function DietasYRecomendaciones() {
           {texto ? <InformeCopiable texto={texto} /> : null}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

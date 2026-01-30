@@ -43,10 +43,13 @@ export default async function ProtocoloPage({ params }: { params: Promise<{ slug
 
   if (!fs.existsSync(filePath)) notFound();
 
+  const raw = fs.readFileSync(filePath, 'utf8');
+  const { data } = matter(raw);
   const { default: Content } = await import(`../../../../content/protocolos/${slug}.mdx`);
 
   return (
     <article className="prose max-w-none">
+      <h1 className="text-2xl font-semibold">{data.title ?? 'Protocolos'}</h1>
       <Content />
     </article>
   );
