@@ -4,7 +4,16 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const FRCV = [
+type ItemBase = {
+  id: string;
+  label: string;
+};
+
+type Criterio = ItemBase & {
+  puntos: number;
+};
+
+const FRCV: ItemBase[] = [
   { id: 'hta', label: 'HTA > 140/90 o en tratamiento' },
   { id: 'tabaco', label: 'Tabaquismo' },
   { id: 'dislipemia', label: 'Dislipemia (HDL < 40)' },
@@ -12,7 +21,7 @@ const FRCV = [
   { id: 'familia', label: 'Antecedentes familiares de cardiopatía isquémica prematura' }
 ];
 
-const CRITERIOS = [
+const CRITERIOS: Criterio[] = [
   { id: 'cad', label: 'CAD previa (estenosis ≥ 50%)', puntos: 1 },
   { id: 'aas', label: 'Tratamiento con AAS más de 1 semana', puntos: 1 },
   { id: 'angina', label: 'Angina severa (≥ 2 crisis/24 h)', puntos: 1 },
@@ -21,7 +30,7 @@ const CRITERIOS = [
   { id: 'edad', label: 'Edad ≥ 65', puntos: 1 }
 ];
 
-function getRiesgoCombinado(puntos) {
+function getRiesgoCombinado(puntos: number) {
   if (puntos < 2) return { combinado: '4,7 %', iam: '3 %' };
   if (puntos === 2) return { combinado: '8,3 %', iam: '3 %' };
   if (puntos === 3) return { combinado: '13,2 %', iam: '5 %' };
@@ -30,7 +39,7 @@ function getRiesgoCombinado(puntos) {
   return { combinado: '41 %', iam: '19 %' };
 }
 
-function getRecomendacion(puntos, st, tn) {
+function getRecomendacion(puntos: number, st: boolean, tn: boolean) {
   if (puntos <= 2) {
     return 'Bajo riesgo. Puede seguir tratamiento ambulatorio.';
   }
@@ -40,7 +49,7 @@ function getRecomendacion(puntos, st, tn) {
   return 'Alto riesgo. Ingreso hospitalario. Iniciar enoxaparina o HNF y IIb/IIIa. Estrategia invasiva precoz (ICP).';
 }
 
-function getRecomendacionEspecial(puntos, st, tn) {
+function getRecomendacionEspecial(puntos: number, st: boolean, tn: boolean) {
   if (puntos === 1 && (st || tn)) {
     return 'Bajo riesgo. Puede seguir tratamiento ambulatorio. Se recomienda una prueba de estrés no invasiva para valoración de isquemia inducible antes del alta (clase IA).';
   }
@@ -57,8 +66,8 @@ function getRecomendacionEspecial(puntos, st, tn) {
 }
 
 export default function TimiScasest() {
-  const [frcv, setFrcv] = useState({});
-  const [seleccion, setSeleccion] = useState({});
+  const [frcv, setFrcv] = useState<Record<string, boolean>>({});
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
 
   const frcvCount = useMemo(
     () => FRCV.reduce((total, f) => (frcv[f.id] ? total + 1 : total), 0),
@@ -97,11 +106,11 @@ Mortalidad por IAM: ${riesgo.iam}
 ${recomendacion}`;
   }, [frcv, seleccion, frcvCount, puntosFrcv, puntuacion, riesgo, recomendacion]);
 
-  const toggleFrcv = (id) => {
+  const toggleFrcv = (id: string) => {
     setFrcv((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

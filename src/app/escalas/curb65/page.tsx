@@ -4,7 +4,13 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const CRITERIOS = [
+type Criterio = {
+  id: string;
+  label: string;
+  texto: string;
+};
+
+const CRITERIOS: Criterio[] = [
   {
     id: 'confusion',
     label: 'Confusión (desorientación en los 3 ejes)',
@@ -32,7 +38,7 @@ const CRITERIOS = [
   },
 ];
 
-function getInterpretacion(puntuacion) {
+function getInterpretacion(puntuacion: number) {
   if (puntuacion <= 1) {
     return {
       texto: 'BAJO RIESGO: Puede hacerse tratamiento ambulatorio',
@@ -58,7 +64,7 @@ function getInterpretacion(puntuacion) {
 }
 
 export default function Curb65() {
-  const [seleccion, setSeleccion] = useState({});
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
   const haySeleccion = Object.values(seleccion).some(Boolean);
 
   const puntuacion = useMemo(() => {
@@ -81,7 +87,7 @@ Puntuación: ${puntuacion}
 ${interpretacion.texto}`;
   }, [haySeleccion, seleccion, puntuacion, interpretacion]);
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

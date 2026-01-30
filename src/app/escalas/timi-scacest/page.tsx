@@ -4,13 +4,26 @@
 import { useMemo, useState } from "react";
 import InformeCopiable from "@/components/InformeCopiable";
 
-const EDADES = [
+type EdadOption = {
+  id: string;
+  label: string;
+  puntos: number;
+};
+
+type Criterio = {
+  id: string;
+  label: string;
+  puntos: number;
+  texto: string;
+};
+
+const EDADES: EdadOption[] = [
   { id: "lt65", label: "Edad < 65 años", puntos: 0 },
   { id: "65_74", label: "Edad 65-74 años", puntos: 2 },
   { id: "ge75", label: "Edad ≥ 75 años", puntos: 3 },
 ];
 
-const CRITERIOS = [
+const CRITERIOS: Criterio[] = [
   {
     id: "frcv",
     label: "DM, HTA o angina",
@@ -40,7 +53,7 @@ const CRITERIOS = [
   },
 ];
 
-function getMortalidad(puntos) {
+function getMortalidad(puntos: number) {
   if (puntos <= 0) return "0,8 %";
   if (puntos === 1) return "1,6 %";
   if (puntos === 2) return "2,2 %";
@@ -54,8 +67,8 @@ function getMortalidad(puntos) {
 }
 
 export default function TimiScacest() {
-  const [edad, setEdad] = useState(EDADES[0]);
-  const [seleccion, setSeleccion] = useState({});
+  const [edad, setEdad] = useState<EdadOption>(EDADES[0]);
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
 
   const puntuacion = useMemo(() => {
     const edadPuntos = edad?.puntos || 0;
@@ -80,7 +93,7 @@ Puntuación: ${puntuacion} puntos
 Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
   }, [edad, seleccion, puntuacion, mortalidad]);
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

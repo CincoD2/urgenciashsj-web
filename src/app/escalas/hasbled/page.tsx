@@ -4,7 +4,13 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const CRITERIOS = [
+type Criterio = {
+  id: string;
+  label: string;
+  texto: string;
+};
+
+const CRITERIOS: Criterio[] = [
   {
     id: 'hta',
     label: 'Hipertensión arterial (TAS > 160 mmHg)',
@@ -55,7 +61,7 @@ const CRITERIOS = [
   }
 ];
 
-function getInterpretacion(puntuacion) {
+function getInterpretacion(puntuacion: number) {
   if (puntuacion >= 3) {
     return {
       texto: 'Riesgo alto (probabilidad de sangrado en un año entre el 4,9 y el 19,6 %)',
@@ -81,7 +87,7 @@ function getInterpretacion(puntuacion) {
 }
 
 export default function Hasbled() {
-  const [seleccion, setSeleccion] = useState({});
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
   const haySeleccion = Object.values(seleccion).some(Boolean);
 
   const puntuacion = useMemo(() => {
@@ -104,7 +110,7 @@ Puntuación: ${puntuacion}
 ${interpretacion.texto}`;
   }, [haySeleccion, seleccion, puntuacion, interpretacion]);
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

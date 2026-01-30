@@ -4,7 +4,13 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const OXIGENO = [
+type Oxigeno = {
+  id: string;
+  label: string;
+  valor: number;
+};
+
+const OXIGENO: Oxigeno[] = [
   { id: '21', label: 'Sin oxígeno suplementario', valor: 21 },
   { id: '24', label: 'Gafas nasales a 1 lpm', valor: 24 },
   { id: '28', label: 'Gafas nasales a 2 lpm', valor: 28 },
@@ -17,7 +23,7 @@ const OXIGENO = [
   { id: '50', label: 'VMK reservorio', valor: 50 }
 ];
 
-function getGravedad(ratio) {
+function getGravedad(ratio: number) {
   if (ratio > 0 && ratio <= 100) {
     return { texto: 'SDRA grave (mortalidad 45%)', color: 'rojo' };
   }
@@ -33,7 +39,7 @@ function getGravedad(ratio) {
 export default function Pafi() {
   const [po2, setPo2] = useState('');
   const [fio2, setFio2] = useState('');
-  const [oxigeno, setOxigeno] = useState(OXIGENO[0]);
+  const [oxigeno, setOxigeno] = useState<Oxigeno>(OXIGENO[0]);
 
   const calculo = useMemo(() => {
     const pO2 = parseFloat(po2);

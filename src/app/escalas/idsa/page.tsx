@@ -4,12 +4,18 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const MAYORES = [
+type Criterio = {
+  id: string;
+  label: string;
+  texto: string;
+};
+
+const MAYORES: Criterio[] = [
   { id: 'vmi', label: 'Necesidad de ventilación mecánica invasiva', texto: 'Necesidad de ventilación mecánica invasiva' },
   { id: 'shock', label: 'Shock séptico que precisa fármacos vasoactivos', texto: 'Shock séptico que precisa fármacos vasoactivos' }
 ];
 
-const MENORES = [
+const MENORES: Criterio[] = [
   { id: 'multilobar', label: 'Infiltrados multilobares', texto: 'Infiltrados multilobares' },
   { id: 'pafi', label: 'PaO2/FiO2 ≤ 90 mmHg', texto: 'PaO2/FiO2 ≤ 90 mmHg' },
   { id: 'confusion', label: 'Confusión/Desorientación', texto: 'Confusión/Desorientación' },
@@ -21,7 +27,7 @@ const MENORES = [
   { id: 'hipotension', label: 'Hipotensión que precise aporte intensivo de fluidos', texto: 'Hipotensión que precise aporte intensivo de fluidos' }
 ];
 
-function getInterpretacion(mayores, menores) {
+function getInterpretacion(mayores: number, menores: number) {
   if (mayores === 0 && menores < 3) {
     return {
       texto: 'No hay criterios de ingreso en UCI.',
@@ -51,8 +57,8 @@ function getInterpretacion(mayores, menores) {
 }
 
 export default function Idsa() {
-  const [mayoresSel, setMayoresSel] = useState({});
-  const [menoresSel, setMenoresSel] = useState({});
+  const [mayoresSel, setMayoresSel] = useState<Record<string, boolean>>({});
+  const [menoresSel, setMenoresSel] = useState<Record<string, boolean>>({});
 
   const mayores = useMemo(
     () => MAYORES.reduce((total, c) => (mayoresSel[c.id] ? total + 1 : total), 0),
@@ -79,11 +85,11 @@ Resultado: ${interpretacion.resumen}
 ${interpretacion.texto}`;
   }, [mayoresSel, menoresSel, interpretacion]);
 
-  const toggleMayor = (id) => {
+  const toggleMayor = (id: string) => {
     setMayoresSel((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const toggleMenor = (id) => {
+  const toggleMenor = (id: string) => {
     setMenoresSel((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

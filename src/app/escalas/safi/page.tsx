@@ -4,7 +4,13 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const OXIGENO = [
+type Oxigeno = {
+  id: string;
+  label: string;
+  valor: number;
+};
+
+const OXIGENO: Oxigeno[] = [
   { id: '21', label: 'Sin oxígeno suplementario', valor: 21 },
   { id: '24', label: 'Gafas nasales a 1 lpm', valor: 24 },
   { id: '28', label: 'Gafas nasales a 2 lpm', valor: 28 },
@@ -17,7 +23,7 @@ const OXIGENO = [
   { id: '50', label: 'VMK reservorio', valor: 50 }
 ];
 
-function calcularPaFiEquivalente(spo2, fio2) {
+function calcularPaFiEquivalente(spo2: number, fio2: number) {
   const SpO2 = spo2 / 100;
   const FiO2 = fio2 / 100;
 
@@ -45,7 +51,7 @@ function calcularPaFiEquivalente(spo2, fio2) {
   return { paFi: F4, paFiAlt: E };
 }
 
-function getGravedad(ratio) {
+function getGravedad(ratio: number) {
   if (ratio > 0 && ratio <= 100) {
     return { texto: 'SDRA grave (mortalidad 45%)', color: 'rojo' };
   }
@@ -58,7 +64,7 @@ function getGravedad(ratio) {
   return { texto: 'Adecuada PaFi', color: 'verde' };
 }
 
-function getSofa(ratio) {
+function getSofa(ratio: number) {
   if (ratio < 100) return 4;
   if (ratio >= 100 && ratio < 200) return 3;
   if (ratio >= 200 && ratio < 300) return 2;
@@ -69,7 +75,7 @@ function getSofa(ratio) {
 export default function Safi() {
   const [spo2, setSpo2] = useState('');
   const [fio2, setFio2] = useState('');
-  const [oxigeno, setOxigeno] = useState(OXIGENO[0]);
+  const [oxigeno, setOxigeno] = useState<Oxigeno>(OXIGENO[0]);
 
   const calculo = useMemo(() => {
     const SpO2 = parseFloat(spo2);

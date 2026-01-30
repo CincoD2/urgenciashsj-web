@@ -4,14 +4,20 @@
 import { useMemo, useState } from "react";
 import InformeCopiable from "@/components/InformeCopiable";
 
-const OCULAR = [
+type Opcion = {
+  id: string;
+  label: string;
+  puntos: number;
+};
+
+const OCULAR: Opcion[] = [
   { id: "o4", label: "Espontánea", puntos: 4 },
   { id: "o3", label: "Apertura a la orden", puntos: 3 },
   { id: "o2", label: "Apertura al dolor", puntos: 2 },
   { id: "o1", label: "Sin respuesta", puntos: 1 },
 ];
 
-const VERBAL = [
+const VERBAL: Opcion[] = [
   { id: "v5", label: "Orientada", puntos: 5 },
   { id: "v4", label: "Confusa", puntos: 4 },
   { id: "v3", label: "Inapropiada", puntos: 3 },
@@ -19,7 +25,7 @@ const VERBAL = [
   { id: "v1", label: "Sin respuesta", puntos: 1 },
 ];
 
-const MOTORA = [
+const MOTORA: Opcion[] = [
   { id: "m6", label: "Obedece órdenes", puntos: 6 },
   { id: "m5", label: "Localiza estímulo doloroso", puntos: 5 },
   { id: "m4", label: "Retirada al dolor", puntos: 4 },
@@ -28,7 +34,7 @@ const MOTORA = [
   { id: "m1", label: "Sin respuesta", puntos: 1 },
 ];
 
-function getInterpretacion(total) {
+function getInterpretacion(total: number) {
   if (total === 15) {
     return { texto: "Sin lesión cerebral", color: "verde" };
   }
@@ -42,9 +48,9 @@ function getInterpretacion(total) {
 }
 
 export default function Glasgow() {
-  const [ocular, setOcular] = useState(OCULAR[0]);
-  const [verbal, setVerbal] = useState(VERBAL[0]);
-  const [motora, setMotora] = useState(MOTORA[0]);
+  const [ocular, setOcular] = useState<Opcion>(OCULAR[0]);
+  const [verbal, setVerbal] = useState<Opcion>(VERBAL[0]);
+  const [motora, setMotora] = useState<Opcion>(MOTORA[0]);
 
   const total = useMemo(
     () => (ocular?.puntos || 0) + (verbal?.puntos || 0) + (motora?.puntos || 0),

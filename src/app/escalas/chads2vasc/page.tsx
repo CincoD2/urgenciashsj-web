@@ -4,13 +4,27 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const EDADES = [
+type EdadOption = {
+  id: string;
+  label: string;
+  puntos: number;
+  texto: string;
+};
+
+type Criterio = {
+  id: string;
+  label: string;
+  puntos: number;
+  texto: string;
+};
+
+const EDADES: EdadOption[] = [
   { id: 'lt65', label: 'Edad < 65 años', puntos: 0, texto: 'Edad < 65 años' },
   { id: '65_74', label: 'Edad entre 65 y 74 años', puntos: 1, texto: 'Edad entre 65 y 74 años' },
   { id: 'ge75', label: 'Edad ≥ 75 años', puntos: 2, texto: 'Edad ≥ 75 años' }
 ];
 
-const CRITERIOS = [
+const CRITERIOS: Criterio[] = [
   {
     id: 'icc',
     label:
@@ -52,7 +66,7 @@ const CRITERIOS = [
   }
 ];
 
-const RIESGO = [
+const RIESGO: string[] = [
   'menor de 1.3 %',
   '1.3 %',
   '2.2 %',
@@ -65,7 +79,7 @@ const RIESGO = [
   '15.2 %'
 ];
 
-function getInterpretacion(puntuacion, soloMujer) {
+function getInterpretacion(puntuacion: number, soloMujer: boolean) {
   if (puntuacion < 1) {
     return {
       texto: `Riesgo bajo (riesgo de ACV en el próximo año: ${RIESGO[puntuacion]})`,
@@ -91,8 +105,8 @@ function getInterpretacion(puntuacion, soloMujer) {
 }
 
 export default function Chads2vasc() {
-  const [edad, setEdad] = useState(null);
-  const [seleccion, setSeleccion] = useState({});
+  const [edad, setEdad] = useState<EdadOption | null>(null);
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
 
   const puntuacionBase = useMemo(() => {
     const edadPuntos = edad?.puntos || 0;
@@ -132,7 +146,7 @@ Puntuación: ${puntuacionFinal}
 ${interpretacion.texto}`;
   }, [edad, seleccion, puntuacionFinal, interpretacion]);
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

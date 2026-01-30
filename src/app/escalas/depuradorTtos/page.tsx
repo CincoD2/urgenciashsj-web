@@ -16,11 +16,11 @@ const REGLAS_URL =
 const RX_TERA = /^Terapia\/Medicamento:\s*(.*)\s*$/i;
 const RX_POSO = /^Posolog[ií]a\/Observaciones:\s*(.*)\s*$/i;
 
-function normEspacios(s) {
+function normEspacios(s: string) {
   return (s || '').replace(/\s{2,}/g, ' ').trim();
 }
 
-function normalizarUnidades(s) {
+function normalizarUnidades(s: string) {
   if (!s) return s;
 
   return (
@@ -40,7 +40,7 @@ function normalizarUnidades(s) {
  * - Borra paréntesis (fabricantes/blisters), conserva "(FM)" si está al inicio
  * - Quita presentación (28 comprimidos, 1 frasco 5mL...), sin romper dosis mg/mL o 80/12,5
  */
-function limpiarNombreMedicamento(raw) {
+function limpiarNombreMedicamento(raw: string) {
   let s = normEspacios(raw);
 
   // Conservar "(FM)" si está al inicio
@@ -120,7 +120,7 @@ function limpiarNombreMedicamento(raw) {
  * Limpieza de Posología/Observaciones
  * Objetivo: "1 cp diario", "4 cp/semanales", "1 gota/12 h", "1 cp/2 días", "1 env./semanal"...
  */
-function limpiarPosologia(raw) {
+function limpiarPosologia(raw: string) {
   let s = (raw || '').replace(/\r/g, '').trim();
 
   // Si viene posología con varias frases: quedarse con la primera pauta útil
@@ -217,7 +217,7 @@ function limpiarPosologia(raw) {
  * depurar: parsea bloques Terapia/Medicamento + Posología/Observaciones
  * y genera salida
  */
-function depurar(textoOriginal, multilinea) {
+function depurar(textoOriginal: string, multilinea: boolean) {
   const fechaActual = new Date().toLocaleDateString('es-ES');
 
   const lineas = (textoOriginal || '')
@@ -365,7 +365,7 @@ export default function DepuradorTtos() {
       .filter(Boolean);
   }, [reglas]);
 
-  function extraerMedicamentos(textoOriginal) {
+  function extraerMedicamentos(textoOriginal: string) {
     const lineas = textoOriginal.split('\n');
     const lista = [];
     for (let i = 0; i < lineas.length; i += 1) {
@@ -386,14 +386,14 @@ export default function DepuradorTtos() {
     return lista;
   }
 
-  function filtrarTextoPorSeleccion(textoOriginal) {
+  function filtrarTextoPorSeleccion(textoOriginal: string) {
     if (!medicamentos.length) return textoOriginal;
     const activos = medicamentos.filter((m) => seleccion[m.id]);
     if (!activos.length) return '';
     return activos.map((m) => m.bloque.join('\n')).join('\n');
   }
 
-  const onDepurar = (nuevoTexto, nuevoVariasLineas = variasLineas) => {
+  const onDepurar = (nuevoTexto: string, nuevoVariasLineas: boolean = variasLineas) => {
     if (!nuevoTexto || !nuevoTexto.trim()) {
       setResultado('');
       setMedicamentos([]);

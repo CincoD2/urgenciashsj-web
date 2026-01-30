@@ -4,7 +4,13 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const CRITERIOS = [
+type Criterio = {
+  id: string;
+  label: string;
+  texto: string;
+};
+
+const CRITERIOS: Criterio[] = [
   {
     id: 'mental',
     label: 'Estado mental alterado o empeorado',
@@ -22,7 +28,7 @@ const CRITERIOS = [
   }
 ];
 
-function getInterpretacion(puntuacion) {
+function getInterpretacion(puntuacion: number) {
   if (puntuacion < 2) {
     return {
       texto: 'BAJO RIESGO: Repetir qSOFA frecuentemente. Continuar tratamiento estándar.',
@@ -36,7 +42,7 @@ function getInterpretacion(puntuacion) {
 }
 
 export default function Qsofa() {
-  const [seleccion, setSeleccion] = useState({});
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
   const haySeleccion = Object.values(seleccion).some(Boolean);
 
   const puntuacion = useMemo(() => {
@@ -59,7 +65,7 @@ Puntuación: ${puntuacion}
 ${interpretacion.texto}`;
   }, [haySeleccion, seleccion, puntuacion, interpretacion]);
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

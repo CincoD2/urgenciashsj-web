@@ -4,7 +4,13 @@
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
-const CRITERIOS = [
+type Criterio = {
+  id: string;
+  label: string;
+  puntos: number;
+};
+
+const CRITERIOS: Criterio[] = [
   { id: 'institucionalizado', label: 'Institucionalizado', puntos: 10 },
   { id: 'neoplasia', label: 'Neoplasia', puntos: 30 },
   { id: 'hepatopatia', label: 'Hepatopatía', puntos: 30 },
@@ -25,7 +31,7 @@ const CRITERIOS = [
   { id: 'derrame', label: 'Derrame pleural', puntos: 10 }
 ];
 
-function getInterpretacion(puntuacion) {
+function getInterpretacion(puntuacion: number) {
   if (puntuacion <= 50) {
     return {
       clase: 'PSI Clase I',
@@ -65,7 +71,7 @@ function getInterpretacion(puntuacion) {
 export default function Psi() {
   const [edad, setEdad] = useState('');
   const [sexo, setSexo] = useState('H');
-  const [seleccion, setSeleccion] = useState({});
+  const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
 
   const puntuacion = useMemo(() => {
     const edadNum = parseInt(edad, 10);
@@ -101,7 +107,7 @@ ${interpretacion?.clase}
 ${interpretacion?.texto}`;
   }, [edad, sexo, seleccion, puntuacion, interpretacion]);
 
-  const toggle = (id) => {
+  const toggle = (id: string) => {
     setSeleccion((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
