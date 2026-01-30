@@ -16,10 +16,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es'),
   title: 'urgenciashsj.es',
   description: 'Herramientas y protocolos para Urgencias',
   icons: {
     icon: '/logourg.png',
+  },
+  openGraph: {
+    title: 'urgenciashsj.es',
+    description: 'Herramientas y protocolos para Urgencias',
+    images: ['/logourg.png'],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'urgenciashsj.es',
+    description: 'Herramientas y protocolos para Urgencias',
+    images: ['/logourg.png'],
   },
 };
 
