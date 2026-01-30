@@ -22,7 +22,7 @@ const UNIDADES: Unidad[] = [
 ];
 
 function convertir(valor: string, unidad: Unidad, tipo: TipoIon): number | null {
-  if (!valor || isNaN(valor)) return null;
+  if (!valor || Number.isNaN(Number(valor))) return null;
   const base = parseFloat(valor);
   if (unidad.id === 'cinco') {
     const divisor = tipo === 'na' ? 2.299 : tipo === 'k' ? 3.91 : tipo === 'cl' ? 3.545 : 6.1017;
