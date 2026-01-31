@@ -80,3 +80,17 @@ a:hover {
 .grecaptcha-badge {
   visibility: hidden;
 }
+
+/* Box content spacing */
+.box-content p {
+  margin: 0 0 6px 0;
+}
+
+.box-content ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.box-content li {
+  margin: 2px 0;
+}

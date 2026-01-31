@@ -2,12 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { notFound } from 'next/navigation';
+import PdfDownloadButton from '@/components/PdfDownloadButton';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug?: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ slug?: string }> }) {
   const { slug } = await params;
   if (!slug) {
     return {};
@@ -41,7 +38,10 @@ export async function generateStaticParams() {
 
 export default async function ProtocoloPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  if (process.env.NODE_ENV === 'production' && (slug === 'sepsis' || slug === 'ejemplo-componentes')) {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    (slug === 'sepsis' || slug === 'ejemplo-componentes')
+  ) {
     notFound();
   }
   const filePath = path.join(process.cwd(), 'content/protocolos', `${slug}.mdx`);
@@ -54,7 +54,12 @@ export default async function ProtocoloPage({ params }: { params: Promise<{ slug
 
   return (
     <article className="prose max-w-none">
-      <h1 className="text-2xl font-semibold">{data.title ?? 'Protocolos'}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold">
+          {data.title ?? 'Protocolos'}
+          <PdfDownloadButton href={(data as { pdf?: string }).pdf} />
+        </h1>
+      </div>
       <Content />
     </article>
   );

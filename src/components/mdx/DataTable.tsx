@@ -3,15 +3,18 @@ type TableCell = string | number;
 type TableRow = TableCell[];
 
 export function DataTable({
-  headers,
-  rows,
+  headers = [],
+  rows = [],
 }: {
-  headers: TableCell[];
-  rows: TableRow[];
+  headers?: TableCell[];
+  rows?: TableRow[];
 }) {
+  if (headers.length === 0 && rows.length === 0) {
+    return null;
+  }
   return (
-    <div className="my-4 overflow-x-auto rounded-lg border border-slate-200 bg-white">
-      <table className="min-w-full text-sm">
+    <div className="not-prose my-4 overflow-x-auto rounded-lg border border-slate-200 bg-white">
+      <table className="m-0 w-full border-collapse text-sm leading-tight">
         <thead className="bg-slate-50 text-slate-700">
           <tr>
             {headers.map((h, idx) => (

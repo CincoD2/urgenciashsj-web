@@ -1,0 +1,237 @@
+---
+title: 'Recogida de muestras microbiológicas en Urgencias'
+description: 'Medios de transporte y técnica de recogida (uretral, rectal, faríngea, lesiones genitales). Tubo azul (Amies), amarillo (PCR GC/CT), rosa (viral).'
+date: '2025-11-17'
+tags: ['microbiologia', 'muestras', 'pcr', 'cultivo', 'urgencias', 'its']
+pdf: '/pdfs/muestras-micro(v20251117).pdf'
+---
+
+<Alert>Guía operativa para seleccionar tubo/medio y técnica de toma de muestra en Urgencias.</Alert>
+
+## Medios de transporte (chuleta)
+
+<DataTable
+  headers={['', 'Tubo', 'Medio', 'Uso']}
+  rows={[
+    [
+      <div className="flex justify-center gap-3">
+        <Image
+          src="/img/isopo-gen-grande.png"
+          alt="Texto alternativo"
+          width={30}
+          height={21}
+          caption=""
+        />
+        <Image
+          src="/img/isopo-gen-peq.png"
+          alt="Texto alternativo"
+          width={30}
+          height={21}
+          caption=""
+        />
+      </div>,
+      'Azul',
+      'Amies',
+      'Cultivo bacterias/hongos (heridas, vaginal/uretral, rectal/perianal, ótico, conjuntival)',
+    ],
+    [
+      <div className="flex justify-center">
+        <Image
+          src="/img/isopo-amarillo.png"
+          alt="Texto alternativo"
+          width={40}
+          height={30}
+          caption=""
+        />
+      </div>,
+      'Amarillo',
+      'PCR',
+      'PCR Gonococo/Chlamydia (cualquier exudado con sospecha; preferente uretral)',
+    ],
+    [
+      <div className="flex justify-center">
+        <Image
+          src="/img/isopo-virus.png"
+          alt="Texto alternativo"
+          width={30}
+          height={21}
+          caption=""
+        />
+      </div>,
+      'Rosa',
+      'Viral',
+      'PCR vírica (HSV, gripe, SARS-CoV-2, VRS, Mpox)',
+    ],
+  ]}
+/>
+<br />
+<Warning>
+  Selecciona el tubo según la técnica solicitada (cultivo ≠ PCR). <br />
+  Si dudas: prioriza evitar contaminación y repite la toma si procede.
+</Warning>
+
+---
+
+## Exudado uretral
+
+<BoxGrid>
+<Box title="Cultivo bacteriano">
+  <div className="flex gap-4">
+    <div className="shrink-0 flex gap-2">
+      <Image
+        src="/img/isopo-gen-grande.png"
+        alt="Texto alternativo"
+        width={30}
+        height={21}
+      />
+      <Image
+        src="/img/isopo-gen-grande.png"
+        alt="Texto alternativo"
+        width={30}
+        height={21}
+      />
+    </div>
+
+    <div className="flex-1">
+      <p><strong>Material:</strong> 2 torundas azules con medio Amies.</p>
+      <p><strong>Técnica:</strong></p>
+      <ul>
+        <li>Con exudado franco: recogida directa con torunda (puede estimularse exprimiendo la uretra).</li>
+        <li>Sin exudado: introducir torunda fina hasta <strong>2 cm</strong> dentro de la uretra.</li>
+      </ul>
+    </div>
+
+  </div>
+</Box>
+
+<Box title="PCR Gonococo / Chlamydia">
+
+  <div className="flex gap-4">
+    <div className="shrink-0">
+      <Image
+        src="/img/isopo-amarillo.png"
+        alt="Texto alternativo"
+        width={60}
+        height={50}
+      />
+    </div>
+
+    <div className="flex-1">
+      <p><strong>Material:</strong> torunda fina + tubo amarillo con medio PCR.</p>
+      <p><strong>Técnica:</strong></p>
+      <ul>
+        <li>Introducir la torunda <strong>2–4 cm</strong> y girar <strong>3–5 s</strong>.</li>
+        <li>Introducir la torunda en el tubo diluyente, romper la varilla y cerrar.</li>
+      </ul>
+    </div>
+
+  </div>
+</Box>
+</BoxGrid>
+---
+
+## Úlceras / vesículas genitales (PCR vírica)
+
+<Box title="PCR vírica (tubo rosa)">
+  <div className="flex gap-4">
+    <div className="shrink-0">
+      <Image src="/img/isopo-virus.png" alt="Torunda y tubo rosa" width={30} height={21} />
+    </div>
+    <div className="flex-1">
+      <p>
+        <strong>Material:</strong> aguja estéril + torunda + tubo rosa con medio viral.
+      </p>
+      <p>
+        <strong>Técnica:</strong>
+      </p>
+      <ul>
+        <li>
+          <strong>Vesículas:</strong> aspirar el líquido y depositarlo en el vial rosa. Si no se
+          puede aspirar o hay poco líquido: romper vesícula, pasar torunda y depositarla en el vial.
+        </li>
+        <li>
+          <strong>Lesión costrosa:</strong> levantar la costra con bisturí/aguja estéril con el
+          menor sangrado posible. Frotar la torunda sobre la lesión e introducirla en el vial.
+        </li>
+      </ul>
+    </div>
+  </div>
+</Box>
+
+<Note>Panel orientativo: HSV, gripe, SARS-CoV-2, VRS, Mpox.</Note>
+
+---
+
+## Muestra anal / rectal
+
+<Box title="Rectal / perianal">
+  <div className="flex gap-4">
+    <div className="shrink-0 flex gap-2">
+      <Image src="/img/isopo-gen-grande.png" alt="Torunda azul" width={50} height={41} />
+      <Image src="/img/isopo-amarillo.png" alt="Tubo amarillo" width={60} height={51} />
+    </div>
+    <div className="flex-1">
+      <p>
+        <strong>Material:</strong> torunda azul ± tubo amarillo (si se solicita Chlamydia).
+      </p>
+      <p>
+        <strong>Técnica:</strong>
+      </p>
+      <ul>
+        <li>Canal libre de heces.</li>
+        <li>
+          Introducir la torunda tras el esfínter anal y rotar <strong>10–30 s</strong>.
+        </li>
+        <li>Si contaminación con heces, repetir.</li>
+        <li>Si Chlamydia: tomar muestra adicional en el vial correspondiente.</li>
+      </ul>
+    </div>
+  </div>
+</Box>
+
+---
+
+## Muestra faríngea
+
+<Box title="Faríngea">
+  <div className="flex gap-4">
+    <div className="shrink-0">
+      <Image
+        src="/img/isopo-gen-grande.png"
+        alt="Torunda azul"
+        width={50}
+        height={41}
+      />
+    </div>
+    <div className="flex-1">
+      <p><strong>Material:</strong> torunda azul.</p>
+      <p><strong>Técnica:</strong></p>
+      <ul>
+        <li>Con depresor: frotar amígdalas y faringe posterior.</li>
+        <li>Evitar contaminar con microbiota de mucosa y lengua.</li>
+      </ul>
+    </div>
+  </div>
+</Box>
+
+---
+
+## Otros exudados para cultivo bacteriano (tubo azul, Amies)
+
+<Checklist
+  items={[
+    { text: 'Heridas', checked: true },
+    { text: 'Vaginal/uretral', checked: true },
+    { text: 'Rectal/perianal', checked: true },
+    { text: 'Ótico', checked: true },
+    { text: 'Conjuntival', checked: true },
+  ]}
+/>
+
+<Callout title="Puntos críticos">
+  <ul>
+    <li>Tubo correcto según prueba solicitada (cultivo vs PCR).</li>
+    <li>Evitar contaminación (heces, lengua, saliva).</li>
+    <li>Respetar profundidad y tiempo de rotación.</li>
+  </ul>
+</Callout>
