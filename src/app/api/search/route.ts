@@ -20,18 +20,21 @@ function loadProtocolos(): SearchItem[] {
   const dir = path.join(process.cwd(), "content", "protocolos");
   if (!fs.existsSync(dir)) return [];
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx"));
-  return files.map((file) => {
-    const full = path.join(dir, file);
-    const raw = fs.readFileSync(full, "utf8");
-    const { data, content } = matter(raw);
-    const slug = file.replace(/\.mdx$/, "");
-    return {
-      type: "protocolo",
-      title: (data as { title?: string }).title ?? slug,
-      url: `/protocolos/${slug}`,
-      content: `${(data as { description?: string }).description ?? ""}\n${content}`,
-    };
-  });
+  const isProd = process.env.NODE_ENV === "production";
+  return files
+    .map((file) => file.replace(/\.mdx$/, ""))
+    .filter((slug) => !(isProd && slug === "ejemplo-componentes"))
+    .map((slug) => {
+      const full = path.join(dir, `${slug}.mdx`);
+      const raw = fs.readFileSync(full, "utf8");
+      const { data, content } = matter(raw);
+      return {
+        type: "protocolo",
+        title: (data as { title?: string }).title ?? slug,
+        url: `/protocolos/${slug}`,
+        content: `${(data as { description?: string }).description ?? ""}\n${content}`,
+      };
+    });
 }
 
 function loadDietas(): SearchItem[] {

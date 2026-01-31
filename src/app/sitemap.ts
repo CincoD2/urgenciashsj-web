@@ -47,7 +47,7 @@ function getProtocolosSlugs() {
     .readdirSync(dir)
     .filter((f) => f.endsWith('.mdx'))
     .map((file) => file.replace(/\.mdx$/, ''))
-    .filter((slug) => !(process.env.NODE_ENV === 'production' && slug === 'sepsis'));
+    .filter((slug) => !(process.env.NODE_ENV === 'production' && (slug === 'sepsis' || slug === 'ejemplo-componentes')));
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {

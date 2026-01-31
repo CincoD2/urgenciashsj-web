@@ -1,3 +1,8 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import matter from 'gray-matter';
+import Link from 'next/link';
+
 type LinkItem = { label: string; href: string; icon?: IconKey };
 
 const observacion: LinkItem[] = [
@@ -357,7 +362,37 @@ function LinkList({ items }: { items: { label: string; href: string; icon?: Icon
   );
 }
 
+type ChangelogEntry = {
+  title: string;
+  date: string;
+  summary?: string;
+};
+
+function loadLatestChangelog(limit: number) {
+  const dir = path.join(process.cwd(), 'content/changelog');
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir)
+    .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
+    .map((file) => {
+      const fullPath = path.join(dir, file);
+      const raw = fs.readFileSync(fullPath, 'utf-8');
+      const { data } = matter(raw);
+
+      return {
+        title: (data.title as string) ?? file.replace(/\.(md|mdx)$/i, ''),
+        date: (data.date as string) ?? '1970-01-01',
+        summary: data.summary as string | undefined,
+      };
+    })
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .slice(0, limit);
+}
+
 export default function HomePage() {
+  const latestChangelog = loadLatestChangelog(3);
+
   return (
     <div className="space-y-10">
       <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9">
@@ -377,6 +412,29 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {latestChangelog.length > 0 && (
+        <Link
+          href="/novedades"
+          className="block rounded-2xl border border-[#cfe2e6] bg-[#eef6f8] p-4 transition hover:border-[#b8d3da] hover:bg-[#e6f2f5]"
+        >
+          <div className="space-y-1 text-sm text-[#3f5f66]">
+            {latestChangelog.map((entry) => (
+              <div key={`${entry.date}-${entry.title}`} className="flex flex-wrap items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
+                  Novedades
+                </span>
+                <span className="text-xs text-[#6b7f83]">{entry.date}</span>
+                <span className="font-semibold text-slate-900">{entry.title}</span>
+                {entry.summary ? (
+                  <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
+                ) : null}
+                <span className="ml-auto text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
+              </div>
+            ))}
+          </div>
+        </Link>
+      )}
 
       <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-4">
         <h2 className="text-xl font-semibold">Enlaces Corporativos</h2>

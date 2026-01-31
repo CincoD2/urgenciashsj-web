@@ -1,0 +1,40 @@
+---
+title: "Ejemplo de componentes MDX"
+description: "Entrada de prueba con bloques MDX (solo local)."
+---
+
+# Ejemplo de componentes MDX
+
+Esta entrada sirve para probar los distintos bloques disponibles en protocolos.
+
+<Alert>Iniciar antibiótico empírico precoz. Retrasos &gt; 1 h se asocian a mayor mortalidad.</Alert>
+
+<Pearl>El lactato puede estar elevado sin hipotensión franca.</Pearl>
+
+<Note>Este protocolo debe revisarse cada 6 meses.</Note>
+
+<Tip>Usa lactato venoso si no hay acceso arterial disponible.</Tip>
+
+<Warning>Evitar bolos rápidos en pacientes con insuficiencia cardiaca.</Warning>
+
+<Box title="Dosis habitual">
+  Cristaloide 30 ml/kg en la primera hora.
+</Box>
+
+<Formula>Na corregido = Na medido + 1.6 × (glucosa - 100) / 100</Formula>
+
+<Checklist
+  items={[
+    { text: "ABC inicial", checked: true },
+    { text: "Analítica urgente", checked: false },
+    { text: "Antibiótico en la primera hora", checked: false }
+  ]}
+/>
+
+<DataTable
+  headers={["Fármaco", "Dosis", "Vía"]}
+  rows={[
+    ["Piperacilina/Tazobactam", "4.5 g", "IV"],
+    ["Meropenem", "1 g", "IV"]
+  ]}
+/>

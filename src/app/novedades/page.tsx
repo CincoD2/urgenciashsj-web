@@ -149,7 +149,7 @@ export default function NovedadesPage() {
                     href={entry.link}
                     className="inline-flex items-center gap-2 text-sm font-semibold text-[#3d7684] hover:text-[#2b5d68]"
                   >
-                    Ver página
+                    Ver novedades
                     <span aria-hidden>→</span>
                   </Link>
                 </div>
