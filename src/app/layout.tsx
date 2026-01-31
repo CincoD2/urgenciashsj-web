@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es'),
   title: 'urgenciashsj.es',
   description: 'Herramientas y protocolos para Urgencias',
+  alternates: {
+    canonical: './',
+  },
   icons: {
     icon: '/logourg.png',
   },
