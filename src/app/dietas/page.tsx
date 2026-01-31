@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InformeCopiable from "@/components/InformeCopiable";
 
@@ -27,6 +27,7 @@ export default function DietasYRecomendaciones() {
   const [seleccion, setSeleccion] = useState<ItemCatalogo | null>(null);
   const [texto, setTexto] = useState("");
   const [cargando, setCargando] = useState(false);
+  const prevQ = useRef("");
 
   useEffect(() => {
     fetch("/dietas_recom/index.json")
@@ -54,16 +55,17 @@ export default function DietasYRecomendaciones() {
 
   const sistemas = useMemo(() => {
     const set = new Set<string>();
-    catalogo.forEach((it) => {
+    filtrados.forEach((it) => {
       (it.sistemas || []).forEach((t) => set.add(t));
     });
     return Array.from(set).sort();
-  }, [catalogo]);
+  }, [filtrados]);
 
   const agrupados = useMemo(() => {
     const grupos: Record<string, ItemCatalogo[]> = {};
     sistemas.forEach((s) => {
-      grupos[s] = filtrados.filter((it) => (it.sistemas || []).includes(s));
+      const items = filtrados.filter((it) => (it.sistemas || []).includes(s));
+      if (items.length) grupos[s] = items;
     });
     const sinSistema = filtrados.filter((it) => !(it.sistemas || []).length);
     if (sinSistema.length) {
@@ -88,8 +90,9 @@ export default function DietasYRecomendaciones() {
     }
   }, []);
 
+  const selectedId = searchParams.get("id") ?? "";
+
   useEffect(() => {
-    const selectedId = searchParams.get("id");
     if (!selectedId || !catalogo.length) return;
     const target = catalogo.find(
       (it) => norm(it.id) === norm(selectedId) || norm(it.titulo) === norm(selectedId)
@@ -97,7 +100,18 @@ export default function DietasYRecomendaciones() {
     if (target && target.id !== seleccion?.id) {
       void cargar(target);
     }
-  }, [catalogo, searchParams, seleccion?.id, cargar]);
+  }, [catalogo, selectedId, seleccion?.id, cargar]);
+
+  useEffect(() => {
+    const hadQuery = prevQ.current.trim().length > 0;
+    const hasQuery = q.trim().length > 0;
+    prevQ.current = q;
+    if (!hadQuery || hasQuery) return;
+    if (!seleccion && !texto && !cargando) return;
+    setSeleccion(null);
+    setTexto("");
+    setCargando(false);
+  }, [q, seleccion, texto, cargando]);
 
   return (
     <div className="space-y-6">
@@ -142,7 +156,13 @@ export default function DietasYRecomendaciones() {
         <div className="filtro-botones">
           <button
             className={`filtro-btn ${!fSistema ? "activo" : ""}`}
-            onClick={() => setFSistema("")}
+            onClick={() => {
+              setFSistema("");
+              setQ("");
+              setSeleccion(null);
+              setTexto("");
+              setCargando(false);
+            }}
           >
             Todos
           </button>
