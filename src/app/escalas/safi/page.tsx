@@ -128,7 +128,9 @@ ${calculo.gravedad.texto}`;
       <h1 className="text-2xl font-semibold">SpO2Fi (SaFi) y equivalencia en PaFi</h1>
       <div className="inputs-grid">
         <div className="input-group">
-          <label>SpO2</label>
+          <label>
+            SpO<sub>2</sub>
+          </label>
           <div className="input-con-unidad">
             <input type="number" min="0" value={spo2} onChange={(e) => setSpo2(e.target.value)} />
             <span className="input-unidad">%</span>
@@ -136,7 +138,9 @@ ${calculo.gravedad.texto}`;
         </div>
 
         <div className="input-group">
-          <label>FiO2</label>
+          <label>
+            FiO<sub>2</sub>
+          </label>
           <div className="input-con-unidad">
             <input
               type="number"

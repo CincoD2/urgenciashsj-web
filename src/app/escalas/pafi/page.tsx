@@ -1,4 +1,4 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useMemo, useState } from 'react';
@@ -20,7 +20,7 @@ const OXIGENO: Oxigeno[] = [
   { id: '30', label: 'VMK 30%', valor: 30 },
   { id: '35', label: 'VMK 35%', valor: 35 },
   { id: '40b', label: 'VMK 40%', valor: 40 },
-  { id: '50', label: 'VMK reservorio', valor: 50 }
+  { id: '50', label: 'VMK reservorio', valor: 50 },
 ];
 
 function getGravedad(ratio: number) {
@@ -79,10 +79,14 @@ ${calculo.texto}`;
 
   return (
     <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">PaFi</h1>
+      <h1 className="text-2xl font-semibold">
+        PaFi (PaO<sub>2</sub>/FiO<sub>2</sub>)
+      </h1>
       <div className="inputs-grid">
         <div className="input-group">
-          <label>pO2</label>
+          <label>
+            pO<sub>2</sub>
+          </label>
           <div className="input-con-unidad">
             <input type="number" min="0" value={po2} onChange={(e) => setPo2(e.target.value)} />
             <span className="input-unidad">mmHg</span>
@@ -90,9 +94,17 @@ ${calculo.texto}`;
         </div>
 
         <div className="input-group">
-          <label>FiO2</label>
+          <label>
+            FiO<sub>2</sub>
+          </label>
           <div className="input-con-unidad">
-            <input type="number" min="21" max="100" value={fio2} onChange={(e) => setFio2(e.target.value)} />
+            <input
+              type="number"
+              min="21"
+              max="100"
+              value={fio2}
+              onChange={(e) => setFio2(e.target.value)}
+            />
             <span className="input-unidad">%</span>
           </div>
         </div>
