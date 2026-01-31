@@ -45,7 +45,7 @@ export default function NovedadesPage() {
   const entries = loadChangelog();
 
   function renderLineWithLinks(line: string) {
-    const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+    const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g;
     const mdParts = line.split(mdLinkRegex);
     const nodes: React.ReactNode[] = [];
 
@@ -80,8 +80,8 @@ export default function NovedadesPage() {
           <a
             key={`${mdUrl}-${i}`}
             href={mdUrl}
-            target="_blank"
-            rel="noreferrer"
+            target={mdUrl.startsWith('http') ? '_blank' : undefined}
+            rel={mdUrl.startsWith('http') ? 'noreferrer' : undefined}
             className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#2b5d68]"
           >
             {mdLabel}
