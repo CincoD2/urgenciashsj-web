@@ -27,18 +27,21 @@ export async function POST(req: Request) {
     if (!secret) {
       return NextResponse.json({ error: 'reCAPTCHA no configurado' }, { status: 500 });
     }
-    if (!token) {
-      return NextResponse.json({ error: 'reCAPTCHA faltante' }, { status: 400 });
-    }
+    const allowBypass = process.env.NODE_ENV !== 'production' || secret === 'test';
+    if (!allowBypass) {
+      if (!token) {
+        return NextResponse.json({ error: 'reCAPTCHA faltante' }, { status: 400 });
+      }
 
-    const captchaRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ secret, response: token }),
-    });
-    const captchaData = (await captchaRes.json()) as { success?: boolean; score?: number; action?: string };
-    if (!captchaData.success || (captchaData.score ?? 0) < 0.5) {
-      return NextResponse.json({ error: 'reCAPTCHA inválido' }, { status: 403 });
+      const captchaRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ secret, response: token }),
+      });
+      const captchaData = (await captchaRes.json()) as { success?: boolean; score?: number; action?: string };
+      if (!captchaData.success || (captchaData.score ?? 0) < 0.5) {
+        return NextResponse.json({ error: 'reCAPTCHA inválido' }, { status: 403 });
+      }
     }
 
     const forwarded = req.headers.get('x-forwarded-for') ?? '';
