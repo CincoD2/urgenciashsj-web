@@ -14,7 +14,10 @@ type Props = {
 function AnalyticsScripts({ gaId }: { gaId: string }) {
   return (
     <>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+        strategy="afterInteractive"
+      />
       <Script id="ga-setup" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -59,7 +62,22 @@ export default function CookieNotice({ gaId }: Props) {
         <div className="fixed inset-x-4 bottom-4 z-50 md:left-auto md:right-6 md:max-w-sm">
           <div className="rounded-xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur">
             <p className="text-sm text-slate-700">
-              Usamos cookies técnicas imprescindibles y, solo con tu consentimiento, cookies analíticas para mejorar el sitio.{' '}
+              <b>Aviso legal</b>: Contenido dirigido exclusivamente a profesionales sanitarios con
+              fines informativos y educativos. No sustituye el juicio clínico ni la valoración
+              individual del paciente. El uso de la información es responsabilidad exclusiva del
+              usuario.{' '}
+              <a
+                href="/disclaimer"
+                className="underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+              >
+                Leer más
+              </a>
+              .
+            </p>
+            <div className="my-3 h-px w-full bg-slate-200/70" />
+            <p className="text-sm text-slate-700">
+              <b>Esta web usa cookies</b> técnicas imprescindibles y, solo con tu consentimiento,
+              cookies analíticas para mejorar el sitio.{' '}
               <a
                 href="/cookies"
                 className="underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
