@@ -174,7 +174,7 @@ ${interpretacion.texto}`;
         </div>
       </div>
 
-      <div className="criterios">
+      <div className="criterios criterios-2col">
         {CRITERIOS.map((c) => (
           <button
             key={c.id}
@@ -194,10 +194,12 @@ ${interpretacion.texto}`;
           </button>
         </div>
 
-        <div className={`resultado ${interpretacion.color}`}>
-          <div className="puntos-total">{puntuacionFinal} puntos</div>
-          <div className="interpretacion">{interpretacion.texto}</div>
-        </div>
+        {edad ? (
+          <div className={`resultado ${interpretacion.color}`}>
+            <div className="puntos-total">{puntuacionFinal} puntos</div>
+            <div className="interpretacion">{interpretacion.texto}</div>
+          </div>
+        ) : null}
       </div>
 
       {textoInforme && <InformeCopiable texto={textoInforme} />}

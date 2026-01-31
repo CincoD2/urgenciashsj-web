@@ -99,7 +99,7 @@ ${interpretacion.texto}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">IDSA/ATS</h1>
       <div className="input-group">
         <label>Criterios mayores</label>
@@ -149,6 +149,22 @@ ${interpretacion.texto}`;
       </div>
 
       {textoInforme && <InformeCopiable texto={textoInforme} />}
+
+      <section className="mt-8 space-y-4 text-sm text-slate-700 leading-relaxed">
+        <div className="space-y-2">
+          <p className="font-semibold">Fuente:</p>
+          <p>
+            <a
+              href="https://doi.org/10.1164/rccm.201908-1581ST"
+              className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684]"
+              target="_blank"
+              rel="noreferrer"
+            >
+              https://doi.org/10.1164/rccm.201908-1581ST
+            </a>
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

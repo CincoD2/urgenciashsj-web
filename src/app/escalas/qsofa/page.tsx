@@ -1,4 +1,4 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useMemo, useState } from 'react';
@@ -14,30 +14,30 @@ const CRITERIOS: Criterio[] = [
   {
     id: 'mental',
     label: 'Estado mental alterado o empeorado',
-    texto: 'Estado mental alterado'
+    texto: 'Estado mental alterado',
   },
   {
     id: 'fr',
     label: 'Frecuencia respiratoria ≥ 22 rpm',
-    texto: 'Frecuencia respiratoria ≥22 rpm'
+    texto: 'Frecuencia respiratoria ≥22 rpm',
   },
   {
     id: 'tas',
     label: 'TAS ≤ 100 mmHg',
-    texto: 'TAS ≤100 mmHg'
-  }
+    texto: 'TAS ≤100 mmHg',
+  },
 ];
 
 function getInterpretacion(puntuacion: number) {
   if (puntuacion < 2) {
     return {
       texto: 'BAJO RIESGO: Repetir qSOFA frecuentemente. Continuar tratamiento estándar.',
-      color: 'verde'
+      color: 'verde',
     };
   }
   return {
     texto: 'RIESGO ALTO: Vigilar disfunción orgánica. Pedir lactato. Evaluar con SOFA.',
-    color: 'rojo'
+    color: 'rojo',
   };
 }
 
@@ -53,8 +53,7 @@ export default function Qsofa() {
 
   const textoInforme = useMemo(() => {
     if (!haySeleccion) return null;
-    const criteriosSeleccionados = CRITERIOS
-      .filter((c) => seleccion[c.id])
+    const criteriosSeleccionados = CRITERIOS.filter((c) => seleccion[c.id])
       .map((c) => `- ${c.texto}`)
       .join('\n');
 
@@ -74,8 +73,8 @@ ${interpretacion.texto}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">qSOFA</h1>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">qSOFA score para identificación de sepsis</h1>
       <div className="criterios">
         {CRITERIOS.map((c) => (
           <button
@@ -103,6 +102,21 @@ ${interpretacion.texto}`;
       </div>
 
       {textoInforme && <InformeCopiable texto={textoInforme} />}
+
+      <section className="mt-8 space-y-4 text-sm text-slate-700 leading-relaxed">
+        <p>
+          Se trata de un modelo desarrollado en Febrero de 2016 para evaluar la posibilidad de un
+          riesgo alto en pacientes con sospecha de sepsis con escasos parámetros, dejando ya a un
+          lado los criterios del SIRS. Emplea solamente el estado mental alterado (es decir,
+          GCS&lt;15).
+        </p>
+        <p>
+          Una puntuación baja no elimina la posibilidad de sepsis, por lo que se recomienda seguir
+          evaluando al paciente, si sigue siendo sospechoso. Una puntuación alta induce a adoptar
+          medidas más concretas de tratamiento, con medición de lactato, evaluación con SOFA,
+          tratamiento antibiótico y fluidoterapia.
+        </p>
+      </section>
     </main>
   );
 }

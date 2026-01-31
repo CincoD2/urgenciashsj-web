@@ -207,8 +207,8 @@ body {
 ================================ */
 
 .criterios {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 10px;
   margin-bottom: 24px;
 }
@@ -483,6 +483,10 @@ body {
   margin-bottom: 20px;
 }
 
+.inputs-row-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .inputs-row-3 {
   grid-template-columns: repeat(3, 1fr);
 }
@@ -509,6 +513,10 @@ body {
   gap: 4px;
 }
 
+.input-group-full {
+  grid-column: 1 / -1;
+}
+
 .input-group label {
   font-size: 13px;
   font-weight: 600;
@@ -522,6 +530,18 @@ body {
   border: 1px solid #d1d5db;
   width: 100%;
   box-sizing: border-box;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.input-row select {
+  width: auto;
+  min-width: 110px;
 }
 
 .input-con-unidad {
@@ -681,13 +701,51 @@ body {
 }
 
 .selector-botones {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .selector-botones-inline {
+  display: flex;
   flex-wrap: nowrap;
+}
+
+.selector-botones-inline-3 {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.selector-botones-inline-3 .selector-btn {
+  flex: 1;
+  min-width: 0;
+}
+
+.selector-botones-2col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.selector-botones-oxigeno {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.selector-botones-oxigeno .selector-btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  width: 120px;
+}
+.criterios-2col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.selector-botones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .selector-botones-compact {

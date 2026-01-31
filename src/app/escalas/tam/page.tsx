@@ -1,4 +1,4 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useMemo, useState } from 'react';
@@ -32,8 +32,8 @@ PAM: ${calculo.map} mmHg`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">TAM</h1>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">Tensión Arterial Media (TAM)</h1>
       <div className="inputs-grid">
         <div className="input-group">
           <label>TAS</label>

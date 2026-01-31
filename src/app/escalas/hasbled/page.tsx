@@ -119,9 +119,9 @@ ${interpretacion.texto}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">HAS-BLED</h1>
-      <div className="criterios">
+      <div className="criterios criterios-2col">
         {CRITERIOS.map((c) => (
           <button
             key={c.id}
@@ -148,6 +148,33 @@ ${interpretacion.texto}`;
       </div>
 
       {textoInforme && <InformeCopiable texto={textoInforme} />}
+
+      <section className="mt-8 space-y-4 text-sm text-slate-700 leading-relaxed">
+        <p>
+          Uno de los tratamientos prioritarios para la prevención del accidente cerebrovascular en la fibrilación
+          auricular, es la anticoagulación oral. Sin embargo, se trata de un tratamiento con riesgo que puede ser
+          importante. El HAS-BLED score fué diseñado tras la evaluación de 3978 pacientes anticoagulados a causa de
+          padecer una Fibrilación Auricular. Este sistema de evaluación mide el riesgo de padecer en un año una
+          hemorragia importante, por su monto o su localización (Intracraneal, con descenso de la Hb de más de 2 g/L,
+          y/o necesidad de transfusión). Clasifica solamente en tres niveles, aparte del muy bajo, pero ha sido
+          recomendado por la European Society of Cardiology (ESC), y por la Sociedad Canadiense de Cardiología. Un
+          score igual o mayor de 3 puntos, no siempre significa la no administración de anticoagulación o detener esta,
+          sino que es un indicativo de una estrecha supervisión periódica del paciente.
+        </p>
+        <div className="space-y-2">
+          <p className="font-semibold">Referencias:</p>
+          <p>
+            Lip, G. Y. H. : Hot Topics: HAS-BLED tool- What is the Real Risk of Blleding in Anticoagulation?.
+            CardioSource.org . HRSonline.org. SEptember 17, 2012
+          </p>
+          <p>
+            Lip G.Y.H., Frison L., Halperin JL, Lane CD: Comparative validation of a Novel Risk Score for predicting
+            Bleeding Risk min anticoagulated patients with atrial fibrillation. The HAS-BLED (Hypertension, Abnormal
+            Renal/Liver function, Stroke, Bleeding History or Predisposition, Labile INR, Elderly, Drugs/Alcohol
+            concomitantly) Score. J Am Coll Cardiol 2011; 57:173-80
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

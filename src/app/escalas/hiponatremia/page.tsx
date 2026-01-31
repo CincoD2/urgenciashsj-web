@@ -270,7 +270,7 @@ ${faltantes.length ? `\nEspecifica el ${faltantes.join(' / ')} del paciente` : '
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">Hiponatremia</h1>
       <div className="inputs-row inputs-row-3 inputs-row-3-mobile">
         <div className="input-group">
@@ -350,7 +350,7 @@ ${faltantes.length ? `\nEspecifica el ${faltantes.join(' / ')} del paciente` : '
       <div className="inputs-grid">
         <div className="input-group">
           <label>Suero para reponer</label>
-          <div className="selector-botones selector-botones-suero">
+          <div className="selector-botones selector-botones-inline-3 selector-botones-suero">
             {SUEROS.map((s) => (
               <button
                 key={s.id}

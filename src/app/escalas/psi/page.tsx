@@ -1,4 +1,4 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useMemo, useState } from 'react';
@@ -28,7 +28,7 @@ const CRITERIOS: Criterio[] = [
   { id: 'glucosa', label: 'Glucemia ≥ 250 mg/dl', puntos: 10 },
   { id: 'hto', label: 'Hematocrito < 30%', puntos: 10 },
   { id: 'po2', label: 'pO2 arterial < 60 mmHg o SatO2 < 90%', puntos: 10 },
-  { id: 'derrame', label: 'Derrame pleural', puntos: 10 }
+  { id: 'derrame', label: 'Derrame pleural', puntos: 10 },
 ];
 
 function getInterpretacion(puntuacion: number) {
@@ -36,14 +36,14 @@ function getInterpretacion(puntuacion: number) {
     return {
       clase: 'PSI Clase I',
       texto: 'La mortalidad a los 30 días es del 0,1-2,8%. Se puede dar alta domiciliaria.',
-      color: 'verde'
+      color: 'verde',
     };
   }
   if (puntuacion <= 70) {
     return {
       clase: 'PSI Clase II',
       texto: 'La mortalidad a los 30 días es del 0,1-2,8%. Se puede dar alta domiciliaria.',
-      color: 'verde'
+      color: 'verde',
     };
   }
   if (puntuacion <= 90) {
@@ -51,36 +51,34 @@ function getInterpretacion(puntuacion: number) {
       clase: 'PSI Clase III',
       texto:
         'La mortalidad a los 30 días es del 0,1-2,8%. Se recomienda ingreso en Unidad de Corta Estancia si no hay hipoxemia.',
-      color: 'amarillo'
+      color: 'amarillo',
     };
   }
   if (puntuacion <= 131) {
     return {
       clase: 'PSI Clase IV',
-      texto: 'La mortalidad a los 30 días es del 8,2-9,3%. El paciente precisa ingreso hospitalario.',
-      color: 'rojo'
+      texto:
+        'La mortalidad a los 30 días es del 8,2-9,3%. El paciente precisa ingreso hospitalario.',
+      color: 'rojo',
     };
   }
   return {
     clase: 'PSI Clase V',
     texto: 'La mortalidad a los 30 días es del 27-31%. El paciente precisa ingreso hospitalario.',
-    color: 'rojo'
+    color: 'rojo',
   };
 }
 
 export default function Psi() {
   const [edad, setEdad] = useState('');
-  const [sexo, setSexo] = useState('H');
+  const [sexo, setSexo] = useState('');
   const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
 
   const puntuacion = useMemo(() => {
     const edadNum = parseInt(edad, 10);
     if (!edadNum) return null;
     const base = edadNum + (sexo === 'M' ? -10 : 0);
-    const extras = CRITERIOS.reduce(
-      (total, c) => (seleccion[c.id] ? total + c.puntos : total),
-      0
-    );
+    const extras = CRITERIOS.reduce((total, c) => (seleccion[c.id] ? total + c.puntos : total), 0);
     return base + extras;
   }, [edad, sexo, seleccion]);
 
@@ -93,13 +91,12 @@ export default function Psi() {
     if (!edad || parseInt(edad, 10) === 0) {
       return 'Introduce la edad del paciente';
     }
-    const criteriosSeleccionados = CRITERIOS
-      .filter((c) => seleccion[c.id])
+    const criteriosSeleccionados = CRITERIOS.filter((c) => seleccion[c.id])
       .map((c) => `- ${c.label}`)
       .join('\n');
     return `PSI
 - Edad del paciente: ${edad} años
-- Sexo: ${sexo === 'M' ? 'Mujer' : 'Hombre'}
+- Sexo: ${sexo === 'M' ? 'Mujer' : sexo === 'H' ? 'Hombre' : 'No especificado'}
 ${criteriosSeleccionados}
 
 PSI: ${puntuacion}
@@ -113,17 +110,17 @@ ${interpretacion?.texto}`;
 
   const reset = () => {
     setEdad('');
-    setSexo('H');
+    setSexo('');
     setSeleccion({});
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">PSI</h1>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">PSI (Pneumonia Severity Index)</h1>
       <div className="inputs-grid">
         <div className="input-group">
           <label>Sexo</label>
-          <div className="selector-botones">
+          <div className="selector-botones selector-botones-2col">
             <button
               type="button"
               className={`selector-btn ${sexo === 'H' ? 'activo' : ''}`}
@@ -150,7 +147,7 @@ ${interpretacion?.texto}`;
         </div>
       </div>
 
-      <div className="criterios">
+      <div className="criterios criterios-2col">
         {CRITERIOS.map((c) => (
           <button
             key={c.id}
@@ -180,7 +177,7 @@ ${interpretacion?.texto}`;
         )}
       </div>
 
-      {textoInforme && <InformeCopiable texto={textoInforme} />}
+      {interpretacion && textoInforme ? <InformeCopiable texto={textoInforme} /> : null}
     </main>
   );
 }

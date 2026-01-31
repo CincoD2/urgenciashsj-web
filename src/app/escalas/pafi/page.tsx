@@ -11,15 +11,15 @@ type Oxigeno = {
 };
 
 const OXIGENO: Oxigeno[] = [
-  { id: '21', label: 'Sin oxígeno suplementario', valor: 21 },
-  { id: '24', label: 'Gafas nasales a 1 lpm', valor: 24 },
-  { id: '28', label: 'Gafas nasales a 2 lpm', valor: 28 },
-  { id: '32', label: 'Gafas nasales a 3 lpm', valor: 32 },
-  { id: '36', label: 'Gafas nasales a 4 lpm', valor: 36 },
-  { id: '40', label: 'Gafas nasales a 5 lpm', valor: 40 },
-  { id: '30', label: 'VMK al 30%', valor: 30 },
-  { id: '35', label: 'VMK al 35%', valor: 35 },
-  { id: '40b', label: 'VMK al 40%', valor: 40 },
+  { id: '21', label: 'Sin O₂', valor: 21 },
+  { id: '24', label: 'GN 1 lpm', valor: 24 },
+  { id: '28', label: 'GN 2 lpm', valor: 28 },
+  { id: '32', label: 'GN 3 lpm', valor: 32 },
+  { id: '36', label: 'GN 4 lpm', valor: 36 },
+  { id: '40', label: 'GN 5 lpm', valor: 40 },
+  { id: '30', label: 'VMK 30%', valor: 30 },
+  { id: '35', label: 'VMK 35%', valor: 35 },
+  { id: '40b', label: 'VMK 40%', valor: 40 },
   { id: '50', label: 'VMK reservorio', valor: 50 }
 ];
 
@@ -78,7 +78,7 @@ ${calculo.texto}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">PaFi</h1>
       <div className="inputs-grid">
         <div className="input-group">
@@ -97,22 +97,23 @@ ${calculo.texto}`;
           </div>
         </div>
 
-        <div className="input-group">
+        <div className="input-group input-group-full">
           <label>Oxígeno suplementario</label>
-          <select
-            value={oxigeno.id}
-            onChange={(e) => {
-              const sel = OXIGENO.find((o) => o.id === e.target.value) || OXIGENO[0];
-              setOxigeno(sel);
-              setFio2(String(sel.valor));
-            }}
-          >
+          <div className="selector-botones selector-botones-oxigeno">
             {OXIGENO.map((o) => (
-              <option key={o.id} value={o.id}>
+              <button
+                key={o.id}
+                type="button"
+                className={`selector-btn ${oxigeno.id === o.id ? 'activo' : ''}`}
+                onClick={() => {
+                  setOxigeno(o);
+                  setFio2(String(o.valor));
+                }}
+              >
                 {o.label}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
         </div>
       </div>
 

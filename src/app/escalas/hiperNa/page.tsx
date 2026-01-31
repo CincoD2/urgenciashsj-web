@@ -151,7 +151,7 @@ const interpretacionSodio = useMemo(() => {
 }, [parsed.na]);
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">Hipernatremia</h1>
     
 

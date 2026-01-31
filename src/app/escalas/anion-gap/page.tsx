@@ -97,67 +97,75 @@ Interpretación: ${calculo.interpretacion}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">Anion GAP</h1>
       <div className="inputs-grid">
         <div className="input-group">
           <label>Sodio (Na+)</label>
-          <input type="number" min="0" value={na} onChange={(e) => setNa(e.target.value)} />
-          <select
-            value={uNa.id}
-            onChange={(e) => setUNa(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
-          >
-            {UNIDADES.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.label}
-              </option>
-            ))}
-          </select>
+          <div className="input-row">
+            <input type="number" min="0" value={na} onChange={(e) => setNa(e.target.value)} />
+            <select
+              value={uNa.id}
+              onChange={(e) => setUNa(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+            >
+              {UNIDADES.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="input-group">
           <label>Potasio (K+) (opcional)</label>
-          <input type="number" min="0" value={k} onChange={(e) => setK(e.target.value)} />
-          <select
-            value={uK.id}
-            onChange={(e) => setUK(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
-          >
-            {UNIDADES.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.label}
-              </option>
-            ))}
-          </select>
+          <div className="input-row">
+            <input type="number" min="0" value={k} onChange={(e) => setK(e.target.value)} />
+            <select
+              value={uK.id}
+              onChange={(e) => setUK(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+            >
+              {UNIDADES.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="input-group">
           <label>Cloro (Cl-)</label>
-          <input type="number" min="0" value={cl} onChange={(e) => setCl(e.target.value)} />
-          <select
-            value={uCl.id}
-            onChange={(e) => setUCl(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
-          >
-            {UNIDADES.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.label}
-              </option>
-            ))}
-          </select>
+          <div className="input-row">
+            <input type="number" min="0" value={cl} onChange={(e) => setCl(e.target.value)} />
+            <select
+              value={uCl.id}
+              onChange={(e) => setUCl(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+            >
+              {UNIDADES.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="input-group">
           <label>Bicarbonato (HCO3-)</label>
-          <input type="number" min="0" value={hco3} onChange={(e) => setHco3(e.target.value)} />
-          <select
-            value={uHco3.id}
-            onChange={(e) => setUHco3(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
-          >
-            {UNIDADES.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.label}
-              </option>
-            ))}
-          </select>
+          <div className="input-row">
+            <input type="number" min="0" value={hco3} onChange={(e) => setHco3(e.target.value)} />
+            <select
+              value={uHco3.id}
+              onChange={(e) => setUHco3(UNIDADES.find((u) => u.id === e.target.value) ?? UNIDADES[0])}
+            >
+              {UNIDADES.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 

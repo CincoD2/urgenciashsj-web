@@ -1,20 +1,20 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
 const OXIGENO = [
-  { id: '21', label: 'Sin oxígeno suplementario', valor: 21 },
-  { id: '24', label: 'Gafas nasales a 1 lpm', valor: 24 },
-  { id: '28', label: 'Gafas nasales a 2 lpm', valor: 28 },
-  { id: '32', label: 'Gafas nasales a 3 lpm', valor: 32 },
-  { id: '36', label: 'Gafas nasales a 4 lpm', valor: 36 },
-  { id: '40', label: 'Gafas nasales a 5 lpm', valor: 40 },
-  { id: '30', label: 'VMK al 30%', valor: 30 },
-  { id: '35', label: 'VMK al 35%', valor: 35 },
-  { id: '40b', label: 'VMK al 40%', valor: 40 },
-  { id: '50', label: 'VMK reservorio', valor: 50 }
+  { id: '21', label: 'Sin O₂', valor: 21 },
+  { id: '24', label: 'GN 1 lpm', valor: 24 },
+  { id: '28', label: 'GN 2 lpm', valor: 28 },
+  { id: '32', label: 'GN 3 lpm', valor: 32 },
+  { id: '36', label: 'GN 4 lpm', valor: 36 },
+  { id: '40', label: 'GN 5 lpm', valor: 40 },
+  { id: '30', label: 'VMK 30%', valor: 30 },
+  { id: '35', label: 'VMK 35%', valor: 35 },
+  { id: '40b', label: 'VMK 40%', valor: 40 },
+  { id: '50', label: 'VMK reservorio', valor: 50 },
 ];
 
 export default function GradienteAaO2() {
@@ -35,7 +35,7 @@ export default function GradienteAaO2() {
     if (!PAtm || !pCO2 || !pO2 || !FiO2 || !Edad) return null;
     if (FiO2 < 21 || FiO2 > 100) return { error: 'FiO2 debe estar entre 21 y 100%' };
 
-    const grad = ((PAtm - 47) * (FiO2 / 100)) - (pCO2 / 0.8) - pO2;
+    const grad = (PAtm - 47) * (FiO2 / 100) - pCO2 / 0.8 - pO2;
     if (grad < 0) return { error: 'El gradiente A-a no puede ser negativo' };
 
     const gradR = Math.round(grad * 100) / 100;
@@ -79,38 +79,16 @@ ${calculo.interpretacion}`;
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">Gradiente A-a O2</h1>
-      <div className="inputs-grid">
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">
+        Gradiente A-a O<sub>2</sub>
+      </h1>
+      <div className="inputs-row inputs-row-2">
         <div className="input-group">
           <label>Presión atmosférica</label>
           <div className="input-con-unidad">
             <input type="number" min="0" value={pAtm} onChange={(e) => setPAtm(e.target.value)} />
             <span className="input-unidad">mmHg</span>
-          </div>
-        </div>
-
-        <div className="input-group">
-          <label>PaCO2</label>
-          <div className="input-con-unidad">
-            <input type="number" min="0" value={pco2} onChange={(e) => setPco2(e.target.value)} />
-            <span className="input-unidad">mmHg</span>
-          </div>
-        </div>
-
-        <div className="input-group">
-          <label>PaO2</label>
-          <div className="input-con-unidad">
-            <input type="number" min="0" value={po2} onChange={(e) => setPo2(e.target.value)} />
-            <span className="input-unidad">mmHg</span>
-          </div>
-        </div>
-
-        <div className="input-group">
-          <label>FiO2</label>
-          <div className="input-con-unidad">
-            <input type="number" min="21" max="100" value={fio2} onChange={(e) => setFio2(e.target.value)} />
-            <span className="input-unidad">%</span>
           </div>
         </div>
 
@@ -121,23 +99,62 @@ ${calculo.interpretacion}`;
             <span className="input-unidad">años</span>
           </div>
         </div>
+      </div>
+
+      <div className="inputs-row inputs-row-3">
+        <div className="input-group">
+          <label>
+            PaO<sub>2</sub>
+          </label>
+          <div className="input-con-unidad">
+            <input type="number" min="0" value={po2} onChange={(e) => setPo2(e.target.value)} />
+            <span className="input-unidad">mmHg</span>
+          </div>
+        </div>
 
         <div className="input-group">
+          <label>
+            PaCO<sub>2</sub>
+          </label>
+          <div className="input-con-unidad">
+            <input type="number" min="0" value={pco2} onChange={(e) => setPco2(e.target.value)} />
+            <span className="input-unidad">mmHg</span>
+          </div>
+        </div>
+
+        <div className="input-group">
+          <label>
+            FiO<sub>2</sub>
+          </label>
+          <div className="input-con-unidad">
+            <input
+              type="number"
+              min="21"
+              max="100"
+              value={fio2}
+              onChange={(e) => setFio2(e.target.value)}
+            />
+            <span className="input-unidad">%</span>
+          </div>
+        </div>
+
+        <div className="input-group input-group-full">
           <label>Oxígeno suplementario</label>
-          <select
-            value={oxigeno.id}
-            onChange={(e) => {
-              const sel = OXIGENO.find((o) => o.id === e.target.value) || OXIGENO[0];
-              setOxigeno(sel);
-              setFio2(String(sel.valor));
-            }}
-          >
+          <div className="selector-botones selector-botones-oxigeno">
             {OXIGENO.map((o) => (
-              <option key={o.id} value={o.id}>
+              <button
+                key={o.id}
+                type="button"
+                className={`selector-btn ${oxigeno.id === o.id ? 'activo' : ''}`}
+                onClick={() => {
+                  setOxigeno(o);
+                  setFio2(String(o.valor));
+                }}
+              >
                 {o.label}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
         </div>
       </div>
 

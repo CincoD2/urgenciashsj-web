@@ -1,8 +1,8 @@
-"use client"
+'use client';
 // @ts-nocheck
 
-import { useMemo, useState } from "react";
-import InformeCopiable from "@/components/InformeCopiable";
+import { useMemo, useState } from 'react';
+import InformeCopiable from '@/components/InformeCopiable';
 
 type EdadOption = {
   id: string;
@@ -18,64 +18,61 @@ type Criterio = {
 };
 
 const EDADES: EdadOption[] = [
-  { id: "lt65", label: "Edad < 65 años", puntos: 0 },
-  { id: "65_74", label: "Edad 65-74 años", puntos: 2 },
-  { id: "ge75", label: "Edad ≥ 75 años", puntos: 3 },
+  { id: 'lt65', label: 'Edad < 65 años', puntos: 0 },
+  { id: '65_74', label: 'Edad 65-74 años', puntos: 2 },
+  { id: 'ge75', label: 'Edad ≥ 75 años', puntos: 3 },
 ];
 
 const CRITERIOS: Criterio[] = [
   {
-    id: "frcv",
-    label: "DM, HTA o angina",
+    id: 'frcv',
+    label: 'DM, HTA o angina',
     puntos: 1,
-    texto: "DM, HTA o angina",
+    texto: 'DM, HTA o angina',
   },
   {
-    id: "tas",
-    label: "TA sistólica < 100 mmHg",
+    id: 'tas',
+    label: 'TA sistólica < 100 mmHg',
     puntos: 3,
-    texto: "TA sistólica < 100 mmHg",
+    texto: 'TA sistólica < 100 mmHg',
   },
-  { id: "peso", label: "Peso < 67 kg", puntos: 1, texto: "Peso < 67 kg" },
+  { id: 'peso', label: 'Peso < 67 kg', puntos: 1, texto: 'Peso < 67 kg' },
   {
-    id: "st",
-    label: "Elevación ST previa o BCRI",
+    id: 'st',
+    label: 'Elevación ST previa o BCRI',
     puntos: 1,
-    texto: "Elevación ST previa o BCRI",
+    texto: 'Elevación ST previa o BCRI',
   },
-  { id: "killip", label: "Killip II-IV", puntos: 2, texto: "Killip II-IV" },
-  { id: "fc", label: "FC > 110 lpm", puntos: 2, texto: "FC > 110 lpm" },
+  { id: 'killip', label: 'Killip II-IV', puntos: 2, texto: 'Killip II-IV' },
+  { id: 'fc', label: 'FC > 110 lpm', puntos: 2, texto: 'FC > 110 lpm' },
   {
-    id: "tto",
-    label: "Retraso tratamiento > 4 h",
+    id: 'tto',
+    label: 'Retraso tratamiento > 4 h',
     puntos: 1,
-    texto: "Retraso tratamiento > 4 h",
+    texto: 'Retraso tratamiento > 4 h',
   },
 ];
 
 function getMortalidad(puntos: number) {
-  if (puntos <= 0) return "0,8 %";
-  if (puntos === 1) return "1,6 %";
-  if (puntos === 2) return "2,2 %";
-  if (puntos === 3) return "4,4 %";
-  if (puntos === 4) return "7,3 %";
-  if (puntos === 5) return "12,4 %";
-  if (puntos === 6) return "16,1 %";
-  if (puntos === 7) return "23,4 %";
-  if (puntos === 8) return "26,8 %";
-  return "35,9 %";
+  if (puntos <= 0) return '0,8 %';
+  if (puntos === 1) return '1,6 %';
+  if (puntos === 2) return '2,2 %';
+  if (puntos === 3) return '4,4 %';
+  if (puntos === 4) return '7,3 %';
+  if (puntos === 5) return '12,4 %';
+  if (puntos === 6) return '16,1 %';
+  if (puntos === 7) return '23,4 %';
+  if (puntos === 8) return '26,8 %';
+  return '35,9 %';
 }
 
 export default function TimiScacest() {
-  const [edad, setEdad] = useState<EdadOption>(EDADES[0]);
+  const [edad, setEdad] = useState<EdadOption | null>(null);
   const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
 
   const puntuacion = useMemo(() => {
     const edadPuntos = edad?.puntos || 0;
-    const otros = CRITERIOS.reduce(
-      (total, c) => (seleccion[c.id] ? total + c.puntos : total),
-      0,
-    );
+    const otros = CRITERIOS.reduce((total, c) => (seleccion[c.id] ? total + c.puntos : total), 0);
     return edadPuntos + otros;
   }, [edad, seleccion]);
 
@@ -83,11 +80,11 @@ export default function TimiScacest() {
 
   const textoInforme = useMemo(() => {
     const criteriosSeleccionados = CRITERIOS.filter((c) => seleccion[c.id]).map(
-      (c) => `- ${c.texto}`,
+      (c) => `- ${c.texto}`
     );
     return `TIMI Risk Score (SCACEST)
-- ${edad.label}
-${criteriosSeleccionados.join("\n")}
+- ${edad?.label ?? 'Edad no seleccionada'}
+${criteriosSeleccionados.join('\n')}
 
 Puntuación: ${puntuacion} puntos
 Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
@@ -98,13 +95,13 @@ Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
   };
 
   const reset = () => {
-    setEdad(EDADES[0]);
+    setEdad(null);
     setSeleccion({});
   };
 
   return (
-    <main className="escala-wrapper" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">TIMI-SCA CEST</h1>
+    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+      <h1 className="text-2xl font-semibold">TIMI para SCACEST</h1>
       <div className="input-group">
         <label>Edad</label>
         <div className="selector-botones">
@@ -112,7 +109,7 @@ Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
             <button
               key={opt.id}
               type="button"
-              className={`selector-btn ${edad?.id === opt.id ? "activo" : ""}`}
+              className={`selector-btn ${edad?.id === opt.id ? 'activo' : ''}`}
               onClick={() => setEdad(opt)}
             >
               {opt.label}
@@ -128,13 +125,11 @@ Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
         {CRITERIOS.map((c) => (
           <button
             key={c.id}
-            className={`criterio-btn ${seleccion[c.id] ? "activo-rojo" : ""}`}
+            className={`criterio-btn ${seleccion[c.id] ? 'activo-rojo' : ''}`}
             onClick={() => toggle(c.id)}
           >
             <span>{c.label}</span>
-            <span className="puntos">
-              {c.puntos > 0 ? `+${c.puntos}` : c.puntos}
-            </span>
+            <span className="puntos">{c.puntos > 0 ? `+${c.puntos}` : c.puntos}</span>
           </button>
         ))}
       </div>
@@ -146,15 +141,17 @@ Riesgo de mortalidad global a los 30 días: ${mortalidad}`;
           </button>
         </div>
 
-        <div className="resultado rojo">
-          <div className="puntos-total">{puntuacion} puntos</div>
-          <div className="interpretacion">
-            Riesgo de mortalidad global a los 30 días: {mortalidad}
+        {edad ? (
+          <div className="resultado rojo">
+            <div className="puntos-total">{puntuacion} puntos</div>
+            <div className="interpretacion">
+              Riesgo de mortalidad global a los 30 días: {mortalidad}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
 
-      {textoInforme && <InformeCopiable texto={textoInforme} />}
+      {edad && textoInforme ? <InformeCopiable texto={textoInforme} /> : null}
     </main>
   );
 }
