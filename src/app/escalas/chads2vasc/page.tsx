@@ -174,7 +174,7 @@ ${interpretacion.texto}`;
         </div>
       </div>
 
-      <div className="criterios criterios-2col">
+      <div className="criterios criterios-2col criterios-1col-mobile">
         {CRITERIOS.map((c) => (
           <button
             key={c.id}

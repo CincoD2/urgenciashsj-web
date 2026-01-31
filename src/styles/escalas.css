@@ -432,6 +432,12 @@ body {
     justify-content: space-between;
     text-align: left;
   }
+  .criterios-1col-mobile {
+    grid-template-columns: 1fr !important;
+  }
+  .inputs-grid-1col-mobile {
+    grid-template-columns: 1fr;
+  }
   .inputs-grid {
     grid-template-columns: 1fr;
   }
@@ -504,6 +510,10 @@ body {
 @media (max-width: 768px) {
   .inputs-row-3-mobile {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .inputs-row-2 {
+    grid-template-columns: 1fr;
   }
 }
 

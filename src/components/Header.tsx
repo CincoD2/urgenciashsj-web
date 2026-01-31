@@ -24,6 +24,13 @@ export default function Header() {
     setOpen(false);
   };
 
+  const closeMenusAndScrollTop = () => {
+    closeMenus();
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  };
+
   return (
     <header
       className={`border-b border-[#dfe9eb] sticky top-0 z-50 bg-white/45 backdrop-blur-md border-white/40`}
@@ -199,7 +206,7 @@ export default function Header() {
                   href="/escalas/depuradorTtos"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Depurador SIA
@@ -209,7 +216,7 @@ export default function Header() {
                   href="/inhaladores"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Inhaladores
@@ -219,7 +226,7 @@ export default function Header() {
                   href="/escalas/anion-gap"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Anion GAP
@@ -229,7 +236,7 @@ export default function Header() {
                   href="/escalas/chads2vasc"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   CHA2DS2-VASc
@@ -239,7 +246,7 @@ export default function Header() {
                   href="/escalas/curb65"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   CURB-65
@@ -249,7 +256,7 @@ export default function Header() {
                   href="/escalas/glasgow"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Glasgow
@@ -259,7 +266,7 @@ export default function Header() {
                   href="/escalas/gradiente-aa-o2"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Gradiente A-a O2
@@ -269,7 +276,7 @@ export default function Header() {
                   href="/escalas/hasbled"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   HAS-BLED
@@ -279,7 +286,7 @@ export default function Header() {
                   href="/escalas/hiperNa"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Hipernatremia
@@ -289,7 +296,7 @@ export default function Header() {
                   href="/escalas/hiponatremia"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Hiponatremia
@@ -299,7 +306,7 @@ export default function Header() {
                   href="/escalas/idsa"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   IDSA/ATS
@@ -309,7 +316,7 @@ export default function Header() {
                   href="/escalas/pafi"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   PaFi
@@ -319,7 +326,7 @@ export default function Header() {
                   href="/escalas/psi"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   PSI
@@ -329,7 +336,7 @@ export default function Header() {
                   href="/escalas/qsofa"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   qSOFA
@@ -339,7 +346,7 @@ export default function Header() {
                   href="/escalas/safi"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   SaFi
@@ -349,7 +356,7 @@ export default function Header() {
                   href="/escalas/tam"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   TAm (PAM)
@@ -359,7 +366,7 @@ export default function Header() {
                   href="/escalas/timi-scacest"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   TIMI SCACEST
@@ -369,7 +376,7 @@ export default function Header() {
                   href="/escalas/timi-scasest"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   TIMI SCASEST
@@ -379,7 +386,7 @@ export default function Header() {
                   href="/escalas/wells-tvp"
                   onClick={() => {
                     setToolsOpen(false);
-                    setOpen(false);
+                    closeMenusAndScrollTop();
                   }}
                 >
                   Wells – TVP
@@ -387,29 +394,29 @@ export default function Header() {
               </div>
 
               <div className="my-2 h-px bg-[#dfe9eb]" />
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/protocolos" onClick={closeMenus}>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/protocolos" onClick={closeMenusAndScrollTop}>
                 Protocolos
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/sesiones" onClick={closeMenus}>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/sesiones" onClick={closeMenusAndScrollTop}>
                 Sesiones
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/dietas" onClick={closeMenus}>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/dietas" onClick={closeMenusAndScrollTop}>
                 Dietas
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/formacion" onClick={closeMenus}>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/formacion" onClick={closeMenusAndScrollTop}>
                 Formación
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/eventos" onClick={closeMenus}>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/eventos" onClick={closeMenusAndScrollTop}>
                 Eventos
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/novedades" onClick={closeMenus}>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/novedades" onClick={closeMenusAndScrollTop}>
                 Novedades
               </Link>
               <button
                 type="button"
                 onClick={() => {
                   setSearchOpen(true);
-                  closeMenus();
+                  closeMenusAndScrollTop();
                 }}
                 className="block w-full rounded px-3 py-2 text-left hover:bg-slate-100"
               >

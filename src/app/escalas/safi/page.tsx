@@ -125,7 +125,9 @@ ${calculo.gravedad.texto}`;
 
   return (
     <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">SpO2Fi (SaFi) y equivalencia en PaFi</h1>
+      <h1 className="text-2xl font-semibold">
+        SpO<sub>2</sub>Fi (SaFi) y equivalencia en PaFi
+      </h1>
       <div className="inputs-grid">
         <div className="input-group">
           <label>

@@ -272,7 +272,7 @@ ${faltantes.length ? `\nEspecifica el ${faltantes.join(' / ')} del paciente` : '
   return (
     <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">Hiponatremia</h1>
-      <div className="inputs-row inputs-row-3 inputs-row-3-mobile">
+      <div className="inputs-row inputs-row-2">
         <div className="input-group">
           <label>Sexo</label>
           <div className="selector-botones selector-botones-inline selector-botones-compact">
