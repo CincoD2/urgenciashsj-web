@@ -76,3 +76,7 @@ a:hover {
   border-color: #3d7684;
   box-shadow: 0 0 0 3px rgba(61, 118, 132, 0.15);
 }
+/* reCAPTCHA v3 badge (legal notice is shown in About modal) */
+.grecaptcha-badge {
+  visibility: hidden;
+}
