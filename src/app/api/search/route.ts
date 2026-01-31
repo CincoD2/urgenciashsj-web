@@ -39,7 +39,13 @@ function loadDietas(): SearchItem[] {
   const indexPath = path.join(base, "index.json");
   if (!fs.existsSync(indexPath)) return [];
   const indexRaw = fs.readFileSync(indexPath, "utf8");
-  let index: Array<{ titulo?: string; ruta?: string; tags?: string[]; sistemas?: string[] }> = [];
+  let index: Array<{
+    id?: string;
+    titulo?: string;
+    ruta?: string;
+    tags?: string[];
+    sistemas?: string[];
+  }> = [];
   try {
     index = JSON.parse(indexRaw);
   } catch {
@@ -47,6 +53,8 @@ function loadDietas(): SearchItem[] {
   }
   return index.map((it) => {
     const ruta = it.ruta ?? "";
+    const id = it.id ?? it.titulo ?? "";
+    const dietasUrl = id ? `/dietas?id=${encodeURIComponent(id)}` : "/dietas";
     let content = "";
     if (ruta) {
       const rel = ruta.replace(/^\/+/, "");
@@ -58,7 +66,7 @@ function loadDietas(): SearchItem[] {
     return {
       type: "dieta",
       title: it.titulo ?? "Dietas y recomendaciones",
-      url: ruta || "/dietas",
+      url: dietasUrl,
       content: `${(it.tags ?? []).join(" ")} ${(it.sistemas ?? []).join(" ")} ${content}`,
     };
   });

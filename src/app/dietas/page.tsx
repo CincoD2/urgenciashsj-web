@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import InformeCopiable from "@/components/InformeCopiable";
 
 type ItemCatalogo = {
@@ -19,6 +20,7 @@ function norm(s = "") {
 }
 
 export default function DietasYRecomendaciones() {
+  const searchParams = useSearchParams();
   const [catalogo, setCatalogo] = useState<ItemCatalogo[]>([]);
   const [q, setQ] = useState("");
   const [fSistema, setFSistema] = useState("");
@@ -70,7 +72,7 @@ export default function DietasYRecomendaciones() {
     return grupos;
   }, [filtrados, sistemas]);
 
-  async function cargar(it: ItemCatalogo) {
+  const cargar = useCallback(async (it: ItemCatalogo) => {
     setSeleccion(it);
     setCargando(true);
     setTexto("");
@@ -84,7 +86,18 @@ export default function DietasYRecomendaciones() {
     } finally {
       setCargando(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    const selectedId = searchParams.get("id");
+    if (!selectedId || !catalogo.length) return;
+    const target = catalogo.find(
+      (it) => norm(it.id) === norm(selectedId) || norm(it.titulo) === norm(selectedId)
+    );
+    if (target && target.id !== seleccion?.id) {
+      void cargar(target);
+    }
+  }, [catalogo, searchParams, seleccion?.id, cargar]);
 
   return (
     <div className="space-y-6">
