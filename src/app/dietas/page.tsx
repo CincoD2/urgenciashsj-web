@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InformeCopiable from "@/components/InformeCopiable";
 
@@ -19,7 +19,7 @@ function norm(s = "") {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-export default function DietasYRecomendaciones() {
+function DietasContenido() {
   const searchParams = useSearchParams();
   const [catalogo, setCatalogo] = useState<ItemCatalogo[]>([]);
   const [q, setQ] = useState("");
@@ -217,5 +217,13 @@ export default function DietasYRecomendaciones() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DietasYRecomendaciones() {
+  return (
+    <Suspense fallback={<div className="space-y-6">Cargando…</div>}>
+      <DietasContenido />
+    </Suspense>
   );
 }
