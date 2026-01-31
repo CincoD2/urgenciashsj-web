@@ -63,7 +63,7 @@ export default function AboutModal({ open, onClose }: Props) {
         <Script src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`} strategy="afterInteractive" />
       ) : null}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative mx-4 w-full max-w-2xl rounded-2xl border border-white/40 bg-white/95 p-6 shadow-2xl backdrop-blur">
+      <div className="relative mx-4 w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-white/40 bg-white/95 p-6 shadow-2xl backdrop-blur">
         <div className="space-y-4 text-sm text-slate-700">
           <h2 className="text-xl font-semibold text-slate-900">Acerca de UrgenciasHSJ.es</h2>
           <p>
@@ -118,6 +118,27 @@ export default function AboutModal({ open, onClose }: Props) {
               Gracias, hemos recibido tu mensaje.
             </div>
           )}
+          <p className="text-[11px] text-slate-500">
+            Este sitio está protegido por reCAPTCHA y se aplican la{' '}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="underline decoration-slate-300 underline-offset-4 hover:text-slate-700"
+            >
+              Política de Privacidad
+            </a>{' '}
+            y los{' '}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noreferrer"
+              className="underline decoration-slate-300 underline-offset-4 hover:text-slate-700"
+            >
+              Términos del servicio
+            </a>{' '}
+            de Google.
+          </p>
           <div className="flex flex-wrap gap-2">
             <button
               type="submit"
