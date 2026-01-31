@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import Script from 'next/script';
 
-const storageKey = 'urgenciashsj-cookie-consent';
-
-type ConsentState = 'accepted' | 'rejected' | 'dismissed' | null;
+import { cookieConsentStorageKey, type ConsentState } from '@/lib/analytics';
 
 type Props = {
   gaId?: string;
@@ -33,22 +31,22 @@ export default function CookieNotice({ gaId }: Props) {
   const hasAnalytics = Boolean(gaId);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(storageKey) as ConsentState;
+    const stored = window.localStorage.getItem(cookieConsentStorageKey) as ConsentState;
     setConsent(stored ?? null);
   }, []);
 
   const accept = () => {
-    window.localStorage.setItem(storageKey, 'accepted');
+    window.localStorage.setItem(cookieConsentStorageKey, 'accepted');
     setConsent('accepted');
   };
 
   const reject = () => {
-    window.localStorage.setItem(storageKey, 'rejected');
+    window.localStorage.setItem(cookieConsentStorageKey, 'rejected');
     setConsent('rejected');
   };
 
   const dismiss = () => {
-    window.localStorage.setItem(storageKey, 'dismissed');
+    window.localStorage.setItem(cookieConsentStorageKey, 'dismissed');
     setConsent('dismissed');
   };
 

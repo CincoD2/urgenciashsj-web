@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { trackEvent } from "@/lib/analytics";
+
 type Result = { type: string; title: string; url: string };
 
 export default function SearchModal({
@@ -86,7 +88,17 @@ export default function SearchModal({
                 <a
                   href={r.url}
                   className="block rounded px-2 py-2 text-sm hover:bg-[#dfe9eb]/60 hover:text-[#3d7684]"
-                  onClick={onClose}
+                  onClick={() => {
+                    if (r.type === "protocolo") {
+                      trackEvent("protocol_open", {
+                        protocol_title: r.title,
+                        protocol_url: r.url,
+                        source: "search_modal",
+                        page_path: window.location.pathname,
+                      });
+                    }
+                    onClose();
+                  }}
                 >
                   <span className="mr-2 rounded bg-[#dfe9eb]/70 px-2 py-0.5 text-[10px] uppercase text-[#516f75]">
                     {r.type === "herramienta"

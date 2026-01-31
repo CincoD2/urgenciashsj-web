@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+import { trackEvent } from '@/lib/analytics';
+
 type Row = {
   especialidad: string;
   titulo: string;
@@ -118,6 +120,14 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
                 className="border-t border-[#dfe9eb] hover:bg-[#dfe9eb]/60 cursor-pointer"
                 onClick={() => {
                   if (!r.link) return;
+                  trackEvent('protocol_open', {
+                    protocol_title: r.titulo,
+                    protocol_specialty: r.especialidad,
+                    protocol_tags: r.tags,
+                    protocol_url: r.link,
+                    source: 'protocolos_table',
+                    page_path: window.location.pathname,
+                  });
                   window.open(r.link, '_blank', 'noopener,noreferrer');
                 }}
               >
