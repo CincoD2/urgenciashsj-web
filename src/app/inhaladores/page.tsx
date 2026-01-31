@@ -490,37 +490,46 @@ export default function Home() {
           className="buscador-input"
         />
       </div>
-
       {/* CABECERA TABLA + PAGINACIÓN */}
       <div className="tabla-header">
         <div className="tabla-info">
-          Mostrando {paginatedData.length} de {filteredAndSortedData.length} resultados &nbsp;—
-          Página {page} de {totalPages}
+          {filteredAndSortedData.length === 0 && !loading ? (
+            <>No hay inhaladores con los filtros aplicados</>
+          ) : (
+            <>
+              Mostrando {paginatedData.length} de {filteredAndSortedData.length} resultados &nbsp;— Página {page} de{' '}
+              {totalPages}
+            </>
+          )}
         </div>
 
-        <div className="paginacion">
-          <button disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
-            ◀
-          </button>
-
-          {getPaginationPages(page, totalPages, maxPageSlots).map((p, i) =>
-            p === '...' ? (
-              <span key={`sep-${i}`} className="paginacion-separador">
-                …
-              </span>
-            ) : (
-              <button key={p} className={p === page ? 'activo' : ''} onClick={() => setPage(p)}>
-                {p}
+        <div className={`paginacion ${filteredAndSortedData.length > 0 ? '' : 'paginacion-placeholder'}`}>
+          {filteredAndSortedData.length > 0 ? (
+            <>
+              <button disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+                ◀
               </button>
-            )
-          )}
 
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            ▶
-          </button>
+              {getPaginationPages(page, totalPages, maxPageSlots).map((p, i) =>
+                p === '...' ? (
+                  <span key={`sep-${i}`} className="paginacion-separador">
+                    …
+                  </span>
+                ) : (
+                  <button key={p} className={p === page ? 'activo' : ''} onClick={() => setPage(p)}>
+                    {p}
+                  </button>
+                )
+              )}
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              >
+                ▶
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
 
@@ -645,30 +654,32 @@ export default function Home() {
         </>
       )}
       {/* PAGINACIÓN */}
-      <div className="paginacion">
-        <button disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
-          {isMobile ? '◀' : '◀ Anterior'}
-        </button>
+      {filteredAndSortedData.length > 0 && (
+        <div className="paginacion">
+          <button disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+            {isMobile ? '◀' : '◀ Anterior'}
+          </button>
 
-        {getPaginationPages(page, totalPages, maxPageSlots).map((p, i) =>
-          p === '...' ? (
-            <span key={`sep-${i}`} className="paginacion-separador">
-              …
-            </span>
-          ) : (
-            <button key={p} className={p === page ? 'activo' : ''} onClick={() => setPage(p)}>
-              {p}
-            </button>
-          )
-        )}
+          {getPaginationPages(page, totalPages, maxPageSlots).map((p, i) =>
+            p === '...' ? (
+              <span key={`sep-${i}`} className="paginacion-separador">
+                …
+              </span>
+            ) : (
+              <button key={p} className={p === page ? 'activo' : ''} onClick={() => setPage(p)}>
+                {p}
+              </button>
+            )
+          )}
 
-        <button
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-        >
-          {isMobile ? '▶' : 'Siguiente ▶'}
-        </button>
-      </div>
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            {isMobile ? '▶' : 'Siguiente ▶'}
+          </button>
+        </div>
+      )}
     </main>
   );
 }
