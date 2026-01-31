@@ -417,6 +417,25 @@ th.sortable span {
     display: none;
   }
 
+  .tabla-header {
+    align-items: flex-start;
+  }
+
+  .tabla-info {
+    font-size: 12px;
+  }
+
+  .paginacion {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .paginacion button {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
   .cards-list {
     display: flex;
     flex-direction: column;

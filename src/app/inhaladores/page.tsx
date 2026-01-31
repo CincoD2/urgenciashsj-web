@@ -252,38 +252,63 @@ export default function Home() {
     setPage(1);
   }, [search, fTipoTratamiento, fTipoInhalador, fAsma, fEpoc, fClases]);
 
-  function getPaginationPages(current: number, total: number): Array<number | '...'> {
+  function getPaginationPages(
+    current: number,
+    total: number,
+    maxSlots: number
+  ): Array<number | '...'> {
     const pages: Array<number | '...'> = [];
 
-    if (total <= 7) {
-      // pocas páginas → mostrar todas
+    const slots = Math.max(5, maxSlots);
+
+    if (total <= slots) {
       for (let i = 1; i <= total; i++) pages.push(i);
       return pages;
     }
 
     pages.push(1);
 
-    if (current > 3) {
-      pages.push('...');
+    const middleSlots = slots - 2;
+    let start = Math.max(2, current - Math.floor(middleSlots / 2));
+    let end = start + middleSlots - 1;
+
+    if (end >= total) {
+      end = total - 1;
+      start = Math.max(2, end - middleSlots + 1);
     }
 
-    for (let i = current - 1; i <= current + 1; i++) {
-      if (i > 1 && i < total) {
-        pages.push(i);
-      }
+    if (start > 2) pages.push('...');
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
     }
 
-    if (current < total - 2) {
-      pages.push('...');
-    }
+    if (end < total - 1) pages.push('...');
 
     pages.push(total);
-
     return pages;
   }
 
   /* ===== PAGINACIÓN ===== */
   const totalPages = Math.ceil(filteredAndSortedData.length / PAGE_SIZE);
+  const [maxPageSlots, setMaxPageSlots] = useState(7);
+
+  useEffect(() => {
+    function updateSlots() {
+      const width = window.innerWidth;
+      if (width < 420) {
+        setMaxPageSlots(5);
+      } else if (width < 640) {
+        setMaxPageSlots(7);
+      } else {
+        setMaxPageSlots(9);
+      }
+    }
+
+    updateSlots();
+    window.addEventListener('resize', updateSlots);
+    return () => window.removeEventListener('resize', updateSlots);
+  }, []);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
@@ -478,7 +503,7 @@ export default function Home() {
             ◀
           </button>
 
-          {getPaginationPages(page, totalPages).map((p, i) =>
+          {getPaginationPages(page, totalPages, maxPageSlots).map((p, i) =>
             p === '...' ? (
               <span key={`sep-${i}`} className="paginacion-separador">
                 …
@@ -622,10 +647,10 @@ export default function Home() {
       {/* PAGINACIÓN */}
       <div className="paginacion">
         <button disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
-          ◀ Anterior
+          {isMobile ? '◀' : '◀ Anterior'}
         </button>
 
-        {getPaginationPages(page, totalPages).map((p, i) =>
+        {getPaginationPages(page, totalPages, maxPageSlots).map((p, i) =>
           p === '...' ? (
             <span key={`sep-${i}`} className="paginacion-separador">
               …
@@ -641,7 +666,7 @@ export default function Home() {
           disabled={page === totalPages}
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
         >
-          Siguiente ▶
+          {isMobile ? '▶' : 'Siguiente ▶'}
         </button>
       </div>
     </main>
