@@ -2,151 +2,176 @@ type LinkItem = { label: string; href: string; icon?: IconKey };
 
 const observacion: LinkItem[] = [
   {
-    label: 'Relevo Observación',
-    href: 'https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing',
+    label: "Relevo Observación",
+    href: "https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing",
   },
   {
-    label: 'Esquema Observación',
-    href: 'https://drive.google.com/file/d/1KQaem_gE9AXnI6FSg_TIbVFba4vmGwCW/view?usp=sharing',
+    label: "Esquema Observación",
+    href: "https://drive.google.com/file/d/1KQaem_gE9AXnI6FSg_TIbVFba4vmGwCW/view?usp=sharing",
   },
 ];
 
 type IconKey =
-  | 'person'
-  | 'money'
-  | 'internet'
-  | 'mail'
-  | 'book'
-  | 'grad'
-  | 'computer'
-  | 'wrench'
-  | 'flask'
-  | 'xray'
-  | 'drop'
-  | 'agenda';
+  | "person"
+  | "money"
+  | "internet"
+  | "mail"
+  | "book"
+  | "grad"
+  | "computer"
+  | "wrench"
+  | "flask"
+  | "xray"
+  | "drop"
+  | "agenda";
 
 const enlacesCorporativos: Record<string, LinkItem[]> = {
   Personal: [
     {
-      label: 'Portal del Empleado GVA',
-      href: 'https://vvd17portalempleado.cs.san.gva.es/',
-      icon: 'person',
+      label: "Portal del Empleado GVA",
+      href: "https://vvd17portalempleado.cs.san.gva.es/",
+      icon: "person",
     },
-    { label: 'Nóminas San Juan', href: 'https://nomina.san.gva.es/es/', icon: 'money' },
-    { label: 'Gestor Identidades (GVA)', href: 'https://idm.san.gva.es/sspr', icon: 'person' },
     {
-      label: 'Intranet Privada San Juan',
-      href: 'https://intranet17.cs.san.gva.es/',
-      icon: 'internet',
+      label: "Nóminas San Juan",
+      href: "https://nomina.san.gva.es/es/",
+      icon: "money",
+    },
+    {
+      label: "Gestor Identidades (GVA)",
+      href: "https://idm.san.gva.es/sspr",
+      icon: "person",
+    },
+    {
+      label: "Intranet Privada San Juan",
+      href: "https://intranet17.cs.san.gva.es/",
+      icon: "internet",
     },
   ],
   Herramientas: [
-    { label: 'Mail Corporativo', href: 'https://outlook.office365.com/', icon: 'mail' },
     {
-      label: 'Biblioteca',
-      href: 'https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac',
-      icon: 'book',
+      label: "Mail Corporativo",
+      href: "https://outlook.office365.com/",
+      icon: "mail",
     },
     {
-      label: 'Portal Formación (EVES)',
-      href: 'https://eves.san.gva.es/web/guest/home',
-      icon: 'grad',
+      label: "Biblioteca",
+      href: "https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac",
+      icon: "book",
     },
     {
-      label: 'Informática',
-      href: 'https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/',
-      icon: 'computer',
+      label: "Portal Formación (EVES)",
+      href: "https://eves.san.gva.es/web/guest/home",
+      icon: "grad",
     },
     {
-      label: 'Partes Mantenimiento',
-      href: 'http://avisos.hribera.gim-web.com/PC/Inici.aspx',
-      icon: 'wrench',
+      label: "Informática",
+      href: "https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/",
+      icon: "computer",
     },
   ],
   Departamento: [
     {
-      label: 'GestLab',
-      href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
-      icon: 'flask',
+      label: "GestLab (HSJ)",
+      href: "https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?",
+      icon: "flask",
+    },
+
+    {
+      label: "Visor RX (HSJ)",
+      href: "https://vvd17zfpa.cs.san.gva.es/ZFP/",
+      icon: "xray",
     },
     {
-      label: 'Laboratorio (HSJ)',
-      href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
-      icon: 'flask',
-    },
-    { label: 'Visor RX (HSJ)', href: 'https://vvd17zfpa.cs.san.gva.es/ZFP/', icon: 'xray' },
-    {
-      label: 'Taonet-Sintrom',
-      href: 'http://10.192.176.103:8080/tao/servlet/KYNTAOController',
-      icon: 'drop',
+      label: "Taonet-Sintrom",
+      href: "http://10.192.176.103:8080/tao/servlet/KYNTAOController",
+      icon: "drop",
     },
     {
-      label: 'Citas MAP',
-      href: 'https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=4&login=a&idioma=es&idCatGuc=PR&idProcGuc=2888',
-      icon: 'agenda',
+      label: "Citas MAP",
+      href: "https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=4&login=a&idioma=es&idCatGuc=PR&idProcGuc=2888",
+      icon: "agenda",
     },
   ],
-  'Otros departamentos': [
-    { label: 'PACS Alicante', href: 'https://c2imzfp.san.gva.es/ZFP', icon: 'xray' },
-    { label: 'PACS Valencia', href: 'https://c1imzfp.san.gva.es/ZFP', icon: 'xray' },
-    { label: 'PACS Castellón', href: 'https://c3imzfp.san.gva.es/ZFP', icon: 'xray' },
+  "Otros departamentos": [
+    {
+      label: "PACS Alicante",
+      href: "https://c2imzfp.san.gva.es/ZFP",
+      icon: "xray",
+    },
+    {
+      label: "PACS Valencia",
+      href: "https://c1imzfp.san.gva.es/ZFP",
+      icon: "xray",
+    },
+    {
+      label: "PACS Castellón",
+      href: "https://c3imzfp.san.gva.es/ZFP",
+      icon: "xray",
+    },
   ],
 };
 
 const documentosInteres: LinkItem[] = [
   {
-    label: 'Solicitudes Personal',
-    href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL',
+    label: "Solicitudes Personal",
+    href: "https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL",
   },
   {
-    label: 'Teléfonos Urgencias (credenciales CS)',
-    href: 'https://sanjuan.san.gva.es/listin/',
+    label: "Teléfonos Urgencias (credenciales CS)",
+    href: "https://sanjuan.san.gva.es/listin/",
   },
   {
-    label: 'Oxigenoterapia Linde | Indicaciones',
-    href: 'https://www.lindemedicaldirect.com/es/lite/app/Modules/Application/Main/Main.html#!/Startup',
-  },
-  { label: 'Perfiles Glucémicos Completos', href: '' },
-  { label: 'Lámpara Hendidura', href: '' },
-  {
-    label: 'Plantilla Protocolos',
-    href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F00.-PLANTILLA%20DE%20PROTOCOLO&files=modelo%20de%20protocolo.docx',
+    label: "Oxigenoterapia Linde | Indicaciones",
+    href: "https://www.lindemedicaldirect.com/es/lite/app/Modules/Application/Main/Main.html#!/Startup",
   },
   {
-    label: 'Hoja firma guardias residentes',
-    href: 'https://drive.google.com/file/d/1yjGxQNaHLHtdOYXpRmCZ-Oq_H9HEfKtG/view?usp=sharing',
+    label: "Perfiles Glucémicos Completos",
+    href: "https://drive.google.com/file/d/1w8JIsDIsdrLVSAdGt3i9jfFyFzx-XR67/view?usp=sharing",
+  },
+
+  {
+    label: "Plantilla Protocolos",
+    href: "https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F00.-PLANTILLA%20DE%20PROTOCOLO&files=modelo%20de%20protocolo.docx",
   },
   {
-    label: 'Hoja Informativa UHD',
-    href: 'https://drive.google.com/file/d/1XfV0FDX5U6wWhKX0DVWnEhiwGl3lXbKI/view?usp=drive_link',
+    label: "Hoja firma guardias residentes",
+    href: "https://drive.google.com/file/d/1yjGxQNaHLHtdOYXpRmCZ-Oq_H9HEfKtG/view?usp=sharing",
+  },
+  {
+    label: "Hoja Informativa UHD",
+    href: "https://drive.google.com/file/d/1XfV0FDX5U6wWhKX0DVWnEhiwGl3lXbKI/view?usp=drive_link",
   },
 ];
 
 const enlacesInteres: LinkItem[] = [
-  { label: 'AEMPS', href: 'http://www.aemps.gob.es/cima/fichasTecnicas.do?metodo=detalleForm' },
-  { label: 'Fármacos Lactancia', href: 'http://e-lactancia.org/' },
   {
-    label: 'Equivalencias Mórficos',
-    href: 'https://lamochiladelresi.wordpress.com/wp-content/uploads/2019/07/tabla_de_equivalencia_aproximada_entre_opioides_2014.pdf',
+    label: "AEMPS",
+    href: "http://www.aemps.gob.es/cima/fichasTecnicas.do?metodo=detalleForm",
   },
-  { label: 'UpToDate', href: 'http://www.uptodate.com/contents/search' },
+  { label: "Fármacos Lactancia", href: "http://e-lactancia.org/" },
   {
-    label: 'Intoxicaciones (MurciaSalud)',
-    href: 'http://www.murciasalud.es/toxiconet.php?op=listado_protocolos&idsec=4014',
+    label: "Equivalencias Mórficos",
+    href: "https://lamochiladelresi.wordpress.com/wp-content/uploads/2019/07/tabla_de_equivalencia_aproximada_entre_opioides_2014.pdf",
+  },
+  { label: "UpToDate", href: "http://www.uptodate.com/contents/search" },
+  {
+    label: "Intoxicaciones (MurciaSalud)",
+    href: "http://www.murciasalud.es/toxiconet.php?op=listado_protocolos&idsec=4014",
   },
   {
-    label: 'CIE oficial',
-    href: 'https://eciemaps.mscbs.gob.es/ecieMaps/browser/indexMapping.html',
+    label: "CIE oficial",
+    href: "https://eciemaps.mscbs.gob.es/ecieMaps/browser/indexMapping.html",
   },
 ];
 
 const calendarEmbed =
-  'https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA';
+  "https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA";
 
 function Icon({ name }: { name: IconKey }) {
-  const common = 'h-4 w-4';
+  const common = "h-4 w-4";
   switch (name) {
-    case 'person':
+    case "person":
       return (
         <svg
           className={common}
@@ -159,7 +184,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M5 21c1.5-4 12.5-4 14 0" />
         </svg>
       );
-    case 'money':
+    case "money":
       return (
         <svg
           className={common}
@@ -173,7 +198,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M7 9v6M17 9v6" />
         </svg>
       );
-    case 'internet':
+    case "internet":
       return (
         <svg
           className={common}
@@ -186,7 +211,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M3 12h18M12 3a12 12 0 0 1 0 18M12 3a12 12 0 0 0 0 18" />
         </svg>
       );
-    case 'mail':
+    case "mail":
       return (
         <svg
           className={common}
@@ -199,7 +224,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M3 7l9 6 9-6" />
         </svg>
       );
-    case 'book':
+    case "book":
       return (
         <svg
           className={common}
@@ -212,7 +237,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M4 4v16a3 3 0 0 1 3-3h10" />
         </svg>
       );
-    case 'grad':
+    case "grad":
       return (
         <svg
           className={common}
@@ -225,7 +250,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M6 10v5c0 2 4 3 6 3s6-1 6-3v-5" />
         </svg>
       );
-    case 'computer':
+    case "computer":
       return (
         <svg
           className={common}
@@ -238,7 +263,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M8 20h8M10 16l-1 4M14 16l1 4" />
         </svg>
       );
-    case 'wrench':
+    case "wrench":
       return (
         <svg
           className={common}
@@ -250,7 +275,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M14 7a4 4 0 0 0-5 5L4 17l3 3 5-5a4 4 0 0 0 5-5z" />
         </svg>
       );
-    case 'flask':
+    case "flask":
       return (
         <svg
           className={common}
@@ -263,7 +288,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M10 2v5l-5 9a3 3 0 0 0 3 4h8a3 3 0 0 0 3-4l-5-9V2" />
         </svg>
       );
-    case 'xray':
+    case "xray":
       return (
         <svg
           className={common}
@@ -276,7 +301,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M9 8h6M9 12h6M9 16h6" />
         </svg>
       );
-    case 'drop':
+    case "drop":
       return (
         <svg
           className={common}
@@ -288,7 +313,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" />
         </svg>
       );
-    case 'agenda':
+    case "agenda":
       return (
         <svg
           className={common}
@@ -304,7 +329,11 @@ function Icon({ name }: { name: IconKey }) {
   }
 }
 
-function LinkList({ items }: { items: { label: string; href: string; icon?: IconKey }[] }) {
+function LinkList({
+  items,
+}: {
+  items: { label: string; href: string; icon?: IconKey }[];
+}) {
   return (
     <ul className="space-y-2">
       {items.map((it) => (
@@ -338,7 +367,10 @@ export default function HomePage() {
       <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9">
         <div
           className="absolute inset-0 bg-cover"
-          style={{ backgroundImage: 'url(/urg-background.png)', backgroundPosition: 'center 18%' }}
+          style={{
+            backgroundImage: "url(/urg-background.png)",
+            backgroundPosition: "center 18%",
+          }}
         />
         <div className="absolute inset-0 bg-white/60" />
         <div className="relative z-10 flex h-full items-center">
@@ -384,7 +416,11 @@ export default function HomePage() {
       <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
         <h2 className="text-xl font-semibold">Próximos eventos relacionados</h2>
         <div className="overflow-hidden rounded-md border border-[#dfe9eb]">
-          <iframe title="Calendario de eventos" src={calendarEmbed} className="h-[500px] w-full" />
+          <iframe
+            title="Calendario de eventos"
+            src={calendarEmbed}
+            className="h-[500px] w-full"
+          />
         </div>
       </section>
     </div>
