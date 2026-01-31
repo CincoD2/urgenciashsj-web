@@ -387,27 +387,30 @@ export default function Header() {
               </div>
 
               <div className="my-2 h-px bg-[#dfe9eb]" />
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/protocolos">
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/protocolos" onClick={closeMenus}>
                 Protocolos
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/sesiones">
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/sesiones" onClick={closeMenus}>
                 Sesiones
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/dietas">
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/dietas" onClick={closeMenus}>
                 Dietas
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/formacion">
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/formacion" onClick={closeMenus}>
                 Formación
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/eventos">
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/eventos" onClick={closeMenus}>
                 Eventos
               </Link>
-              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/novedades">
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/novedades" onClick={closeMenus}>
                 Novedades
               </Link>
               <button
                 type="button"
-                onClick={() => setSearchOpen(true)}
+                onClick={() => {
+                  setSearchOpen(true);
+                  closeMenus();
+                }}
                 className="block w-full rounded px-3 py-2 text-left hover:bg-slate-100"
               >
                 Buscar
