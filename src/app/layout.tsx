@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { Encode_Sans, Geist_Mono } from 'next/font/google';
-import Script from 'next/script';
 
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CookieNotice from '@/components/CookieNotice';
 
 const encodeSans = Encode_Sans({
   variable: '--font-encode-sans',
@@ -49,20 +49,10 @@ export default function RootLayout({
       <body
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
-        {gaId ? (
-          <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
-            <Script id="ga-setup" strategy="afterInteractive">
-              {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${gaId}');`}
-            </Script>
-          </>
-        ) : null}
         <Header />
         <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>
         <Footer />
+        <CookieNotice gaId={gaId} />
       </body>
     </html>
   );
