@@ -48,31 +48,44 @@ export default function Header() {
           <span className="font-semibold">UrgenciasHSJ</span>
         </Link>
 
-        <button
-          type="button"
-          aria-label={open ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#dfe9eb] text-[#2b5d68] transition md:hidden"
-        >
-          <span className="relative block h-4 w-5">
-            <span
-              className={`absolute left-0 top-0 h-0.5 w-5 bg-current transition-transform duration-200 ${
-                open ? "translate-y-[7px] rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-current transition-opacity duration-200 ${
-                open ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-current transition-transform duration-200 ${
-                open ? "-translate-y-[7px] -rotate-45" : ""
-              }`}
-            />
-          </span>
-        </button>
+        <div className="ml-auto flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            aria-label="Buscar"
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-[#2b5d68] transition"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-5-5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-[#2b5d68] transition"
+          >
+            <span className="relative block h-4 w-5">
+              <span
+                className={`absolute left-0 top-0 h-0.5 w-5 bg-current transition-transform duration-200 ${
+                  open ? "translate-y-[7px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-[7px] h-0.5 w-5 bg-current transition-opacity duration-200 ${
+                  open ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-[14px] h-0.5 w-5 bg-current transition-transform duration-200 ${
+                  open ? "-translate-y-[7px] -rotate-45" : ""
+                }`}
+              />
+            </span>
+          </button>
+        </div>
 
         <div className="ml-auto hidden items-center gap-6 md:flex">
           <div
@@ -178,7 +191,7 @@ export default function Header() {
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
-              <path d="M20 20l-3.5-3.5" />
+              <path d="M21 21l-5-5" />
             </svg>
           </button>
         </div>
@@ -412,16 +425,6 @@ export default function Header() {
               <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/novedades" onClick={closeMenusAndScrollTop}>
                 Novedades
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchOpen(true);
-                  closeMenusAndScrollTop();
-                }}
-                className="block w-full rounded px-3 py-2 text-left hover:bg-slate-100"
-              >
-                Buscar
-              </button>
             </div>
           </div>
         </div>

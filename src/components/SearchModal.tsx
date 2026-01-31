@@ -55,7 +55,7 @@ export default function SearchModal({
   return (
     <div className="fixed inset-0 z-[60]">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative mx-auto mt-20 w-[92%] max-w-2xl rounded-xl border border-white/40 bg-white/90 p-3 shadow-xl backdrop-blur-md">
+      <div className="relative mx-auto mt-20 w-[92%] max-w-2xl rounded-xl border border-white/40 bg-white/95 p-3 shadow-xl backdrop-blur-lg backdrop-saturate-150">
         <div className="flex items-center gap-2">
           <svg className="h-4 w-4 text-[#3d7684]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="7" />
@@ -66,7 +66,7 @@ export default function SearchModal({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar en todo el sitio..."
-            className="w-full bg-transparent py-1 text-sm outline-none"
+            className="w-full bg-transparent py-1 text-base outline-none md:text-sm"
           />
           <button
             type="button"
