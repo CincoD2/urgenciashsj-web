@@ -15,6 +15,8 @@ const staticRoutes = [
   '/calculadoras',
   '/escalas',
   '/disclaimer',
+  '/cookies',
+  '/novedades',
 ];
 
 const escalaRoutes = [

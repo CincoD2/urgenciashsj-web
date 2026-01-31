@@ -160,6 +160,9 @@ export default function Header() {
           <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/eventos">
             Eventos
           </Link>
+          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/novedades">
+            Novedades
+          </Link>
           <button
             type="button"
             aria-label="Buscar"
@@ -398,6 +401,9 @@ export default function Header() {
               </Link>
               <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/eventos">
                 Eventos
+              </Link>
+              <Link className="block rounded px-3 py-2 hover:bg-slate-100" href="/novedades">
+                Novedades
               </Link>
               <button
                 type="button"
