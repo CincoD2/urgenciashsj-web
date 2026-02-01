@@ -212,7 +212,7 @@ export async function POST(req: Request) {
         ? {
             args: chromium.args,
             executablePath,
-            headless: chromium.headless,
+            headless: true,
           }
         : {
             executablePath,
