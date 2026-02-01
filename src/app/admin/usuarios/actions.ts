@@ -46,3 +46,24 @@ export async function setUserRole(formData: FormData) {
 
   revalidatePath('/admin/usuarios');
 }
+
+export async function updateAutoLogout(formData: FormData) {
+  await assertAdmin();
+  const idleMinutes = Number(formData.get('idleMinutes'));
+  const warningSeconds = Number(formData.get('warningSeconds'));
+
+  if (!Number.isFinite(idleMinutes) || idleMinutes < 1 || idleMinutes > 120) {
+    throw new Error('Minutos de inactividad inválidos');
+  }
+  if (!Number.isFinite(warningSeconds) || warningSeconds < 5 || warningSeconds > 300) {
+    throw new Error('Segundos de aviso inválidos');
+  }
+
+  await prisma.appSettings.upsert({
+    where: { id: 1 },
+    update: { idleMinutes, warningSeconds },
+    create: { id: 1, idleMinutes, warningSeconds },
+  });
+
+  revalidatePath('/admin/usuarios');
+}

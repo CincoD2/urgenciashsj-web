@@ -62,3 +62,10 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model AppSettings {
+  id             Int      @id @default(1)
+  idleMinutes    Int      @default(5)
+  warningSeconds Int      @default(30)
+  updatedAt      DateTime @updatedAt
+}

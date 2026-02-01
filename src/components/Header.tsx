@@ -128,7 +128,9 @@ export default function Header() {
                       type="button"
                       onClick={() => {
                         setUserOpen(false);
-                        signOut({ callbackUrl: "/" });
+                        signOut({ redirect: false }).finally(() => {
+                          window.location.href = window.location.origin;
+                        });
                       }}
                       className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
                     >
@@ -346,7 +348,9 @@ export default function Header() {
                       type="button"
                       onClick={() => {
                         setUserOpen(false);
-                        signOut({ callbackUrl: "/" });
+                        signOut({ redirect: false }).finally(() => {
+                          window.location.href = window.location.origin;
+                        });
                       }}
                       className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
                     >
