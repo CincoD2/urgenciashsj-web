@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
-import { neon } from '@neondatabase/serverless';
+import { Pool, neonConfig } from '@neondatabase/serverless';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -8,7 +8,9 @@ declare global {
 }
 
 const connectionString = process.env.DATABASE_URL;
-const adapter = connectionString ? new PrismaNeon(neon(connectionString)) : undefined;
+neonConfig.fetchConnectionCache = true;
+const pool = connectionString ? new Pool({ connectionString }) : undefined;
+const adapter = pool ? new PrismaNeon(pool) : undefined;
 
 const prismaClient = global.prisma ?? new PrismaClient({ adapter });
 
