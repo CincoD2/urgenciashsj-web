@@ -8,8 +8,6 @@ declare global {
 }
 
 const connectionString = process.env.DATABASE_URL;
-console.log('DATABASE_URL presente:', Boolean(connectionString));
-neonConfig.fetchConnectionCache = true;
 const adapter = connectionString ? new PrismaNeon({ connectionString }) : undefined;
 
 const prismaClient = global.prisma ?? new PrismaClient({ adapter });
