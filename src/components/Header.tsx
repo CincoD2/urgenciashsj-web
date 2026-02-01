@@ -60,6 +60,16 @@ export default function Header() {
               <path d="M21 21l-5-5" />
             </svg>
           </button>
+          <Link
+            href="/login"
+            aria-label="Iniciar sesión o registrarse"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-[#2b5d68] transition"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
+            </svg>
+          </Link>
           <button
             type="button"
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -194,6 +204,16 @@ export default function Header() {
               <path d="M21 21l-5-5" />
             </svg>
           </button>
+          <Link
+            href="/login"
+            aria-label="Iniciar sesión o registrarse"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
+            </svg>
+          </Link>
         </div>
       </nav>
 

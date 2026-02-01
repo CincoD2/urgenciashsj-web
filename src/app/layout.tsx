@@ -5,6 +5,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CookieNotice from '@/components/CookieNotice';
+import Providers from '@/components/Providers';
 
 const encodeSans = Encode_Sans({
   variable: '--font-encode-sans',
@@ -52,10 +53,12 @@ export default function RootLayout({
       <body
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
-        <Header />
-        <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>
-        <Footer />
-        <CookieNotice gaId={gaId} />
+        <Providers>
+          <Header />
+          <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>
+          <Footer />
+          <CookieNotice gaId={gaId} />
+        </Providers>
       </body>
     </html>
   );
