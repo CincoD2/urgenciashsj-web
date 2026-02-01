@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import SearchModal from "./SearchModal";
 import { signOut, useSession } from "next-auth/react";
+import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -128,6 +129,10 @@ export default function Header() {
                       type="button"
                       onClick={() => {
                         setUserOpen(false);
+                        if (typeof window !== "undefined") {
+                          localStorage.removeItem(LOCAL_STORAGE_KEY);
+                          sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                        }
                         signOut({ redirect: false }).finally(() => {
                           window.location.href = window.location.origin;
                         });
@@ -348,6 +353,10 @@ export default function Header() {
                       type="button"
                       onClick={() => {
                         setUserOpen(false);
+                        if (typeof window !== "undefined") {
+                          localStorage.removeItem(LOCAL_STORAGE_KEY);
+                          sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                        }
                         signOut({ redirect: false }).finally(() => {
                           window.location.href = window.location.origin;
                         });

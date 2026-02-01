@@ -2,11 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
 
 const DEFAULT_IDLE_MINUTES = 5;
 const DEFAULT_WARNING_SECONDS = 30;
-const SESSION_STORAGE_KEY = "uhsj_tab_session";
-const LOCAL_STORAGE_KEY = "uhsj_active_session";
 
 function generateSessionId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -59,6 +58,10 @@ export default function IdleLogout() {
   const handleSignOut = () => {
     clearTimers();
     setWarningOpen(false);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    }
     signOut({ redirect: false }).finally(() => {
       if (typeof window !== "undefined") {
         window.location.href = window.location.origin;

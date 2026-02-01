@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import type { ClientSafeProvider } from "next-auth/react";
 import { registerUser } from "./actions";
+import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -107,6 +108,10 @@ export default function LoginPage() {
                   const formData = new FormData(form);
                   const email = String(formData.get("email") || "");
                   const password = String(formData.get("password") || "");
+                  if (typeof window !== "undefined") {
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                  }
                   const res = await signIn("credentials", {
                     redirect: false,
                     email,
@@ -232,7 +237,13 @@ export default function LoginPage() {
                     <button
                       key={provider.id}
                       type="button"
-                    onClick={() => signIn(provider.id, { callbackUrl: "/" })}
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        localStorage.removeItem(LOCAL_STORAGE_KEY);
+                        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                      }
+                      signIn(provider.id, { callbackUrl: "/" });
+                    }}
                     className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
                   >
                     Continuar con {provider.name}
@@ -241,7 +252,13 @@ export default function LoginPage() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => signIn("google", { callbackUrl: "/" })}
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        localStorage.removeItem(LOCAL_STORAGE_KEY);
+                        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                      }
+                      signIn("google", { callbackUrl: "/" });
+                    }}
                     className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
                   >
                     Continuar con Google
