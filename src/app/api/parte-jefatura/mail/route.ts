@@ -226,6 +226,7 @@ export async function POST(req: Request) {
       printBackground: true,
       margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' },
     });
+    const pdfContent = Buffer.from(pdfBuffer);
     await page.close();
     await browser.close();
 
@@ -255,7 +256,7 @@ export async function POST(req: Request) {
       attachments: [
         {
           filename: 'parte-jefatura.pdf',
-          content: pdfBuffer,
+          content: pdfContent,
           contentType: 'application/pdf',
         },
       ],
