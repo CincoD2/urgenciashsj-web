@@ -2,21 +2,30 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import SearchModal from "./SearchModal";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const userCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isPrivate = pathname.startsWith("/parte-jefatura") || pathname.startsWith("/admin/usuarios");
   const { data: session, status } = useSession();
+  const isAuthed = status === "authenticated";
   const userLabel =
     status === "authenticated" ? session?.user?.name || session?.user?.email || "Cuenta" : "Acceso";
+  const isAdmin = session?.user?.role === "ADMIN";
+  const navItemClass = isAuthed
+    ? "rounded px-2 py-1 !text-white hover:bg-white/10"
+    : "rounded px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60";
+  const toolsLinkClass = isAuthed
+    ? "inline-flex items-center gap-1 rounded px-2 py-1 !text-white hover:bg-white/10"
+    : "inline-flex items-center gap-1 rounded px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60";
 
   const mobileMenuClass = `md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
     open ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
@@ -38,12 +47,19 @@ export default function Header() {
 
   return (
     <header
-      className={`border-b border-[#dfe9eb] sticky top-0 z-50 bg-white/45 backdrop-blur-md border-white/40 ${
-        isPrivate ? "shadow-[inset_0_-2px_0_0_#2b5d68]" : ""
+      className={`border-b border-[#dfe9eb] sticky top-0 z-50 backdrop-blur-md border-white/40 ${
+        isAuthed ? "bg-[#1f4c57]" : "bg-white/45"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center px-4 py-2 text-[#2b5d68]">
-        <Link href="/" className="flex items-center gap-3">
+      <nav
+        className={`mx-auto flex max-w-7xl items-center px-4 py-2 ${
+          isAuthed ? "text-white" : "text-[#2b5d68]"
+        }`}
+      >
+        <Link
+          href="/"
+          className={`flex items-center gap-3 ${isAuthed ? "!text-white" : "text-[#2b5d68]"}`}
+        >
           <Image
             src="/logourg.png"
             alt="Urgencias HSJ"
@@ -56,38 +72,85 @@ export default function Header() {
         </Link>
 
         <div className="ml-auto flex items-center gap-2 md:hidden">
-          {isPrivate && (
-            <span className="rounded-full border border-[#2b5d68]/30 bg-[#2b5d68]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2b5d68]">
-              Privado
-            </span>
-          )}
           <button
             type="button"
             aria-label="Buscar"
             onClick={() => setSearchOpen(true)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-[#2b5d68] transition"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition ${
+              isAuthed ? "!text-white" : "text-[#2b5d68]"
+            }`}
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
               <path d="M21 21l-5-5" />
             </svg>
           </button>
-          <Link
-            href="/login"
-            aria-label="Iniciar sesión o registrarse"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-[#2b5d68] transition"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
-            </svg>
-          </Link>
+          <div className="relative">
+            <button
+              type="button"
+              aria-label="Cuenta"
+              onClick={() => setUserOpen((v) => !v)}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition ${
+                isAuthed ? "!text-white" : "text-[#2b5d68]"
+              }`}
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
+              </svg>
+            </button>
+            {userOpen && (
+              <div className="absolute right-0 top-full z-50 mt-2 w-52 rounded-md border border-white/40 bg-white/90 p-2 text-right text-sm shadow-lg backdrop-blur-lg">
+                {status === "authenticated" ? (
+                  <>
+                    <span className="block px-3 py-2 text-xs font-semibold text-slate-500">{userLabel}</span>
+                    <Link
+                      className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
+                      href="/parte-jefatura"
+                      onClick={() => setUserOpen(false)}
+                    >
+                      Parte de jefatura
+                    </Link>
+                    {isAdmin && (
+                      <>
+                        <div className="my-1 h-px bg-[#dfe9eb]" />
+                        <Link
+                          className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
+                          href="/admin/usuarios"
+                          onClick={() => setUserOpen(false)}
+                        >
+                          Administración
+                        </Link>
+                      </>
+                    )}
+                    <div className="my-1 h-px bg-[#dfe9eb]" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserOpen(false);
+                        signOut({ callbackUrl: "/" });
+                      }}
+                      className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </>
+                ) : (
+                  <Link className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100" href="/login">
+                    Iniciar sesión
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
           <button
             type="button"
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-[#2b5d68] transition"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition ${
+              isAuthed ? "!text-white" : "text-[#2b5d68]"
+            }`}
           >
             <span className="relative block h-4 w-5">
               <span
@@ -109,12 +172,7 @@ export default function Header() {
           </button>
         </div>
 
-        <div className="ml-auto hidden items-center gap-6 md:flex">
-          {isPrivate && (
-            <span className="rounded-full border border-[#2b5d68]/30 bg-[#2b5d68]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2b5d68]">
-              Entorno privado
-            </span>
-          )}
+        <div className="ml-auto hidden items-center gap-4 md:flex">
           <div
             className="relative"
             onMouseEnter={() => setToolsOpen(true)}
@@ -122,7 +180,7 @@ export default function Header() {
           >
             <Link
               href="/escalas"
-              className="inline-flex items-center gap-1 rounded px-2 py-1 hover:bg-[#dfe9eb]/60"
+              className={toolsLinkClass}
               onClick={closeMenus}
             >
               Herramientas
@@ -192,46 +250,117 @@ export default function Header() {
               </Link>
             </div>
           </div>
-          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/protocolos">
+          <Link className={navItemClass} href="/protocolos">
             Protocolos
           </Link>
-          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/sesiones">
+          <Link className={navItemClass} href="/sesiones">
             Sesiones
           </Link>
-          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/dietas">
+          <Link className={navItemClass} href="/dietas">
             Dietas
           </Link>
-          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/formacion">
+          <Link className={navItemClass} href="/formacion">
             Formación
           </Link>
-          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/eventos">
+          <Link className={navItemClass} href="/eventos">
             Eventos
           </Link>
-          <Link className="rounded px-2 py-1 hover:bg-[#dfe9eb]/60" href="/novedades">
+          <Link className={navItemClass} href="/novedades">
             Novedades
           </Link>
           <button
             type="button"
             aria-label="Buscar"
             onClick={() => setSearchOpen(true)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-md ${
+              isAuthed ? "!text-white hover:bg-white/10" : "text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+            }`}
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
               <path d="M21 21l-5-5" />
             </svg>
           </button>
-          <Link
-            href="/login"
-            aria-label="Iniciar sesión o registrarse"
-            className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+          <div
+            className="relative"
+            onMouseEnter={() => {
+              if (userCloseTimer.current) {
+                clearTimeout(userCloseTimer.current);
+              }
+              setUserOpen(true);
+            }}
+            onMouseLeave={() => {
+              userCloseTimer.current = setTimeout(() => setUserOpen(false), 120);
+            }}
           >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
-            </svg>
-            <span className="text-xs font-semibold">{userLabel}</span>
-          </Link>
+            <button
+              type="button"
+              onClick={() => setUserOpen((v) => !v)}
+              className={`inline-flex items-center gap-2 rounded-md px-2 py-1 ${
+                isAuthed ? "!text-white hover:bg-white/10" : "text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+              }`}
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
+              </svg>
+              <span className="text-xs font-semibold">{userLabel}</span>
+            </button>
+            {userOpen && (
+              <div
+                className="absolute right-0 top-full z-50 mt-2 w-56 rounded-md border border-white/40 bg-white/90 p-2 text-right text-sm shadow-lg backdrop-blur-lg"
+                onMouseEnter={() => {
+                  if (userCloseTimer.current) {
+                    clearTimeout(userCloseTimer.current);
+                  }
+                  setUserOpen(true);
+                }}
+                onMouseLeave={() => {
+                  userCloseTimer.current = setTimeout(() => setUserOpen(false), 120);
+                }}
+              >
+                {status === "authenticated" ? (
+                  <>
+                    <span className="block px-3 py-2 text-xs font-semibold text-slate-500">{userLabel}</span>
+                    <Link
+                      className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
+                      href="/parte-jefatura"
+                      onClick={() => setUserOpen(false)}
+                    >
+                      Parte de jefatura
+                    </Link>
+                    {isAdmin && (
+                      <>
+                        <div className="my-1 h-px bg-[#dfe9eb]" />
+                        <Link
+                          className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
+                          href="/admin/usuarios"
+                          onClick={() => setUserOpen(false)}
+                        >
+                          Administración
+                        </Link>
+                      </>
+                    )}
+                    <div className="my-1 h-px bg-[#dfe9eb]" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserOpen(false);
+                        signOut({ callbackUrl: "/" });
+                      }}
+                      className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </>
+                ) : (
+                  <Link className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100" href="/login">
+                    Iniciar sesión
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 

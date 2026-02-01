@@ -116,7 +116,7 @@ export default function LoginPage() {
                     setError("Credenciales incorrectas.");
                   } else {
                     setSuccess("Acceso correcto. Redirigiendo...");
-                    window.location.href = "/parte-jefatura";
+                    window.location.href = "/";
                   }
                 }}
               >
@@ -232,16 +232,16 @@ export default function LoginPage() {
                     <button
                       key={provider.id}
                       type="button"
-                      onClick={() => signIn(provider.id, { callbackUrl: "/parte-jefatura" })}
-                      className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
-                    >
-                      Continuar con {provider.name}
-                    </button>
-                  ))
+                    onClick={() => signIn(provider.id, { callbackUrl: "/" })}
+                    className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
+                  >
+                    Continuar con {provider.name}
+                  </button>
+                ))
                 ) : (
                   <button
                     type="button"
-                    onClick={() => signIn("google", { callbackUrl: "/parte-jefatura" })}
+                    onClick={() => signIn("google", { callbackUrl: "/" })}
                     className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
                   >
                     Continuar con Google

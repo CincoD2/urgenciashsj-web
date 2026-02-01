@@ -144,7 +144,7 @@ export default function ParteJefaturaPage() {
         <button
           type="button"
           onClick={() => onChange(adjustValue(value, 1))}
-          className="flex h-full w-8 items-center justify-center border-l border-slate-300 text-base font-semibold leading-none"
+          className="flex h-full w-8 items-center justify-center border-l border-slate-300 text-base font-semibold leading-none hover:bg-slate-200"
           aria-label={`${ariaLabel} aumentar`}
         >
           +
@@ -152,7 +152,7 @@ export default function ParteJefaturaPage() {
         <button
           type="button"
           onClick={() => onChange(adjustValue(value, -1))}
-          className="flex h-full w-8 items-center justify-center border-l border-slate-300 text-base font-semibold leading-none"
+          className="flex h-full w-8 items-center justify-center border-l border-slate-300 text-base font-semibold leading-none hover:bg-slate-200"
           aria-label={`${ariaLabel} disminuir`}
         >
           −
@@ -733,17 +733,21 @@ export default function ParteJefaturaPage() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-2 rounded bg-slate-900 px-4 py-2 text-white disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 disabled:opacity-60"
             >
               {loading ? 'Generando...' : 'Generar PDF'}
             </button>
             <button
               type="button"
               onClick={() => {
+                if (!isValid) {
+                  setError('Completa la fecha y el jefe de la guardia.');
+                  return;
+                }
                 setMailError('');
                 setMailOpen(true);
               }}
-              className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-slate-700"
+              className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
             >
               Enviar por mail
             </button>
@@ -751,7 +755,7 @@ export default function ParteJefaturaPage() {
           <button
             type="button"
             onClick={resetForm}
-            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-slate-700"
+            className="inline-flex items-center gap-2 rounded border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
           >
             Borrar
           </button>
@@ -780,7 +784,7 @@ export default function ParteJefaturaPage() {
               <button
                 type="button"
                 onClick={() => setMailOpen(false)}
-                className="rounded border border-slate-300 px-3 py-2 text-sm"
+                className="rounded border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50 hover:border-slate-400"
               >
                 Cancelar
               </button>
@@ -790,7 +794,7 @@ export default function ParteJefaturaPage() {
               disabled={mailSending || mailSuccess}
               className={`rounded px-3 py-2 text-sm text-white disabled:opacity-60 ${
                 mailSuccess ? 'bg-emerald-600' : 'bg-slate-900'
-              }`}
+              } ${mailSuccess ? '' : 'hover:bg-slate-800'}`}
             >
               {mailSending ? 'Enviando...' : mailSuccess ? 'Enviado!' : 'Enviar'}
             </button>
