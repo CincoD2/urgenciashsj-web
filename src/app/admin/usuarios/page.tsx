@@ -6,13 +6,22 @@ import { prisma } from '@/lib/prisma';
 
 import { setUserApproved, setUserRole } from './actions';
 
+type UserRow = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: 'ADMIN' | 'USER';
+  approved: boolean;
+  createdAt: Date;
+};
+
 export default async function AdminUsersPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== 'ADMIN') {
     redirect('/');
   }
 
-  const users = await prisma.user.findMany({
+  const users: UserRow[] = await prisma.user.findMany({
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
