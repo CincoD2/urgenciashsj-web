@@ -408,6 +408,10 @@ export default function ParteJefaturaPage() {
   const handleSendMail = async () => {
     setMailError('');
     setMailSuccess(false);
+    if (!isValid) {
+      setMailError('Completa la fecha y el jefe de la guardia.');
+      return;
+    }
     if (!mailTo.trim()) {
       setMailError('Introduce un email válido.');
       return;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import SearchModal from "./SearchModal";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -12,6 +13,10 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isPrivate = pathname.startsWith("/parte-jefatura") || pathname.startsWith("/admin/usuarios");
+  const { data: session, status } = useSession();
+  const userLabel =
+    status === "authenticated" ? session?.user?.name || session?.user?.email || "Cuenta" : "Acceso";
 
   const mobileMenuClass = `md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
     open ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
@@ -33,7 +38,9 @@ export default function Header() {
 
   return (
     <header
-      className={`border-b border-[#dfe9eb] sticky top-0 z-50 bg-white/45 backdrop-blur-md border-white/40`}
+      className={`border-b border-[#dfe9eb] sticky top-0 z-50 bg-white/45 backdrop-blur-md border-white/40 ${
+        isPrivate ? "shadow-[inset_0_-2px_0_0_#2b5d68]" : ""
+      }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center px-4 py-2 text-[#2b5d68]">
         <Link href="/" className="flex items-center gap-3">
@@ -49,6 +56,11 @@ export default function Header() {
         </Link>
 
         <div className="ml-auto flex items-center gap-2 md:hidden">
+          {isPrivate && (
+            <span className="rounded-full border border-[#2b5d68]/30 bg-[#2b5d68]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2b5d68]">
+              Privado
+            </span>
+          )}
           <button
             type="button"
             aria-label="Buscar"
@@ -98,6 +110,11 @@ export default function Header() {
         </div>
 
         <div className="ml-auto hidden items-center gap-6 md:flex">
+          {isPrivate && (
+            <span className="rounded-full border border-[#2b5d68]/30 bg-[#2b5d68]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2b5d68]">
+              Entorno privado
+            </span>
+          )}
           <div
             className="relative"
             onMouseEnter={() => setToolsOpen(true)}
@@ -207,12 +224,13 @@ export default function Header() {
           <Link
             href="/login"
             aria-label="Iniciar sesión o registrarse"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+            className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20c1.6-3.5 5-6 8-6s6.4 2.5 8 6" />
             </svg>
+            <span className="text-xs font-semibold">{userLabel}</span>
           </Link>
         </div>
       </nav>
