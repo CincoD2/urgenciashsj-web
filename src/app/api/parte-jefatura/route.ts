@@ -229,6 +229,7 @@ export async function POST(req: Request) {
       printBackground: true,
       margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' },
     });
+    const pdfContent = Buffer.from(pdfBuffer);
 
     await page.close();
     await browser.close();
@@ -237,7 +238,7 @@ export async function POST(req: Request) {
       Boolean((body as Body & { download?: boolean }).download) ||
       req.headers.get('x-download') === '1';
 
-    return new Response(pdfBuffer, {
+    return new Response(pdfContent, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `${isDownload ? 'attachment' : 'inline'}; filename="parte-jefatura.pdf"`,
