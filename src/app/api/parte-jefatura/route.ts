@@ -109,7 +109,7 @@ const isRichTextEmpty = (html: string) => {
 
 async function loadLogoDataUrl() {
   try {
-    const logoPath = path.join(process.cwd(), 'public', 'img', 'parte-jefatura-logo.png');
+    const logoPath = path.join(process.cwd(), 'src', 'assets', 'parte-jefatura-logo.png');
     const file = await readFile(logoPath);
     return `data:image/png;base64,${file.toString('base64')}`;
   } catch {
