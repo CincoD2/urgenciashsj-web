@@ -10,11 +10,9 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
-  experimental: {
-    outputFileTracingIncludes: {
-      '/api/parte-jefatura': ['./node_modules/@sparticuz/chromium/bin/**'],
-      '/api/parte-jefatura/mail': ['./node_modules/@sparticuz/chromium/bin/**'],
-    },
+  outputFileTracingIncludes: {
+    '/api/parte-jefatura': ['./node_modules/@sparticuz/chromium/bin/**'],
+    '/api/parte-jefatura/mail': ['./node_modules/@sparticuz/chromium/bin/**'],
   },
   async redirects() {
     return [
