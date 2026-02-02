@@ -51,8 +51,8 @@
   {
     "id": "ESTREÑIMIENTO",
     "titulo": "Estreñimiento",
-    "ruta": "/dietas_recom/ESTREÑIMIENTO.txt",
-    "tags": ["dieta", "digestivo"],
+    "ruta": "/dietas_recom/estrenimiento.txt",
+    "tags": ["dieta", "digestivo", "fibra", "constipación", "fecaloma", "impactación"],
     "sistemas": ["digestivo"]
   },
   {
@@ -126,7 +126,7 @@
   {
     "id": "Inmovilización por vendas de Yeso",
     "titulo": "Inmovilización por Vendas de Yeso",
-    "ruta": "/dietas_recom/Inmovilización por vendas de Yeso.txt",
+    "ruta": "/dietas_recom/ferulas.txt",
     "tags": ["trauma", "recomendacion", "vendaje", "férula"],
     "sistemas": ["trauma"]
   },
@@ -154,8 +154,16 @@
   {
     "id": "MIGRAÑAS",
     "titulo": "Migrañas",
-    "ruta": "/dietas_recom/MIGRAÑAS.txt",
-    "tags": ["dieta", "neurológico", "recomendacion"],
+    "ruta": "/dietas_recom/migranas.txt",
+    "tags": [
+      "dieta",
+      "neurológico",
+      "recomendacion",
+      "cefalea",
+      "jaqueca",
+      "dolor de cabeza",
+      "aura"
+    ],
     "sistemas": ["neurológico"]
   },
   {
@@ -182,8 +190,8 @@
   {
     "id": "PROTECCIÓN BILIAR",
     "titulo": "Protección Biliar",
-    "ruta": "/dietas_recom/PROTECCIÓN BILIAR.txt",
-    "tags": ["dieta", "digestivo", "recomendacion", "cólico"],
+    "ruta": "/dietas_recom/proteccion_biliar.txt",
+    "tags": ["dieta", "digestivo", "recomendacion", "cólico", "biliar"],
     "sistemas": ["digestivo"]
   },
   {
