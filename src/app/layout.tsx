@@ -26,7 +26,12 @@ export const metadata: Metadata = {
     canonical: './',
   },
   icons: {
-    icon: '/logourg.png',
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/logourg.png', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+    shortcut: '/favicon.png',
   },
   openGraph: {
     title: 'urgenciashsj.es',
