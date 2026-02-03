@@ -51,16 +51,20 @@ providers.push(
       });
 
       if (!user?.passwordHash) {
-        return null;
+        throw new Error('invalid_credentials');
       }
 
       const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) {
-        return null;
+        throw new Error('invalid_credentials');
       }
 
       if (!user.emailVerified && !adminEmails.includes(email)) {
-        return null;
+        throw new Error('email_unverified');
+      }
+
+      if (!user.approved && !adminEmails.includes(email)) {
+        throw new Error('pending_approval');
       }
 
       return {

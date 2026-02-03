@@ -41,13 +41,14 @@ export async function registerUser(formData: FormData) {
   ) {
     return {
       ok: false,
-      message: 'Datos invÃ¡lidos. Revisa nombre, hospital, categorÃ­a, email y contraseÃ±as.',
+      code: 'invalid_data',
+      message: 'Datos inválidos. Revisa nombre, hospital, categoría, email y contraseñas.',
     } as const;
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    return { ok: false, message: 'Ese email ya estÃ¡ registrado.' } as const;
+    return { ok: false, code: 'email_exists', message: 'Ese email ya está registrado.' } as const;
   }
 
   const host = process.env.SMTP_HOST;
@@ -56,7 +57,7 @@ export async function registerUser(formData: FormData) {
   const pass = process.env.SMTP_PASS;
   const from = process.env.CONTACT_FROM_EMAIL ?? process.env.SMTP_USER;
   if (!host || !port || !user || !pass || !from) {
-    return { ok: false, message: 'Email de confirmaciÃ³n no configurado.' } as const;
+    return { ok: false, code: 'email_not_configured', message: 'Email de confirmación no configurado.' } as const;
   }
 
   const passwordHash = await bcrypt.hash(password, 10);

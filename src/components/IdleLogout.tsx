@@ -20,6 +20,7 @@ export default function IdleLogout() {
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const warnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sessionInitRef = useRef(false);
 
   const clearTimers = () => {
     if (idleTimer.current) clearTimeout(idleTimer.current);
@@ -62,11 +63,7 @@ export default function IdleLogout() {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
       sessionStorage.removeItem(SESSION_STORAGE_KEY);
     }
-    signOut({ redirect: false }).finally(() => {
-      if (typeof window !== "undefined") {
-        window.location.href = window.location.origin;
-      }
-    });
+    signOut({ callbackUrl: "/logout" });
   };
 
   const handleStay = () => {
@@ -100,8 +97,13 @@ export default function IdleLogout() {
     const tabSession = sessionStorage.getItem(SESSION_STORAGE_KEY);
 
     if (localSession && tabSession !== localSession) {
-      handleSignOut();
-      return;
+      if (!sessionInitRef.current) {
+        sessionStorage.setItem(SESSION_STORAGE_KEY, localSession);
+        sessionInitRef.current = true;
+      } else {
+        handleSignOut();
+        return;
+      }
     }
 
     if (!localSession) {
@@ -110,6 +112,10 @@ export default function IdleLogout() {
       sessionStorage.setItem(SESSION_STORAGE_KEY, newId);
     } else if (!tabSession) {
       sessionStorage.setItem(SESSION_STORAGE_KEY, localSession);
+    }
+
+    if (!sessionInitRef.current) {
+      sessionInitRef.current = true;
     }
 
     const activityHandler = () => scheduleTimers();

@@ -40,6 +40,8 @@ function LoginContent() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [resetEmail, setResetEmail] = useState<string | null>(null);
+  const [resetNotice, setResetNotice] = useState<string | null>(null);
   const [googleReady, setGoogleReady] = useState(false);
   const searchParams = useSearchParams();
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
@@ -124,7 +126,7 @@ function LoginContent() {
             <div className="flex flex-col gap-2">
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={() => signOut({ callbackUrl: '/logout' })}
                 className="rounded-md bg-[#2b5d68] px-4 py-2 text-sm font-semibold text-white"
               >
                 Cerrar sesión
@@ -146,6 +148,8 @@ function LoginContent() {
                   setMode('login');
                   setError(null);
                   setSuccess(null);
+                  setResetEmail(null);
+                  setResetNotice(null);
                 }}
                 className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold ${
                   mode === 'login' ? 'bg-[#2b5d68] text-white' : 'text-[#2b5d68]'
@@ -159,6 +163,8 @@ function LoginContent() {
                   setMode('register');
                   setError(null);
                   setSuccess(null);
+                  setResetEmail(null);
+                  setResetNotice(null);
                 }}
                 className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold ${
                   mode === 'register' ? 'bg-[#2b5d68] text-white' : 'text-[#2b5d68]'
@@ -191,9 +197,17 @@ function LoginContent() {
                     password,
                   });
                   if (res?.error) {
-                    setError('Credenciales incorrectas o email sin confirmar.');
+                    if (res.error === 'pending_approval') {
+                      setError('Tu usuario está pendiente de aprobación por el administrador.');
+                    } else if (res.error === 'email_unverified') {
+                      setError('Debes confirmar tu email antes de iniciar sesión.');
+                    } else {
+                      setError('Credenciales incorrectas.');
+                    }
+                    setResetEmail(email || null);
                   } else {
                     setSuccess('Acceso correcto. Redirigiendo...');
+                    setResetEmail(null);
                     window.location.href = '/';
                   }
                 }}
@@ -239,15 +253,23 @@ function LoginContent() {
                   event.preventDefault();
                   setError(null);
                   setSuccess(null);
+                  setResetNotice(null);
                   const formData = new FormData(event.currentTarget);
                   const result = await registerUser(formData);
                   if (!result.ok) {
                     setError(result.message);
+                    if (result.code === 'email_exists') {
+                      const email = String(formData.get('email') || '').trim().toLowerCase();
+                      setResetEmail(email || null);
+                    } else {
+                      setResetEmail(null);
+                    }
                   } else {
                     setSuccess(
                       result.message ?? 'Registro recibido. Revisa tu email para confirmar.'
                     );
                     setMode('login');
+                    setResetEmail(null);
                   }
                 }}
               >
@@ -363,6 +385,32 @@ function LoginContent() {
                 }`}
               >
                 {error ?? success}
+              </div>
+            )}
+
+            {resetEmail && (
+              <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+                ¿Has olvidado la contraseña?
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setResetNotice(null);
+                    const res = await fetch('/api/password-reset', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: resetEmail }),
+                    });
+                    if (res.ok) {
+                      setResetNotice('Te hemos enviado un enlace para restablecer la contraseña.');
+                    } else {
+                      setResetNotice('No se pudo enviar el email. Inténtalo de nuevo.');
+                    }
+                  }}
+                  className="ml-2 font-semibold underline"
+                >
+                  Recordar contraseña
+                </button>
+                {resetNotice && <div className="mt-2 text-xs text-amber-700">{resetNotice}</div>}
               </div>
             )}
 

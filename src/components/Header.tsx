@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import SearchModal from "./SearchModal";
 import { signOut, useSession } from "next-auth/react";
+import { changePassword } from "@/app/change-password/actions";
 import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
 
 export default function Header() {
@@ -21,6 +23,9 @@ export default function Header() {
   const emailLabel = session?.user?.email?.split("@")[0];
   const userLabel = isAuthed ? emailLabel || "Cuenta" : "Acceso";
   const isAdmin = session?.user?.role === "ADMIN";
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [changeState, changeAction] = useActionState(changePassword, {});
+  const changePasswordRef = useRef<HTMLDivElement | null>(null);
   const navItemClass = isAuthed
     ? "rounded px-2 py-1 !text-white hover:bg-white/10"
     : "rounded px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60";
@@ -38,6 +43,12 @@ export default function Header() {
     setToolsOpen(false);
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (changeState?.ok) {
+      setShowChangePassword(false);
+    }
+  }, [changeState?.ok]);
 
   const closeMenusAndScrollTop = () => {
     closeMenus();
@@ -125,15 +136,21 @@ export default function Header() {
                     <div className="my-1 h-px bg-[#dfe9eb]" />
                     <button
                       type="button"
+                      onClick={() => setShowChangePassword(true)}
+                      className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
+                    >
+                      Cambiar contraseña
+                    </button>
+                    <div className="my-1 h-px bg-[#dfe9eb]" />
+                    <button
+                      type="button"
                       onClick={() => {
                         setUserOpen(false);
                         if (typeof window !== "undefined") {
                           localStorage.removeItem(LOCAL_STORAGE_KEY);
                           sessionStorage.removeItem(SESSION_STORAGE_KEY);
                         }
-                        signOut({ redirect: false }).finally(() => {
-                          window.location.href = window.location.origin;
-                        });
+                        signOut({ callbackUrl: "/logout" });
                       }}
                       className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
                     >
@@ -350,18 +367,24 @@ export default function Header() {
                       </Link>
                     </>
                   )}
-                  <div className="my-1 h-px bg-[#dfe9eb]" />
-                  <button
-                    type="button"
-                    onClick={() => {
+                    <div className="my-1 h-px bg-[#dfe9eb]" />
+                    <button
+                      type="button"
+                      onClick={() => setShowChangePassword(true)}
+                      className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
+                    >
+                      Cambiar contraseña
+                    </button>
+                    <div className="my-1 h-px bg-[#dfe9eb]" />
+                    <button
+                      type="button"
+                      onClick={() => {
                       setUserOpen(false);
                       if (typeof window !== "undefined") {
                         localStorage.removeItem(LOCAL_STORAGE_KEY);
                         sessionStorage.removeItem(SESSION_STORAGE_KEY);
                       }
-                      signOut({ redirect: false }).finally(() => {
-                        window.location.href = window.location.origin;
-                      });
+                      signOut({ callbackUrl: "/logout" });
                     }}
                     className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
                   >
@@ -618,6 +641,88 @@ export default function Header() {
         </div>
       </div>
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+
+      {isAuthed &&
+        showChangePassword &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 px-4">
+            <div
+              ref={changePasswordRef}
+              className="w-full max-w-sm rounded-2xl bg-white p-6 text-left shadow-xl"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-slate-900">Cambiar contraseña</h2>
+                <button
+                  type="button"
+                  onClick={() => setShowChangePassword(false)}
+                  className="rounded-md px-2 py-1 text-sm text-slate-500 hover:bg-slate-100"
+                >
+                  Cerrar
+                </button>
+              </div>
+              <form action={changeAction} className="mt-4 space-y-3">
+                <input type="hidden" name="email" value={session?.user?.email ?? ""} />
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Contraseña actual
+                  </label>
+                  <input
+                    name="currentPassword"
+                    type="password"
+                    required
+                    className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    autoComplete="current-password"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Nueva contraseña
+                  </label>
+                  <input
+                    name="newPassword"
+                    type="password"
+                    minLength={8}
+                    required
+                    className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Repite la nueva contraseña
+                  </label>
+                  <input
+                    name="newPasswordConfirm"
+                    type="password"
+                    minLength={8}
+                    required
+                    className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full rounded-md bg-[#2b5d68] px-4 py-2 text-sm font-semibold text-white"
+                >
+                  Guardar contraseña
+                </button>
+                {changeState?.message && (
+                  <div
+                    className={`rounded-md border px-3 py-2 text-sm ${
+                      changeState.ok
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "border-rose-200 bg-rose-50 text-rose-700"
+                    }`}
+                  >
+                    {changeState.message}
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
     </header>
   );
 }
