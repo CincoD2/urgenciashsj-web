@@ -170,6 +170,7 @@ function LoginContent() {
 
             {mode === 'login' ? (
               <form
+                key="login"
                 className="space-y-3"
                 autoComplete="on"
                 onSubmit={async (event) => {
@@ -207,7 +208,7 @@ function LoginContent() {
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                     placeholder="tu@correo.com"
-                    autoComplete="username"
+                    autoComplete="section-login username"
                   />
                 </div>
                 <div className="space-y-1">
@@ -231,6 +232,7 @@ function LoginContent() {
               </form>
             ) : (
               <form
+                key="register"
                 className="space-y-3"
                 autoComplete="off"
                 onSubmit={async (event) => {
@@ -257,7 +259,7 @@ function LoginContent() {
                     Nombre y apellidos
                   </label>
                   <input
-                    name="name"
+                    name="fullName"
                     type="text"
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"

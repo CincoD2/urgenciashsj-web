@@ -17,7 +17,7 @@ function isValidEmail(email: string) {
 }
 
 export async function registerUser(formData: FormData) {
-  const name = String(formData.get('name') || '').trim();
+  const name = String(formData.get('fullName') || formData.get('name') || '').trim();
   const hospital = String(formData.get('hospital') || '').trim();
   const position = String(formData.get('position') || '').trim();
   const email = String(formData.get('email') || '').trim().toLowerCase();
