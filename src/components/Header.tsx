@@ -18,8 +18,8 @@ export default function Header() {
   const isHome = pathname === "/";
   const { data: session, status } = useSession();
   const isAuthed = status === "authenticated";
-  const userLabel =
-    status === "authenticated" ? session?.user?.name || session?.user?.email || "Cuenta" : "Acceso";
+  const emailLabel = session?.user?.email?.split("@")[0];
+  const userLabel = isAuthed ? emailLabel || "Cuenta" : "Acceso";
   const isAdmin = session?.user?.role === "ADMIN";
   const navItemClass = isAuthed
     ? "rounded px-2 py-1 !text-white hover:bg-white/10"

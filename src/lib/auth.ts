@@ -39,7 +39,15 @@ providers.push(
 
       const user = await prisma.user.findUnique({
         where: { email },
-        select: { id: true, email: true, name: true, role: true, approved: true, passwordHash: true },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          approved: true,
+          passwordHash: true,
+          emailVerified: true,
+        },
       });
 
       if (!user?.passwordHash) {
@@ -48,6 +56,10 @@ providers.push(
 
       const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) {
+        return null;
+      }
+
+      if (!user.emailVerified) {
         return null;
       }
 

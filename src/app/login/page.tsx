@@ -5,6 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import type { ClientSafeProvider } from "next-auth/react";
 import { registerUser } from "./actions";
 import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     let mounted = true;
@@ -24,6 +26,21 @@ export default function LoginPage() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    const verified = searchParams.get("verified");
+    if (verified === "1") {
+      setError(null);
+      setSuccess("Email confirmado. Ya puedes iniciar sesión.");
+      setMode("login");
+    } else if (verified === "expired") {
+      setSuccess(null);
+      setError("El enlace de confirmación ha caducado. Regístrate de nuevo.");
+    } else if (verified === "error") {
+      setSuccess(null);
+      setError("No se pudo confirmar el email. Inténtalo de nuevo.");
+    }
+  }, [searchParams]);
 
   const isLoading = status === "loading";
   const isAuthed = status === "authenticated";
@@ -118,7 +135,7 @@ export default function LoginPage() {
                     password,
                   });
                   if (res?.error) {
-                    setError("Credenciales incorrectas.");
+                    setError("Credenciales incorrectas o email sin confirmar.");
                   } else {
                     setSuccess("Acceso correcto. Redirigiendo...");
                     window.location.href = "/";
@@ -139,14 +156,14 @@ export default function LoginPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Contraseña
+                    ContraseÃ±a
                   </label>
                   <input
                     name="password"
                     type="password"
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
-                    placeholder="Mínimo 8 caracteres"
+                    placeholder="MÃ­nimo 8 caracteres"
                   />
                 </div>
                 <button
@@ -168,20 +185,56 @@ export default function LoginPage() {
                   if (!result.ok) {
                     setError(result.message);
                   } else {
-                    setSuccess("Registro recibido. Ahora puedes iniciar sesión.");
+                    setSuccess(result.message ?? "Registro recibido. Revisa tu email para confirmar.");
                     setMode("login");
                   }
                 }}
               >
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Nombre (opcional)
+                    Nombre y apellidos
                   </label>
                   <input
                     name="name"
                     type="text"
+                    required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                   />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Hospital
+                  </label>
+                  <select
+                    name="hospital"
+                    required
+                    className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      Selecciona una opción
+                    </option>
+                    <option value="Hospital de San Juan">Hospital de San Juan</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Categoría
+                  </label>
+                  <select
+                    name="position"
+                    required
+                    className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      Selecciona una opción
+                    </option>
+                    <option value="Adjunto">Adjunto</option>
+                    <option value="Residente">Residente</option>
+                    <option value="Otro">Otro</option>
+                  </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -206,6 +259,19 @@ export default function LoginPage() {
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                     placeholder="Mínimo 8 caracteres"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Repite la contraseña
+                  </label>
+                  <input
+                    name="passwordConfirm"
+                    type="password"
+                    minLength={8}
+                    required
+                    className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    placeholder="Repite tu contraseña"
                   />
                 </div>
                 <button
@@ -272,3 +338,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+

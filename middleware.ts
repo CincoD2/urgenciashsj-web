@@ -1,38 +1,34 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { withAuth } from 'next-auth/middleware';
 
-const protectedPrefixes = ['/parte-jefatura', '/api/parte-jefatura'];
-const adminPrefixes = ['/admin/usuarios'];
+export default withAuth(
+  function middleware(req) {
+    const { pathname } = req.nextUrl;
+    const token = req.nextauth?.token;
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const isProtected = protectedPrefixes.some((path) => pathname.startsWith(path));
-  const isAdmin = adminPrefixes.some((path) => pathname.startsWith(path));
+    if (!token) {
+      return NextResponse.next();
+    }
 
-  if (!isProtected && !isAdmin) {
+    if (!token.approved) {
+      return NextResponse.redirect(new URL('/pendiente', req.url));
+    }
+
+    if (pathname.startsWith('/admin/usuarios') && token.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+
     return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+    pages: {
+      signIn: '/api/auth/signin',
+    },
   }
-
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-  if (!token) {
-    const signInUrl = new URL('/api/auth/signin', req.url);
-    signInUrl.searchParams.set('callbackUrl', req.url);
-    return NextResponse.redirect(signInUrl);
-  }
-
-  if (!token.approved) {
-    const pendingUrl = new URL('/pendiente', req.url);
-    return NextResponse.redirect(pendingUrl);
-  }
-
-  if (isAdmin && token.role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/', req.url));
-  }
-
-  return NextResponse.next();
-}
+);
 
 export const config = {
   matcher: ['/parte-jefatura/:path*', '/api/parte-jefatura/:path*', '/admin/usuarios/:path*'],

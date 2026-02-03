@@ -1,6 +1,8 @@
 'use server';
 
 import bcrypt from 'bcryptjs';
+import crypto from 'node:crypto';
+import nodemailer from 'nodemailer';
 import { revalidatePath } from 'next/cache';
 
 import { prisma } from '@/lib/prisma';
@@ -16,16 +18,45 @@ function isValidEmail(email: string) {
 
 export async function registerUser(formData: FormData) {
   const name = String(formData.get('name') || '').trim();
+  const hospital = String(formData.get('hospital') || '').trim();
+  const position = String(formData.get('position') || '').trim();
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const password = String(formData.get('password') || '');
+  const passwordConfirm = String(formData.get('passwordConfirm') || '');
 
-  if (!email || !password || !isValidEmail(email) || password.length < 8) {
-    return { ok: false, message: 'Datos inválidos. Revisa email y contraseña.' } as const;
+  const validHospitals = new Set(['Hospital de San Juan', 'Otro']);
+  const validPositions = new Set(['Adjunto', 'Residente', 'Otro']);
+
+  if (
+    !name ||
+    !hospital ||
+    !position ||
+    !email ||
+    !password ||
+    !isValidEmail(email) ||
+    password.length < 8 ||
+    password !== passwordConfirm ||
+    !validHospitals.has(hospital) ||
+    !validPositions.has(position)
+  ) {
+    return {
+      ok: false,
+      message: 'Datos invÃ¡lidos. Revisa nombre, hospital, categorÃ­a, email y contraseÃ±as.',
+    } as const;
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    return { ok: false, message: 'Ese email ya está registrado.' } as const;
+    return { ok: false, message: 'Ese email ya estÃ¡ registrado.' } as const;
+  }
+
+  const host = process.env.SMTP_HOST;
+  const port = process.env.SMTP_PORT;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.CONTACT_FROM_EMAIL ?? process.env.SMTP_USER;
+  if (!host || !port || !user || !pass || !from) {
+    return { ok: false, message: 'Email de confirmaciÃ³n no configurado.' } as const;
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
@@ -33,15 +64,46 @@ export async function registerUser(formData: FormData) {
 
   await prisma.user.create({
     data: {
-      name: name || null,
+      name,
       email,
       passwordHash,
+      hospital,
+      position,
       role: isAdmin ? 'ADMIN' : 'USER',
       approved: isAdmin,
     },
   });
 
+  await prisma.verificationToken.deleteMany({ where: { identifier: email } });
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  await prisma.verificationToken.create({
+    data: {
+      identifier: email,
+      token,
+      expires,
+    },
+  });
+
+  const baseUrl =
+    process.env.NEXTAUTH_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+  const verifyUrl = `${baseUrl}/api/verify-email?token=${token}&email=${encodeURIComponent(email)}`;
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(port),
+    secure: Number(port) === 465,
+    auth: { user, pass },
+  });
+
+  await transporter.sendMail({
+    from,
+    to: email,
+    subject: 'Confirma tu email en UrgenciasHSJ',
+    text: `Hola,\n\nConfirma tu email haciendo clic en este enlace:\n${verifyUrl}\n\nEste enlace caduca en 24 horas.`,
+  });
+
   revalidatePath('/login');
 
-  return { ok: true } as const;
+  return { ok: true, message: 'Registro recibido. Revisa tu email para confirmar.' } as const;
 }
