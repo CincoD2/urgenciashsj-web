@@ -1,62 +1,112 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import type { ClientSafeProvider } from "next-auth/react";
-import { registerUser } from "./actions";
-import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from 'react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { registerUser } from './actions';
+import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from '@/lib/sessionKeys';
+import { useSearchParams } from 'next/navigation';
+import Script from 'next/script';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (options: { client_id: string; callback: (response: { credential: string }) => void }) => void;
+          renderButton: (
+            element: HTMLElement,
+            options: {
+              type?: string;
+              theme?: string;
+              size?: string;
+              width?: string;
+              text?: string;
+              shape?: string;
+              logo_alignment?: string;
+              click_listener?: () => void;
+            }
+          ) => void;
+        };
+      };
+    };
+  }
+}
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
-  const [providers, setProviders] = useState<Record<string, ClientSafeProvider> | null>(null);
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [googleReady, setGoogleReady] = useState(false);
   const searchParams = useSearchParams();
+  const googleButtonRef = useRef<HTMLDivElement | null>(null);
+
+  const isLoading = status === 'loading';
+  const isAuthed = status === 'authenticated';
 
   useEffect(() => {
-    let mounted = true;
-    void (async () => {
-      const res = await fetch("/api/auth/providers");
-      const data = (await res.json()) as Record<string, ClientSafeProvider>;
-      if (mounted) setProviders(data);
-    })();
-    return () => {
-      mounted = false;
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId || !googleReady || isLoading || isAuthed || !googleButtonRef.current) return;
+
+    const renderButton = () => {
+      if (!window.google?.accounts?.id) return;
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: () => {
+          // Usamos el flujo OAuth de NextAuth; el callback no se usa aquí.
+        },
+      });
+      if (googleButtonRef.current) {
+        googleButtonRef.current.innerHTML = '';
+        window.google.accounts.id.renderButton(googleButtonRef.current, {
+          theme: 'filled_blue',
+          size: 'large',
+          text: 'signin_with',
+          shape: 'pill',
+          width: '100%',
+          click_listener: () => {
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem(LOCAL_STORAGE_KEY);
+              sessionStorage.removeItem(SESSION_STORAGE_KEY);
+            }
+            signIn('google', { callbackUrl: '/' });
+          },
+        });
+      }
     };
-  }, []);
+
+    if (window.google?.accounts?.id) {
+      renderButton();
+    }
+  }, [googleReady, isAuthed, isLoading, mode]);
 
   useEffect(() => {
-    const verified = searchParams.get("verified");
-    if (verified === "1") {
+    const verified = searchParams.get('verified');
+    if (verified === '1') {
       setError(null);
-      setSuccess("Email confirmado. Ya puedes iniciar sesión.");
-      setMode("login");
-    } else if (verified === "expired") {
+      setSuccess('Email confirmado. Ya puedes iniciar sesión.');
+      setMode('login');
+    } else if (verified === 'expired') {
       setSuccess(null);
-      setError("El enlace de confirmación ha caducado. Regístrate de nuevo.");
-    } else if (verified === "error") {
+      setError('El enlace de confirmación ha caducado. Regístrate de nuevo.');
+    } else if (verified === 'error') {
       setSuccess(null);
-      setError("No se pudo confirmar el email. Inténtalo de nuevo.");
+      setError('No se pudo confirmar el email. Inténtalo de nuevo.');
     }
   }, [searchParams]);
 
-  const isLoading = status === "loading";
-  const isAuthed = status === "authenticated";
-  const oauthProviders = useMemo(
-    () => (providers ? Object.values(providers).filter((p) => p.id !== "credentials") : []),
-    [providers]
-  );
-
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center gap-6 px-6 py-16 text-center">
+      {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+          onLoad={() => setGoogleReady(true)}
+        />
+      )}
       <div className="space-y-2">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#4d7a86]">Acceso privado</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-[#4d7a86]">Zona privada</p>
         <h1 className="text-3xl font-semibold text-slate-900">Iniciar sesión o registrarse</h1>
-        <p className="text-sm text-slate-600">
-          Usa tu cuenta para acceder al parte de jefatura. El alta queda pendiente de aprobación.
-        </p>
       </div>
 
       <div className="w-full max-w-md rounded-2xl border border-[#dfe9eb] bg-white/90 p-6 shadow-sm">
@@ -65,12 +115,13 @@ export default function LoginPage() {
         ) : isAuthed ? (
           <div className="space-y-3">
             <p className="text-sm text-slate-700">
-              Conectado como <span className="font-semibold">{session?.user?.email ?? "usuario"}</span>.
+              Conectado como{' '}
+              <span className="font-semibold">{session?.user?.email ?? 'usuario'}</span>.
             </p>
             <div className="flex flex-col gap-2">
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => signOut({ callbackUrl: '/' })}
                 className="rounded-md bg-[#2b5d68] px-4 py-2 text-sm font-semibold text-white"
               >
                 Cerrar sesión
@@ -89,12 +140,12 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setMode("login");
+                  setMode('login');
                   setError(null);
                   setSuccess(null);
                 }}
                 className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold ${
-                  mode === "login" ? "bg-[#2b5d68] text-white" : "text-[#2b5d68]"
+                  mode === 'login' ? 'bg-[#2b5d68] text-white' : 'text-[#2b5d68]'
                 }`}
               >
                 Iniciar sesión
@@ -102,43 +153,44 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setMode("register");
+                  setMode('register');
                   setError(null);
                   setSuccess(null);
                 }}
                 className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold ${
-                  mode === "register" ? "bg-[#2b5d68] text-white" : "text-[#2b5d68]"
+                  mode === 'register' ? 'bg-[#2b5d68] text-white' : 'text-[#2b5d68]'
                 }`}
               >
                 Registrarse
               </button>
             </div>
 
-            {mode === "login" ? (
+            {mode === 'login' ? (
               <form
                 className="space-y-3"
+                autoComplete="on"
                 onSubmit={async (event) => {
                   event.preventDefault();
                   setError(null);
                   setSuccess(null);
                   const form = event.currentTarget;
                   const formData = new FormData(form);
-                  const email = String(formData.get("email") || "");
-                  const password = String(formData.get("password") || "");
-                  if (typeof window !== "undefined") {
+                  const email = String(formData.get('email') || '');
+                  const password = String(formData.get('password') || '');
+                  if (typeof window !== 'undefined') {
                     localStorage.removeItem(LOCAL_STORAGE_KEY);
                     sessionStorage.removeItem(SESSION_STORAGE_KEY);
                   }
-                  const res = await signIn("credentials", {
+                  const res = await signIn('credentials', {
                     redirect: false,
                     email,
                     password,
                   });
                   if (res?.error) {
-                    setError("Credenciales incorrectas o email sin confirmar.");
+                    setError('Credenciales incorrectas o email sin confirmar.');
                   } else {
-                    setSuccess("Acceso correcto. Redirigiendo...");
-                    window.location.href = "/";
+                    setSuccess('Acceso correcto. Redirigiendo...');
+                    window.location.href = '/';
                   }
                 }}
               >
@@ -152,18 +204,19 @@ export default function LoginPage() {
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                     placeholder="tu@correo.com"
+                    autoComplete="username"
                   />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    ContraseÃ±a
+                    Contraseña
                   </label>
                   <input
                     name="password"
                     type="password"
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
-                    placeholder="MÃ­nimo 8 caracteres"
+                    autoComplete="current-password"
                   />
                 </div>
                 <button
@@ -176,6 +229,7 @@ export default function LoginPage() {
             ) : (
               <form
                 className="space-y-3"
+                autoComplete="off"
                 onSubmit={async (event) => {
                   event.preventDefault();
                   setError(null);
@@ -185,11 +239,16 @@ export default function LoginPage() {
                   if (!result.ok) {
                     setError(result.message);
                   } else {
-                    setSuccess(result.message ?? "Registro recibido. Revisa tu email para confirmar.");
-                    setMode("login");
+                    setSuccess(
+                      result.message ?? 'Registro recibido. Revisa tu email para confirmar.'
+                    );
+                    setMode('login');
                   }
                 }}
               >
+                <p className="text-center text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  El Registro debe ser aprobado por el administrador
+                </p>
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Nombre y apellidos
@@ -199,6 +258,10 @@ export default function LoginPage() {
                     type="text"
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
+                    autoComplete="section-register name"
+                    autoCapitalize="words"
+                    autoCorrect="off"
+                    spellCheck={false}
                   />
                 </div>
                 <div className="space-y-1">
@@ -246,6 +309,7 @@ export default function LoginPage() {
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                     placeholder="tu@correo.com"
+                    autoComplete="section-register email"
                   />
                 </div>
                 <div className="space-y-1">
@@ -259,6 +323,7 @@ export default function LoginPage() {
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                     placeholder="Mínimo 8 caracteres"
+                    autoComplete="new-password"
                   />
                 </div>
                 <div className="space-y-1">
@@ -272,6 +337,7 @@ export default function LoginPage() {
                     required
                     className="w-full rounded-md border border-[#dfe9eb] px-3 py-2 text-sm"
                     placeholder="Repite tu contraseña"
+                    autoComplete="new-password"
                   />
                 </div>
                 <button
@@ -286,51 +352,17 @@ export default function LoginPage() {
             {(error || success) && (
               <div
                 className={`rounded-md border px-3 py-2 text-sm ${
-                  error ? "border-rose-200 bg-rose-50 text-rose-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  error
+                    ? 'border-rose-200 bg-rose-50 text-rose-700'
+                    : 'border-emerald-200 bg-emerald-50 text-emerald-700'
                 }`}
               >
                 {error ?? success}
               </div>
             )}
 
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.2em] text-[#4d7a86]">
-                O usa Google
-              </p>
-              <div className="flex flex-col gap-2">
-                {oauthProviders.length > 0 ? (
-                  oauthProviders.map((provider) => (
-                    <button
-                      key={provider.id}
-                      type="button"
-                    onClick={() => {
-                      if (typeof window !== "undefined") {
-                        localStorage.removeItem(LOCAL_STORAGE_KEY);
-                        sessionStorage.removeItem(SESSION_STORAGE_KEY);
-                      }
-                      signIn(provider.id, { callbackUrl: "/" });
-                    }}
-                    className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
-                  >
-                    Continuar con {provider.name}
-                  </button>
-                ))
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (typeof window !== "undefined") {
-                        localStorage.removeItem(LOCAL_STORAGE_KEY);
-                        sessionStorage.removeItem(SESSION_STORAGE_KEY);
-                      }
-                      signIn("google", { callbackUrl: "/" });
-                    }}
-                    className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
-                  >
-                    Continuar con Google
-                  </button>
-                )}
-              </div>
+            <div className="flex justify-center">
+              <div ref={googleButtonRef} />
             </div>
           </div>
         )}
@@ -338,5 +370,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
