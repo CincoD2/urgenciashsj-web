@@ -97,11 +97,57 @@ export async function registerUser(formData: FormData) {
     auth: { user, pass },
   });
 
+  const subject = 'Confirma tu email en UrgenciasHSJ';
+  const logoUrl = `${baseUrl}/logourg.png`;
+  const html = `
+    <!doctype html>
+    <html lang="es">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>${subject}</title>
+        <style>
+          body { margin: 0; background: #f5f8f9; font-family: "Encode Sans", Arial, Helvetica, sans-serif; color: #0f172a; }
+          .wrap { max-width: 560px; margin: 0 auto; padding: 32px 16px; }
+          .card { background: #ffffff; border: 1px solid #dfe9eb; border-radius: 16px; padding: 24px; }
+          .logo { display: inline-flex; align-items: center; gap: 10px; }
+          .logo img { width: 32px; height: 32px; }
+          .title { font-size: 20px; font-weight: 700; margin: 16px 0 8px; }
+          .text { font-size: 14px; line-height: 1.6; color: #334155; }
+          .button { display: inline-block; margin: 18px 0; background: #2b5d68; color: #ffffff; text-decoration: none; padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; }
+          .muted { font-size: 12px; color: #64748b; }
+          .footer { margin-top: 18px; font-size: 12px; color: #94a3b8; }
+        </style>
+      </head>
+      <body>
+        <div class="wrap">
+          <div class="card">
+            <div class="logo">
+              <img src="${logoUrl}" alt="UrgenciasHSJ" />
+              <strong>UrgenciasHSJ</strong>
+            </div>
+            <div class="title">Confirma tu email</div>
+            <p class="text">
+              Para activar tu cuenta, confirma tu dirección de email haciendo clic en el botón.
+            </p>
+            <a class="button" href="${verifyUrl}">Confirmar email</a>
+            <p class="text muted">Este enlace caduca en 24 horas.</p>
+            <p class="text muted">
+              Si no has solicitado este registro, puedes ignorar este email.
+            </p>
+          </div>
+          <div class="footer">UrgenciasHSJ · ${baseUrl}</div>
+        </div>
+      </body>
+    </html>
+  `;
+
   await transporter.sendMail({
     from,
     to: email,
-    subject: 'Confirma tu email en UrgenciasHSJ',
+    subject,
     text: `Hola,\n\nConfirma tu email haciendo clic en este enlace:\n${verifyUrl}\n\nEste enlace caduca en 24 horas.`,
+    html,
   });
 
   revalidatePath('/login');

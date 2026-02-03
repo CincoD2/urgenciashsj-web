@@ -89,7 +89,7 @@ function LoginContent() {
     const verified = searchParams.get('verified');
     if (verified === '1') {
       setError(null);
-      setSuccess('Email confirmado. Ya puedes iniciar sesión.');
+      setSuccess('Email confirmado. Usuario pendiente de aprobación.');
       setMode('login');
     } else if (verified === 'expired') {
       setSuccess(null);
@@ -131,12 +131,6 @@ function LoginContent() {
               >
                 Cerrar sesión
               </button>
-              <a
-                href="/parte-jefatura"
-                className="rounded-md border border-[#2b5d68]/30 px-4 py-2 text-sm font-semibold text-[#2b5d68]"
-              >
-                Ir al parte de jefatura
-              </a>
             </div>
           </div>
         ) : (
