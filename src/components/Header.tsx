@@ -7,7 +7,7 @@ import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import SearchModal from "./SearchModal";
 import { signOut, useSession } from "next-auth/react";
-import { changePassword } from "@/app/change-password/actions";
+import { ChangePasswordState, changePassword } from "@/app/change-password/actions";
 import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
 
 export default function Header() {
@@ -24,7 +24,10 @@ export default function Header() {
   const userLabel = isAuthed ? emailLabel || "Cuenta" : "Acceso";
   const isAdmin = session?.user?.role === "ADMIN";
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [changeState, changeAction] = useActionState(changePassword, {});
+  const [changeState, changeAction] = useActionState<ChangePasswordState, FormData>(
+    changePassword,
+    {}
+  );
   const changePasswordRef = useRef<HTMLDivElement | null>(null);
   const navItemClass = isAuthed
     ? "rounded px-2 py-1 !text-white hover:bg-white/10"

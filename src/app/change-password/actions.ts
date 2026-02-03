@@ -4,7 +4,9 @@ import bcrypt from 'bcryptjs';
 
 import { prisma } from '@/lib/prisma';
 
-export async function changePassword(_prevState: { ok?: boolean; message?: string }, formData: FormData) {
+export type ChangePasswordState = { ok?: boolean; message?: string };
+
+export async function changePassword(_prevState: ChangePasswordState, formData: FormData) {
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const currentPassword = String(formData.get('currentPassword') || '');
   const newPassword = String(formData.get('newPassword') || '');
