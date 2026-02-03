@@ -59,7 +59,7 @@ providers.push(
         return null;
       }
 
-      if (!user.emailVerified) {
+      if (!user.emailVerified && !adminEmails.includes(email)) {
         return null;
       }
 
