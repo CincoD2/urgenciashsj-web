@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { registerUser } from './actions';
 import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from '@/lib/sessionKeys';
@@ -35,7 +35,7 @@ declare global {
   }
 }
 
-export default function LoginPage() {
+function LoginContent() {
   const { data: session, status } = useSession();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
@@ -371,5 +371,13 @@ export default function LoginPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto min-h-[40vh] w-full max-w-3xl px-6 py-16" />}>
+      <LoginContent />
+    </Suspense>
   );
 }
