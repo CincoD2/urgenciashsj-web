@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import rawData from "./standycalc-data.json";
 
@@ -488,7 +488,7 @@ function getButtonLabel(sectionLabel: string, names: string[]) {
   return match ?? sectionLabel;
 }
 
-export default function StandyCalcPage() {
+function StandyCalcClient() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"estandar" | "restringidas" | "instrucciones">(
     "estandar",
@@ -2431,5 +2431,13 @@ export default function StandyCalcPage() {
         ) : null}
       </section>
     </div>
+  );
+}
+
+export default function StandyCalcPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-sm text-slate-500">Cargando STANDyCALC…</div>}>
+      <StandyCalcClient />
+    </Suspense>
   );
 }
