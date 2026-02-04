@@ -30,11 +30,11 @@ export default function Header() {
   );
   const changePasswordRef = useRef<HTMLDivElement | null>(null);
   const navItemClass = isAuthed
-    ? "rounded px-2 py-1 !text-white hover:bg-white/10"
-    : "rounded px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60";
+    ? "rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm"
+    : "rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm";
   const toolsLinkClass = isAuthed
-    ? "inline-flex items-center gap-1 rounded px-2 py-1 !text-white hover:bg-white/10"
-    : "inline-flex items-center gap-1 rounded px-2 py-1 text-[#2b5d68] hover:bg-[#dfe9eb]/60";
+    ? "inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm"
+    : "inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm";
 
   const mobileMenuClass = `md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
     open ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
@@ -73,7 +73,9 @@ export default function Header() {
       >
         <Link
           href="/"
-          className={`flex items-center gap-3 ${isAuthed ? "!text-white" : "text-[#2b5d68]"}`}
+          className={`flex items-center gap-2 text-sm xl:gap-3 xl:text-base ${
+            isAuthed ? "!text-white" : "text-[#2b5d68]"
+          }`}
         >
           <Image
             src="/logourg.png"
@@ -86,7 +88,7 @@ export default function Header() {
           <span className="font-semibold">UrgenciasHSJ</span>
         </Link>
 
-        <div className="ml-auto flex items-center gap-2 md:hidden">
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
           <button
             type="button"
             aria-label="Buscar"
@@ -204,7 +206,7 @@ export default function Header() {
           </button>
         </div>
 
-        <div className="ml-auto hidden items-center gap-4 md:flex">
+        <div className="ml-auto hidden items-center gap-2 lg:flex xl:gap-4">
           <div
             className="relative"
             onMouseEnter={() => setToolsOpen(true)}
@@ -216,7 +218,7 @@ export default function Header() {
               onClick={closeMenus}
             >
               Herramientas
-              <span aria-hidden className="text-xs">▾</span>
+              <span aria-hidden className="text-[10px] xl:text-xs">▾</span>
             </Link>
             <div
               className={`absolute left-0 top-full z-50 w-64 rounded-md border border-white/40 bg-white/85 p-2 shadow-lg backdrop-blur-lg ${

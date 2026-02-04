@@ -30,7 +30,7 @@ export const metadata: Metadata = {
       { url: '/favicon.png', type: 'image/png' },
       { url: '/logourg.png', type: 'image/png' },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: [\n      { url: '/apple-touch-icon-180x180.png', sizes: '180x180' },\n      { url: '/apple-touch-icon-167x167.png', sizes: '167x167' },\n      { url: '/apple-touch-icon-152x152.png', sizes: '152x152' },\n      { url: '/apple-touch-icon-120x120.png', sizes: '120x120' },\n    ],
     shortcut: '/favicon.png',
   },
   openGraph: {
