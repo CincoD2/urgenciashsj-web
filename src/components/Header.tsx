@@ -36,7 +36,7 @@ export default function Header() {
     ? "inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm"
     : "inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm";
 
-  const mobileMenuClass = `md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+  const mobileMenuClass = `lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
     open ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
   }`;
   const toolsMenuClass = `ml-2 grid grid-cols-2 gap-1 text-sm overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
