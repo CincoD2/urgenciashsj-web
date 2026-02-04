@@ -576,7 +576,7 @@ export default function StandyCalcPage() {
     [],
   );
 
-  const enabledRestrictedCards = useMemo(() => [], []);
+  const enabledRestrictedCards = useMemo<string[]>(() => [], []);
 
   const standardHeaders = useMemo(() => {
     const headers: { row: number; label: string; isAllowed: boolean }[] = [];
