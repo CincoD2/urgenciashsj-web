@@ -418,20 +418,24 @@ export default function HomePage() {
           href="/novedades"
           className="block rounded-2xl border border-[#cfe2e6] bg-[#eef6f8] p-4 transition hover:border-[#b8d3da] hover:bg-[#e6f2f5]"
         >
-          <div className="space-y-1 text-sm text-[#3f5f66]">
-            {latestChangelog.map((entry) => (
-              <div key={`${entry.date}-${entry.title}`} className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
-                  Novedades
-                </span>
-                <span className="text-xs text-[#6b7f83]">{entry.date}</span>
-                <span className="font-semibold text-slate-900">{entry.title}</span>
-                {entry.summary ? (
-                  <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
-                ) : null}
-                <span className="ml-auto text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
-              </div>
-            ))}
+          <div className="space-y-2 text-sm text-[#3f5f66]">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
+                Novedades
+              </span>
+              <span className="text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
+            </div>
+            <div className="space-y-1">
+              {latestChangelog.map((entry) => (
+                <div key={`${entry.date}-${entry.title}`} className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs text-[#6b7f83]">{entry.date}</span>
+                  <span className="font-semibold text-slate-900">{entry.title}</span>
+                  {entry.summary ? (
+                    <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
+                  ) : null}
+                </div>
+              ))}
+            </div>
           </div>
         </Link>
       )}
