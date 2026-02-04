@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import InformeCopiable from "@/components/InformeCopiable";
 
 type ItemCatalogo = {
@@ -21,6 +21,8 @@ function norm(s = "") {
 
 function DietasContenido() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [catalogo, setCatalogo] = useState<ItemCatalogo[]>([]);
   const [q, setQ] = useState("");
   const [fSistema, setFSistema] = useState("");
@@ -89,6 +91,11 @@ function DietasContenido() {
       setCargando(false);
     }
   }, []);
+
+  const clearSelectedId = useCallback(() => {
+    if (!searchParams.get("id")) return;
+    router.replace(pathname, { scroll: false });
+  }, [searchParams, router, pathname]);
 
   const selectedId = searchParams.get("id") ?? "";
 
@@ -190,7 +197,10 @@ function DietasContenido() {
                   key={it.id}
                   type="button"
                   className={`selector-btn dietas-item ${seleccion?.id === it.id ? "activo" : ""}`}
-                  onClick={() => cargar(it)}
+                  onClick={() => {
+                    clearSelectedId();
+                    void cargar(it);
+                  }}
                   title={(it.tags || []).join(", ")}
                 >
                   {it.titulo}
