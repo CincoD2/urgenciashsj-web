@@ -821,6 +821,34 @@ body {
   position: relative;
 }
 
+.tooltip-icon {
+  width: auto;
+  height: auto;
+  border: none;
+  margin-left: 6px;
+}
+
+.tooltip-icon[href] {
+  cursor: pointer;
+}
+
+.tooltip-icon img {
+  display: block;
+}
+
+.abbr-tooltip {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  cursor: help;
+}
+
+.abbr-tooltip-no-circle {
+  width: auto;
+  height: auto;
+  border: none;
+  margin-left: 0;
+}
+
 .tooltip-text {
   visibility: hidden;
   opacity: 0;

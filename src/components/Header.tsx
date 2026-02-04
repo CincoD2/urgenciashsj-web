@@ -228,6 +228,9 @@ export default function Header() {
               <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/depuradorTtos" onClick={closeMenus}>
                 Depurador SIA
               </Link>
+              <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/escalas/standycalc" onClick={closeMenus}>
+                StandyCalc® (beta)
+              </Link>
               <Link className="block rounded px-3 py-2 text-sm hover:bg-slate-100" href="/inhaladores" onClick={closeMenus}>
                 Inhaladores
               </Link>
@@ -439,6 +442,16 @@ export default function Header() {
                   }}
                 >
                   Depurador SIA
+                </Link>
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/standycalc"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    closeMenusAndScrollTop();
+                  }}
+                >
+                  StandyCalc® (beta)
                 </Link>
                 <Link
                   className="rounded px-2 py-1 hover:bg-slate-100"

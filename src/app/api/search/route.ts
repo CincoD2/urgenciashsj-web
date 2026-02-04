@@ -97,6 +97,51 @@ function loadPages(): SearchItem[] {
 function loadTools(): SearchItem[] {
   const items = [
     { title: "Depurador SIA", url: "/escalas/depuradorTtos" },
+    {
+      title: "STANDyCALC®",
+      url: "/escalas/standycalc",
+      content:
+        "standycalc perfusion perfusiones dilucion diluciones farmacia farmacos fármacos mezclas infusion infusiones " +
+        "amiodarona naloxona dobutamina nimodipino dopamina nitroglicerina flecainida nitroprusiato flumazenilo " +
+        "octreotido furosemida sodio hipertonico heparina somatostatina labetalol teofilina magnesio sulfato " +
+        "valproico morfina vernakalant n-acetilcisteina",
+    },
+    ...[
+      "AMIODARONA",
+      "NALOXONA",
+      "DOBUTAMINA",
+      "NIMODIPINO",
+      "DOPAMINA",
+      "NITROGLICERINA",
+      "FLECAINIDA",
+      "NITROPRUSIATO",
+      "FLUMAZENILO",
+      "OCTREOTIDO",
+      "FUROSEMIDA",
+      "SODIO HIPERTONICO",
+      "HEPARINA",
+      "SOMATOSTATINA",
+      "LABETALOL",
+      "TEOFILINA",
+      "MAGNESIO SULFATO",
+      "VALPROICO",
+      "MORFINA",
+      "VERNAKALANT",
+      "N-ACETILCISTEINA",
+      "CISATRACURIO",
+      "ESMOLOL",
+      "FUROSEMIDA CONC",
+      "LEVOSIMENDAN",
+      "MIDAZOLAM",
+      "NORADRENALINA",
+      "PROCAINAMIDA",
+      "SALBUTAMOL",
+      "URAPIDIL",
+    ].map((drug) => ({
+      title: `${drug} (STANDyCALC®)`,
+      url: `/escalas/standycalc?drug=${encodeURIComponent(drug)}`,
+      content: `standycalc ${drug.toLowerCase()} ${drug}`,
+    })),
     { title: "Inhaladores", url: "/inhaladores" },
     { title: "Anion GAP", url: "/escalas/anion-gap" },
     { title: "CHA2DS2-VASc", url: "/escalas/chads2vasc" },
@@ -120,7 +165,7 @@ function loadTools(): SearchItem[] {
     type: "herramienta",
     title: it.title,
     url: it.url,
-    content: `herramientas escalas ${it.title}`,
+    content: it.content ?? `herramientas escalas ${it.title}`,
   }));
 }
 

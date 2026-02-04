@@ -214,6 +214,22 @@ export default function Escalas() {
       </section>
 
       <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Farmacia</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a className="escala-link-btn" href="/escalas/standycalc">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 6h16" />
+                <path d="M7 6v12a5 5 0 0 0 10 0V6" />
+                <path d="M9 10h6" />
+              </svg>
+            </span>
+            STANDyCALC
+          </a>
+        </div>
+      </section>
+
+      <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Orion Clinic</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <a className="escala-link-btn" href="/escalas/depuradorTtos">
