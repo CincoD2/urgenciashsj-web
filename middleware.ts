@@ -25,7 +25,7 @@ export default withAuth(
       authorized: ({ token }) => !!token,
     },
     pages: {
-      signIn: '/api/auth/signin',
+      signIn: '/login?reason=private',
     },
   }
 );

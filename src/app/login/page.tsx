@@ -40,6 +40,7 @@ function LoginContent() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [resetEmail, setResetEmail] = useState<string | null>(null);
   const [resetNotice, setResetNotice] = useState<string | null>(null);
   const [googleReady, setGoogleReady] = useState(false);
@@ -100,6 +101,15 @@ function LoginContent() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    const reason = searchParams.get('reason');
+    if (reason === 'private') {
+      setNotice('Página solo disponible en la zona privada. Regístrate o Inicia Sesión.');
+    } else {
+      setNotice(null);
+    }
+  }, [searchParams]);
+
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center gap-6 px-6 py-16 text-center">
       {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
@@ -135,6 +145,11 @@ function LoginContent() {
           </div>
         ) : (
           <div className="space-y-4 text-left">
+            {notice && (
+              <div className="rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-700">
+                {notice}
+              </div>
+            )}
             <div className="flex rounded-lg border border-[#dfe9eb] bg-white">
               <button
                 type="button"
@@ -381,6 +396,7 @@ function LoginContent() {
                 {error ?? success}
               </div>
             )}
+
 
             {resetEmail && (
               <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
