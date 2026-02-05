@@ -79,6 +79,8 @@ const SUEROS_VOLUMENES = {
   1000: { llenado: 1047, aire: 15, adicional: 236.5, residual: 4.4 },
 } as const;
 
+type SueroKey = keyof typeof SUEROS_VOLUMENES;
+
 function calcOrionFrequency(hours: number) {
   if (!Number.isFinite(hours)) return null;
   if (hours >= 1 && hours < 2) return 1;
@@ -1324,11 +1326,18 @@ function StandyCalcClient() {
   const nacDose1G = peso === '' ? null : Math.min(0.15 * Number(peso), 15);
   const nacDose2G = peso === '' ? null : Math.min(0.05 * Number(peso), 5);
   const nacDose3G = peso === '' ? null : Math.min(0.1 * Number(peso), 10);
-  const nacMixes = [
+  const nacMixesBase: Array<{
+    label: string;
+    doseG: number | null;
+    suero: SueroKey;
+    tiempoMin?: number;
+    tiempoH?: number;
+  }> = [
     { label: 'MEZCLA 1', doseG: nacDose1G, suero: 250, tiempoMin: 15 },
     { label: 'MEZCLA 2', doseG: nacDose2G, suero: 500, tiempoH: 4 },
     { label: 'MEZCLA 3', doseG: nacDose3G, suero: 1000, tiempoH: 16 },
-  ].map((mix) => {
+  ];
+  const nacMixes = nacMixesBase.map((mix) => {
     const doseG = mix.doseG;
     const volVialesMl = doseG != null ? doseG / (nacVialG / nacVialMl) : null;
     const nVialesRaw = volVialesMl != null ? volVialesMl / nacVialMl : null;
