@@ -628,6 +628,84 @@ body {
   background: #f9fafb;
 }
 
+/* ===============================
+   FORMATEO ANALITICA ORION
+================================ */
+
+.orion-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.orion-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.orion-card-note {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.orion-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.orion-actions {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.orion-actions-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+}
+
+.orion-actions-hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.orion-textarea {
+  min-height: 320px;
+  margin-bottom: 0;
+}
+
+.orion-reset {
+  margin: 0;
+}
+
+.orion-analitica-page .informe-texto {
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .orion-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .depurador-acciones {
   display: flex;
   gap: 8px;
@@ -870,4 +948,9 @@ body {
 .tooltip:focus .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.tooltip-top .tooltip-text {
+  top: auto;
+  bottom: 22px;
 }
