@@ -242,6 +242,17 @@ export default function Escalas() {
             </span>
             Depurador SIA
           </a>
+          <a className="escala-link-btn" href="/escalas/formateo-analitica-orion">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 6h16" />
+                <path d="M4 12h10" />
+                <path d="M4 18h7" />
+                <path d="M16 11l3 3-3 3" />
+              </svg>
+            </span>
+            Formateo Analítica Orion
+          </a>
         </div>
       </section>
     </div>
