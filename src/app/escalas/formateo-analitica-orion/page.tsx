@@ -82,22 +82,27 @@ function buildOutput(lines: string[], includeInterval: boolean): string {
   const maxValue = maxLen(resultados.map((p) => p.valueUnit));
   const maxInterval = maxLen(resultados.map((p) => intervaloTexto(p)));
 
-  const tabSize = 8;
+  // Orion Clinic editor uses wider tab stops (approx. 18 spaces).
+  // We avoid TAB characters and pad with spaces to match those tab stops.
+  const tabSize = 18;
+  const indentSpaces = tabSize;
   const roundTab = (n: number) => Math.max(tabSize, Math.ceil(n / tabSize) * tabSize);
-  const col2 = roundTab(maxName);
-  const col3 = col2 + roundTab(maxFlag);
-  const col4 = col3 + roundTab(maxValue);
-  const col5 = col4 + roundTab(maxInterval || 1);
+  const col2 = roundTab(indentSpaces + maxName);
+  const col3 = roundTab(col2 + maxFlag);
+  const col4 = roundTab(col3 + maxValue);
+  const col5 = roundTab(col4 + (maxInterval || 1));
 
   const advanceWithTab = (pos: number) => Math.floor(pos / tabSize + 1) * tabSize;
-  const tabsToReach = (pos: number, target: number) => {
+  const spacesToReach = (pos: number, target: number) => {
     let p = pos;
-    let tabs = "";
-    while (p < target || tabs.length === 0) {
-      tabs += "\t";
-      p = advanceWithTab(p);
+    let spaces = "";
+    while (p < target || spaces.length === 0) {
+      const next = advanceWithTab(p);
+      const add = Math.max(1, next - p);
+      spaces += " ".repeat(add);
+      p = next;
     }
-    return tabs;
+    return spaces;
   };
 
   const out: string[] = [];
@@ -108,16 +113,16 @@ function buildOutput(lines: string[], includeInterval: boolean): string {
     }
 
     const interval = intervaloTexto(p);
-    let line = `\t${p.name}`;
-    line += tabsToReach(line.length, col2);
+    let line = `${" ".repeat(indentSpaces)}${p.name}`;
+    line += spacesToReach(line.length, col2);
     line += p.flag;
-    line += tabsToReach(line.length, col3);
+    line += spacesToReach(line.length, col3);
     line += p.valueUnit;
 
     if (includeInterval) {
-      line += tabsToReach(line.length, col4);
+      line += spacesToReach(line.length, col4);
       line += interval;
-      line += tabsToReach(line.length, col5);
+      line += spacesToReach(line.length, col5);
     }
 
     out.push(line.trimEnd());
