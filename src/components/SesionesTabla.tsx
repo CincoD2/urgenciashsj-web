@@ -8,10 +8,46 @@ type Row = {
   tags: string;
   link: string;
 };
+type SortDir = "asc" | "desc";
 
 type GvizCell = { v?: unknown; f?: unknown } | null;
 type GvizRow = { c?: GvizCell[] } | null;
 type GvizResponse = { table?: { rows?: GvizRow[] } } | null;
+
+function IntranetIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-.696-3.534c.63 0 1.332-.288 2.196-1.458l.911-1.22a.334.334 0 0 0-.074-.472.38.38 0 0 0-.505.06l-1.475 1.679a.241.241 0 0 1-.279.061.211.211 0 0 1-.12-.244l1.858-7.446a.499.499 0 0 0-.575-.613l-3.35.613a.35.35 0 0 0-.276.258l-.086.334a.25.25 0 0 0 .243.312h1.73l-1.476 5.922c-.054.234-.144.63-.144.918 0 .666.396 1.296 1.422 1.296zm1.83-10.536c.702 0 1.242-.414 1.386-1.044.036-.144.054-.306.054-.414 0-.504-.396-.972-1.134-.972-.702 0-1.242.414-1.386 1.044a1.868 1.868 0 0 0-.054.414c0 .504.396.972 1.134.972z" />
+    </svg>
+  );
+}
+
+function isIntranetLink(link: string): boolean {
+  if (!link) return false;
+  if (!link.startsWith("http://") && !link.startsWith("https://")) return false;
+  try {
+    const { hostname } = new URL(link);
+    if (typeof window !== "undefined") {
+      const currentHost = window.location.hostname;
+      if (hostname === currentHost) return false;
+    }
+    return hostname === "10.192.176.110" || hostname === "vvd17cloud.cs.san.gva.es";
+  } catch {
+    return false;
+  }
+}
+
+function isInternalLink(link: string): boolean {
+  if (!link) return false;
+  if (!link.startsWith("http://") && !link.startsWith("https://")) return false;
+  try {
+    const { hostname } = new URL(link);
+    if (typeof window === "undefined") return false;
+    return hostname === window.location.hostname;
+  } catch {
+    return false;
+  }
+}
 
 function parseGviz(text: string): GvizResponse {
   // Google gviz devuelve: "/*O_o*/\ngoogle.visualization.Query.setResponse({...});"
@@ -34,6 +70,7 @@ export default function SesionesTabla({
   const [q, setQ] = useState("");
   const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
 
   useEffect(() => {
     let cancelled = false;
@@ -73,15 +110,33 @@ export default function SesionesTabla({
 
   const filtered = useMemo(() => {
     const f = q.trim().toUpperCase();
-    if (!f) return rows;
-    return rows.filter((r) => {
-      return (
-        r.tipo.toUpperCase().includes(f) ||
-        r.titulo.toUpperCase().includes(f) ||
-        r.tags.toUpperCase().includes(f)
-      );
+    const base = !f
+      ? rows
+      : rows.filter((r) => {
+          return (
+            r.tipo.toUpperCase().includes(f) ||
+            r.titulo.toUpperCase().includes(f) ||
+            r.tags.toUpperCase().includes(f)
+          );
+        });
+
+    return [...base].sort((a, b) => {
+      const primary = a.titulo.localeCompare(b.titulo, "es", {
+        sensitivity: "base",
+        numeric: true,
+      });
+      if (primary !== 0) return sortDir === "asc" ? primary : -primary;
+      const secondary = a.tipo.localeCompare(b.tipo, "es", {
+        sensitivity: "base",
+        numeric: true,
+      });
+      return sortDir === "asc" ? secondary : -secondary;
     });
-  }, [q, rows]);
+  }, [q, rows, sortDir]);
+
+  const toggleSort = () => {
+    setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+  };
 
   return (
     <div className="space-y-3">
@@ -111,7 +166,21 @@ export default function SesionesTabla({
           <thead>
             <tr className="bg-[#3d7684] text-white">
               <th className="px-3 py-3 text-left w-[20%]">Tipo</th>
-              <th className="px-3 py-3 text-left w-[35%]">Título - Autor - Fecha</th>
+              <th className="px-3 py-3 text-left w-[35%]">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 font-semibold"
+                  onClick={toggleSort}
+                  aria-label={`Ordenar por Título ${
+                    sortDir === "asc" ? "descendente" : "ascendente"
+                  }`}
+                >
+                  Título - Autor - Fecha
+                  <span aria-hidden className="text-xs opacity-90">
+                    {sortDir === "asc" ? "↑" : "↓"}
+                  </span>
+                </button>
+              </th>
               <th className="px-3 py-3 text-left w-[40%] hidden sm:table-cell">
                 Tags
               </th>
@@ -125,19 +194,48 @@ export default function SesionesTabla({
             {filtered.map((r, idx) => (
               <tr
                 key={`${r.titulo}-${idx}`}
-                className="border-t border-[#dfe9eb] hover:bg-[#dfe9eb]/60 cursor-pointer"
+                className={`border-t border-[#dfe9eb] hover:bg-[#dfe9eb]/60 cursor-pointer ${
+                  r.link && isInternalLink(r.link) ? "bg-[#f1f6f7]" : ""
+                }`}
                 onClick={() => {
                   if (!r.link) return;
                   window.open(r.link, "_blank", "noopener,noreferrer");
                 }}
               >
                 <td className="px-3 py-3">{r.tipo}</td>
-                <td className="px-3 py-3 font-semibold">{r.titulo}</td>
+                <td className="px-3 py-3 font-semibold">
+                  <span className="inline-flex items-center gap-2">
+                    {r.titulo}
+                    {r.link && isIntranetLink(r.link) ? (
+                      <span
+                        className="inline-flex items-center justify-center text-[#6b7f83] sm:hidden"
+                        title="accesible solo intranet"
+                        aria-label="accesible solo intranet"
+                      >
+                        <IntranetIcon />
+                      </span>
+                    ) : null}
+                  </span>
+                </td>
                 <td className="px-3 py-3 italic hidden sm:table-cell">
                   {r.tags}
                 </td>
                 <td className="px-3 py-3 text-center hidden sm:table-cell">
-                  {r.link ? "🔗" : ""}
+                  {r.link ? (
+                    isIntranetLink(r.link) ? (
+                      <span
+                        className="inline-flex items-center justify-center text-[#6b7f83]"
+                        title="accesible solo intranet"
+                        aria-label="accesible solo intranet"
+                      >
+                        <IntranetIcon />
+                      </span>
+                    ) : (
+                      "🔗"
+                    )
+                  ) : (
+                    ""
+                  )}
                 </td>
               </tr>
             ))}
