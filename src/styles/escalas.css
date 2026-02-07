@@ -255,6 +255,18 @@ body {
   color: #137333;
 }
 
+.criterio-btn.activo-amarillo {
+  background: #fff4e5;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.criterio-btn.activo-naranja {
+  background: #ffedd5;
+  border-color: #fb923c;
+  color: #9a3412;
+}
+
 /* ===============================
    BOTÓN RESET
 ================================ */

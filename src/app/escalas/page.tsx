@@ -9,13 +9,13 @@ export default function Escalas() {
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Cardiología</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <a className="escala-link-btn" href="/escalas/chads2vasc">
+          <a className="escala-link-btn" href="/escalas/cha2ds2va">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 21s-7-4.5-7-10a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 5.5-7 10-7 10z" />
               </svg>
             </span>
-            CHA2DS2-VASc
+            CHA2DS2-VA
           </a>
           <a className="escala-link-btn" href="/escalas/hasbled">
             <span className="escala-link-icon" aria-hidden>
@@ -97,18 +97,6 @@ export default function Escalas() {
             </span>
             PSI
           </a>
-          <a className="escala-link-btn" href="/escalas/idsa">
-            <span className="escala-link-icon" aria-hidden>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M8 5h8" />
-                <path d="M9 3h6v4H9z" />
-                <path d="M6 7h12v12H6z" />
-                <path d="M9 11h6" />
-                <path d="M12 8v6" />
-              </svg>
-            </span>
-            IDSA/ATS
-          </a>
           <a className="escala-link-btn" href="/escalas/gradiente-aa-o2">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -152,6 +140,34 @@ export default function Escalas() {
               </svg>
             </span>
             Glasgow
+          </a>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Infecciosas</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a className="escala-link-btn" href="/escalas/idsa">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 5h8" />
+                <path d="M9 3h6v4H9z" />
+                <path d="M6 7h12v12H6z" />
+                <path d="M9 11h6" />
+                <path d="M12 8v6" />
+              </svg>
+            </span>
+            IDSA/ATS
+          </a>
+          <a className="escala-link-btn" href="/escalas/sofa">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 12h16" />
+                <path d="M8 6h8" />
+                <path d="M8 18h8" />
+              </svg>
+            </span>
+            SOFA
           </a>
           <a className="escala-link-btn" href="/escalas/qsofa">
             <span className="escala-link-icon" aria-hidden>
@@ -242,7 +258,7 @@ export default function Escalas() {
             </span>
             Depurador SIA
           </a>
-          <a className="escala-link-btn" href="/escalas/formateo-analitica-orion">
+          <span className="escala-link-btn pointer-events-none opacity-50" aria-disabled="true">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M4 6h16" />
@@ -252,7 +268,7 @@ export default function Escalas() {
               </svg>
             </span>
             Formateo Analítica Orion
-          </a>
+          </span>
         </div>
       </section>
     </div>

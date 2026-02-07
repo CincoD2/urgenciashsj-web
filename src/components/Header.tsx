@@ -1,17 +1,14 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { usePathname } from "next/navigation";
-import SearchModal from "./SearchModal";
-import { signOut, useSession } from "next-auth/react";
-import {
-  ChangePasswordState,
-  changePassword,
-} from "@/app/change-password/actions";
-import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "@/lib/sessionKeys";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useActionState, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { usePathname } from 'next/navigation';
+import SearchModal from './SearchModal';
+import { signOut, useSession } from 'next-auth/react';
+import { ChangePasswordState, changePassword } from '@/app/change-password/actions';
+import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from '@/lib/sessionKeys';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -24,30 +21,30 @@ export default function Header() {
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHome = pathname === '/';
   const { data: session, status } = useSession();
-  const isAuthed = status === "authenticated";
-  const emailLabel = session?.user?.email?.split("@")[0];
-  const userLabel = isAuthed ? emailLabel || "Cuenta" : "Acceso";
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAuthed = status === 'authenticated';
+  const emailLabel = session?.user?.email?.split('@')[0];
+  const userLabel = isAuthed ? emailLabel || 'Cuenta' : 'Acceso';
+  const isAdmin = session?.user?.role === 'ADMIN';
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [changeState, changeAction] = useActionState<
-    ChangePasswordState,
-    FormData
-  >(changePassword, {});
+  const [changeState, changeAction] = useActionState<ChangePasswordState, FormData>(
+    changePassword,
+    {}
+  );
   const changePasswordRef = useRef<HTMLDivElement | null>(null);
   const navItemClass = isAuthed
-    ? "rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm"
-    : "rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm";
+    ? 'rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm'
+    : 'rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm';
   const toolsLinkClass = isAuthed
-    ? "inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm"
-    : "inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm";
+    ? 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm'
+    : 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm';
 
   const mobileMenuClass = `lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
-    open ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
+    open ? 'max-h-[900px] opacity-100' : 'max-h-0 opacity-0'
   }`;
   const toolsMenuClass = `ml-2 grid grid-cols-2 gap-1 text-sm overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
-    toolsOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+    toolsOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
   }`;
   const closeMenus = () => {
     setToolsOpen(false);
@@ -73,13 +70,12 @@ export default function Header() {
       return;
     }
     const atTop = menu.scrollTop <= 1;
-    const atBottom =
-      menu.scrollTop + menu.clientHeight >= menu.scrollHeight - 1;
+    const atBottom = menu.scrollTop + menu.clientHeight >= menu.scrollHeight - 1;
     setCanScrollUp(!atTop);
     setCanScrollDown(!atBottom);
   };
 
-  const startToolsScroll = (direction: "up" | "down") => {
+  const startToolsScroll = (direction: 'up' | 'down') => {
     const menu = toolsMenuRef.current;
     if (!menu) {
       return;
@@ -94,22 +90,21 @@ export default function Header() {
       }
 
       const atTop = current.scrollTop <= 1;
-      const atBottom =
-        current.scrollTop + current.clientHeight >= current.scrollHeight - 1;
-      if (direction === "down" && atBottom) {
+      const atBottom = current.scrollTop + current.clientHeight >= current.scrollHeight - 1;
+      if (direction === 'down' && atBottom) {
         current.scrollTop = current.scrollHeight;
         updateToolsScrollState();
         stopToolsScroll();
         return;
       }
-      if (direction === "up" && atTop) {
+      if (direction === 'up' && atTop) {
         current.scrollTop = 0;
         updateToolsScrollState();
         stopToolsScroll();
         return;
       }
 
-      current.scrollTop += direction === "down" ? 8 : -8;
+      current.scrollTop += direction === 'down' ? 8 : -8;
       updateToolsScrollState();
     }, 16);
   };
@@ -128,26 +123,26 @@ export default function Header() {
 
   const closeMenusAndScrollTop = () => {
     closeMenus();
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "auto" });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   };
 
   return (
     <header
       className={`border-b border-[#dfe9eb] sticky top-0 z-50 backdrop-blur-md border-white/40 ${
-        isAuthed ? "bg-[#1f4c57]" : "bg-white/45"
+        isAuthed ? 'bg-[#1f4c57]' : 'bg-white/45'
       }`}
     >
       <nav
         className={`mx-auto flex max-w-7xl items-center px-4 py-2 ${
-          isAuthed ? "text-white" : "text-[#2b5d68]"
+          isAuthed ? 'text-white' : 'text-[#2b5d68]'
         }`}
       >
         <Link
           href="/"
           className={`flex items-center gap-2 text-sm xl:gap-3 xl:text-base ${
-            isAuthed ? "!text-white" : "text-[#2b5d68]"
+            isAuthed ? '!text-white' : 'text-[#2b5d68]'
           }`}
         >
           <Image
@@ -167,7 +162,7 @@ export default function Header() {
             aria-label="Buscar"
             onClick={() => setSearchOpen(true)}
             className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition ${
-              isAuthed ? "!text-white" : "text-[#2b5d68]"
+              isAuthed ? '!text-white' : 'text-[#2b5d68]'
             }`}
           >
             <svg
@@ -238,11 +233,11 @@ export default function Header() {
                       type="button"
                       onClick={() => {
                         setUserOpen(false);
-                        if (typeof window !== "undefined") {
+                        if (typeof window !== 'undefined') {
                           localStorage.removeItem(LOCAL_STORAGE_KEY);
                           sessionStorage.removeItem(SESSION_STORAGE_KEY);
                         }
-                        signOut({ callbackUrl: "/logout" });
+                        signOut({ callbackUrl: '/logout' });
                       }}
                       className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
                     >
@@ -272,27 +267,27 @@ export default function Header() {
           </div>
           <button
             type="button"
-            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition ${
-              isAuthed ? "!text-white" : "text-[#2b5d68]"
+              isAuthed ? '!text-white' : 'text-[#2b5d68]'
             }`}
           >
             <span className="relative block h-4 w-5">
               <span
                 className={`absolute left-0 top-0 h-0.5 w-5 bg-current transition-transform duration-200 ${
-                  open ? "translate-y-[7px] rotate-45" : ""
+                  open ? 'translate-y-[7px] rotate-45' : ''
                 }`}
               />
               <span
                 className={`absolute left-0 top-[7px] h-0.5 w-5 bg-current transition-opacity duration-200 ${
-                  open ? "opacity-0" : "opacity-100"
+                  open ? 'opacity-0' : 'opacity-100'
                 }`}
               />
               <span
                 className={`absolute left-0 top-[14px] h-0.5 w-5 bg-current transition-transform duration-200 ${
-                  open ? "-translate-y-[7px] -rotate-45" : ""
+                  open ? '-translate-y-[7px] -rotate-45' : ''
                 }`}
               />
             </span>
@@ -311,11 +306,7 @@ export default function Header() {
               stopToolsScroll();
             }}
           >
-            <Link
-              href="/escalas"
-              className={toolsLinkClass}
-              onClick={closeMenus}
-            >
+            <Link href="/escalas" className={toolsLinkClass} onClick={closeMenus}>
               Herramientas
               <span aria-hidden className="text-[10px] xl:text-xs">
                 ▾
@@ -323,208 +314,204 @@ export default function Header() {
             </Link>
             <div
               className={`absolute left-0 top-full z-50 w-64 rounded-md border border-white/40 bg-white/85 p-2 shadow-lg backdrop-blur-md ${
-                toolsOpen ? "block" : "hidden"
+                toolsOpen ? 'block' : 'hidden'
               }`}
             >
-              {canScrollUp && (
-                <div className="mb-1 flex items-center justify-center pb-1">
-                  <button
-                    type="button"
-                    aria-label="Desplazar herramientas hacia arriba"
-                    onMouseEnter={() => startToolsScroll("up")}
-                    onMouseLeave={stopToolsScroll}
-                    className="flex items-center justify-center"
-                  >
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-white">
-                      <svg
-                        className="h-3.5 w-3.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M6 15l6-6 6 6" />
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-              )}
+              <div className="mb-1 flex h-9 items-center justify-center pb-1">
+                <button
+                  type="button"
+                  aria-label="Desplazar herramientas hacia arriba"
+                  onMouseEnter={() => startToolsScroll('up')}
+                  onMouseLeave={stopToolsScroll}
+                  className={`flex items-center justify-center ${
+                    canScrollUp ? '' : 'pointer-events-none invisible'
+                  }`}
+                >
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-white">
+                    <svg
+                      className="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M6 15l6-6 6 6" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
               <div
                 ref={toolsMenuRef}
-                className="max-h-[320px] overflow-y-auto pr-1"
+                className="max-h-[50vh] overflow-y-auto pr-1 lg:max-h-[50vh]"
                 onScroll={updateToolsScrollState}
               >
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/depuradorTtos"
-                onClick={closeMenus}
-              >
-                Depurador SIA
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/formateo-analitica-orion"
-                onClick={closeMenus}
-              >
-                Formateo AnalÃ­tica Orion
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/standycalc"
-                onClick={closeMenus}
-              >
-                StandyCalc® (beta)
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/inhaladores"
-                onClick={closeMenus}
-              >
-                Inhaladores
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/anion-gap"
-                onClick={closeMenus}
-              >
-                Anion GAP
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/chads2vasc"
-                onClick={closeMenus}
-              >
-                CHA2DS2-VASc
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/curb65"
-                onClick={closeMenus}
-              >
-                CURB-65
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/glasgow"
-                onClick={closeMenus}
-              >
-                Glasgow
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/gradiente-aa-o2"
-                onClick={closeMenus}
-              >
-                Gradiente A-a O2
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/hasbled"
-                onClick={closeMenus}
-              >
-                HAS-BLED
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/hiperNa"
-                onClick={closeMenus}
-              >
-                Hipernatremia
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/hiponatremia"
-                onClick={closeMenus}
-              >
-                Hiponatremia
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/idsa"
-                onClick={closeMenus}
-              >
-                IDSA/ATS
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/pafi"
-                onClick={closeMenus}
-              >
-                PaFi
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/psi"
-                onClick={closeMenus}
-              >
-                PSI
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/qsofa"
-                onClick={closeMenus}
-              >
-                qSOFA
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/safi"
-                onClick={closeMenus}
-              >
-                SaFi
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/tam"
-                onClick={closeMenus}
-              >
-                TAm (PAM)
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/timi-scacest"
-                onClick={closeMenus}
-              >
-                TIMI SCACEST
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/timi-scasest"
-                onClick={closeMenus}
-              >
-                TIMI SCASEST
-              </Link>
-              <Link
-                className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                href="/escalas/wells-tvp"
-                onClick={closeMenus}
-              >
-                Wells – TVP
-              </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/depuradorTtos"
+                  onClick={closeMenus}
+                >
+                  Depurador SIA
+                </Link>
+                <span className="block rounded px-3 py-2 text-sm text-slate-400">
+                  Formateo Analítica Orion
+                </span>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/standycalc"
+                  onClick={closeMenus}
+                >
+                  StandyCalc® (beta)
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/inhaladores"
+                  onClick={closeMenus}
+                >
+                  Inhaladores
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/anion-gap"
+                  onClick={closeMenus}
+                >
+                  Anion GAP
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/cha2ds2va"
+                  onClick={closeMenus}
+                >
+                  CHA2DS2-VA
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/curb65"
+                  onClick={closeMenus}
+                >
+                  CURB-65
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/glasgow"
+                  onClick={closeMenus}
+                >
+                  Glasgow
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/gradiente-aa-o2"
+                  onClick={closeMenus}
+                >
+                  Gradiente A-a O2
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/hasbled"
+                  onClick={closeMenus}
+                >
+                  HAS-BLED
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/hiperNa"
+                  onClick={closeMenus}
+                >
+                  Hipernatremia
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/hiponatremia"
+                  onClick={closeMenus}
+                >
+                  Hiponatremia
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/idsa"
+                  onClick={closeMenus}
+                >
+                  IDSA/ATS
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/pafi"
+                  onClick={closeMenus}
+                >
+                  PaFi
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/psi"
+                  onClick={closeMenus}
+                >
+                  PSI
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/qsofa"
+                  onClick={closeMenus}
+                >
+                  qSOFA
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/safi"
+                  onClick={closeMenus}
+                >
+                  SaFi
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/tam"
+                  onClick={closeMenus}
+                >
+                  TAm (PAM)
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/timi-scacest"
+                  onClick={closeMenus}
+                >
+                  TIMI SCACEST
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/timi-scasest"
+                  onClick={closeMenus}
+                >
+                  TIMI SCASEST
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/wells-tvp"
+                  onClick={closeMenus}
+                >
+                  Wells – TVP
+                </Link>
               </div>
-              {canScrollDown && (
-                <div className="mt-1 flex items-center justify-center pt-1">
-                  <button
-                    type="button"
-                    aria-label="Desplazar herramientas hacia abajo"
-                    onMouseEnter={() => startToolsScroll("down")}
-                    onMouseLeave={stopToolsScroll}
-                    className="flex items-center justify-center"
-                  >
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-white">
-                      <svg
-                        className="h-3.5 w-3.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-              )}
+              <div className="mt-1 flex h-9 items-center justify-center pt-1">
+                <button
+                  type="button"
+                  aria-label="Desplazar herramientas hacia abajo"
+                  onMouseEnter={() => startToolsScroll('down')}
+                  onMouseLeave={stopToolsScroll}
+                  className={`flex items-center justify-center ${
+                    canScrollDown ? '' : 'pointer-events-none invisible'
+                  }`}
+                >
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-white">
+                    <svg
+                      className="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
           <Link className={navItemClass} href="/protocolos">
@@ -550,9 +537,7 @@ export default function Header() {
             aria-label="Buscar"
             onClick={() => setSearchOpen(true)}
             className={`inline-flex h-9 w-9 items-center justify-center rounded-md ${
-              isAuthed
-                ? "!text-white hover:bg-white/10"
-                : "text-[#2b5d68] hover:bg-[#dfe9eb]/60"
+              isAuthed ? '!text-white hover:bg-white/10' : 'text-[#2b5d68] hover:bg-[#dfe9eb]/60'
             }`}
           >
             <svg
@@ -576,10 +561,7 @@ export default function Header() {
                 setUserOpen(true);
               }}
               onMouseLeave={() => {
-                userCloseTimer.current = setTimeout(
-                  () => setUserOpen(false),
-                  120,
-                );
+                userCloseTimer.current = setTimeout(() => setUserOpen(false), 120);
               }}
             >
               <button
@@ -609,10 +591,7 @@ export default function Header() {
                     setUserOpen(true);
                   }}
                   onMouseLeave={() => {
-                    userCloseTimer.current = setTimeout(
-                      () => setUserOpen(false),
-                      120,
-                    );
+                    userCloseTimer.current = setTimeout(() => setUserOpen(false), 120);
                   }}
                 >
                   <span className="block px-3 py-2 text-xs font-semibold text-slate-500">
@@ -650,11 +629,11 @@ export default function Header() {
                     type="button"
                     onClick={() => {
                       setUserOpen(false);
-                      if (typeof window !== "undefined") {
+                      if (typeof window !== 'undefined') {
                         localStorage.removeItem(LOCAL_STORAGE_KEY);
                         sessionStorage.removeItem(SESSION_STORAGE_KEY);
                       }
-                      signOut({ callbackUrl: "/logout" });
+                      signOut({ callbackUrl: '/logout' });
                     }}
                     className="block w-full rounded px-3 py-2 text-right text-slate-700 hover:bg-slate-100"
                   >
@@ -695,10 +674,7 @@ export default function Header() {
                 aria-expanded={toolsOpen}
               >
                 <span>Herramientas</span>
-                <span
-                  aria-hidden
-                  className={`text-xs transition ${toolsOpen ? "rotate-180" : ""}`}
-                >
+                <span aria-hidden className={`text-xs transition ${toolsOpen ? 'rotate-180' : ''}`}>
                   ▾
                 </span>
               </button>
@@ -714,16 +690,7 @@ export default function Header() {
                 >
                   Depurador SIA
                 </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/formateo-analitica-orion"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Formateo AnalÃ­tica Orion
-                </Link>
+                <span className="rounded px-2 py-1 text-slate-400">Formateo Analítica Orion</span>
                 <Link
                   className="rounded px-2 py-1 hover:bg-slate-100"
                   href="/escalas/standycalc"
@@ -756,13 +723,13 @@ export default function Header() {
                 </Link>
                 <Link
                   className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/chads2vasc"
+                  href="/escalas/cha2ds2va"
                   onClick={() => {
                     setToolsOpen(false);
                     closeMenusAndScrollTop();
                   }}
                 >
-                  CHA2DS2-VASc
+                  CHA2DS2-VA
                 </Link>
                 <Link
                   className="rounded px-2 py-1 hover:bg-slate-100"
@@ -967,7 +934,7 @@ export default function Header() {
 
       {isAuthed &&
         showChangePassword &&
-        typeof document !== "undefined" &&
+        typeof document !== 'undefined' &&
         createPortal(
           <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 px-4">
             <div
@@ -975,9 +942,7 @@ export default function Header() {
               className="w-full max-w-sm rounded-2xl bg-white p-6 text-left shadow-xl"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900">
-                  Cambiar contraseña
-                </h2>
+                <h2 className="text-lg font-semibold text-slate-900">Cambiar contraseña</h2>
                 <button
                   type="button"
                   onClick={() => setShowChangePassword(false)}
@@ -987,11 +952,7 @@ export default function Header() {
                 </button>
               </div>
               <form action={changeAction} className="mt-4 space-y-3">
-                <input
-                  type="hidden"
-                  name="email"
-                  value={session?.user?.email ?? ""}
-                />
+                <input type="hidden" name="email" value={session?.user?.email ?? ''} />
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Contraseña actual
@@ -1040,8 +1001,8 @@ export default function Header() {
                   <div
                     className={`rounded-md border px-3 py-2 text-sm ${
                       changeState.ok
-                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-rose-200 bg-rose-50 text-rose-700"
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                        : 'border-rose-200 bg-rose-50 text-rose-700'
                     }`}
                   >
                     {changeState.message}
@@ -1050,7 +1011,7 @@ export default function Header() {
               </form>
             </div>
           </div>,
-          document.body,
+          document.body
         )}
     </header>
   );

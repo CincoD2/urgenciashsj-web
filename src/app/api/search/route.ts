@@ -144,7 +144,7 @@ function loadTools(): SearchItem[] {
     })),
     { title: "Inhaladores", url: "/inhaladores" },
     { title: "Anion GAP", url: "/escalas/anion-gap" },
-    { title: "CHA2DS2-VASc", url: "/escalas/chads2vasc" },
+    { title: "CHA2DS2-VA", url: "/escalas/cha2ds2va" },
     { title: "CURB-65", url: "/escalas/curb65" },
     { title: "Glasgow", url: "/escalas/glasgow" },
     { title: "Gradiente A-a O2", url: "/escalas/gradiente-aa-o2" },
