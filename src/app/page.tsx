@@ -403,7 +403,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-10">
-      <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9">
+      <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9 rounded-b-3xl">
         <div
           className="absolute inset-0 bg-cover"
           style={{

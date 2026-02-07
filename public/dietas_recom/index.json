@@ -281,6 +281,26 @@
     "tags": ["macro", "eco", "Vejiga", "hidronefrosis", "ectasia", "cru", "anuria", "abdomen"],
     "sistemas": ["nefrourológico", "nefrológico", "Ecografía"]
   },
+  {
+    "id": "cribado_vih_vhc_vhb",
+    "titulo": "Cribado VIH/VHB/VHC",
+    "ruta": "/dietas_recom/cribado_vih_vhb_vhc.txt",
+    "tags": [
+      "Zoster",
+      "Neumonía",
+      "NAC",
+      "recomendacion",
+      "ITS",
+      "Chemsex",
+      "PPE",
+      "Profilaxis",
+      "TAR",
+      "Antirretrovirales",
+      "Hepatitis",
+      "Deja tu Huella"
+    ],
+    "sistemas": ["infeccioso"]
+  },
 
   {
     "id": "DIVERTICULITIS3",
