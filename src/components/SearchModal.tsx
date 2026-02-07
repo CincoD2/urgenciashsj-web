@@ -83,8 +83,8 @@ export default function SearchModal({
             <div className="py-2 text-sm text-[#516f75]">Sin resultados</div>
           )}
           <ul className="divide-y divide-[#dfe9eb]">
-            {results.map((r) => (
-              <li key={`${r.type}-${r.url}`}>
+            {results.map((r, idx) => (
+              <li key={`${r.type}-${r.url}-${idx}`}>
                 <a
                   href={r.url}
                   className="block rounded px-2 py-2 text-sm hover:bg-[#dfe9eb]/60 hover:text-[#3d7684]"

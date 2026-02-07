@@ -3,7 +3,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import Link from 'next/link';
 
-type LinkItem = { label: string; href: string; icon?: IconKey };
+type LinkItem = { label: string; href: string; icon?: IconKey; intranet?: boolean };
 
 const observacion: LinkItem[] = [
   {
@@ -36,6 +36,7 @@ const enlacesCorporativos: Record<string, LinkItem[]> = {
       label: 'Portal del Empleado GVA',
       href: 'https://vvd17portalempleado.cs.san.gva.es/',
       icon: 'person',
+      intranet: true,
     },
     {
       label: 'Nóminas San Juan',
@@ -51,6 +52,7 @@ const enlacesCorporativos: Record<string, LinkItem[]> = {
       label: 'Intranet Privada San Juan',
       href: 'https://intranet17.cs.san.gva.es/',
       icon: 'internet',
+      intranet: true,
     },
   ],
   Utilidades: [
@@ -66,13 +68,14 @@ const enlacesCorporativos: Record<string, LinkItem[]> = {
     },
     {
       label: 'Portal Formación (EVES)',
-      href: 'https://eves.san.gva.es/web/guest/home',
+      href: 'https://eves.san.gva.es/es/',
       icon: 'grad',
     },
     {
       label: 'Informática',
       href: 'https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/',
       icon: 'computer',
+      intranet: true,
     },
   ],
   Departamento: [
@@ -80,39 +83,25 @@ const enlacesCorporativos: Record<string, LinkItem[]> = {
       label: 'GestLab (HSJ)',
       href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
       icon: 'flask',
+      intranet: true,
     },
 
     {
       label: 'Visor RX (HSJ)',
       href: 'https://vvd17zfpa.cs.san.gva.es/ZFP/',
       icon: 'xray',
+      intranet: true,
     },
     {
       label: 'Taonet-Sintrom',
       href: 'http://10.192.176.103:8080/tao/servlet/KYNTAOController',
       icon: 'drop',
+      intranet: true,
     },
     {
       label: 'Citas AP',
-      href: 'https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=4&login=a&idioma=es&idCatGuc=PR&idProcGuc=2888',
+      href: 'https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=5&idioma=es&idProcGuc=2888&idSubfaseGuc=SOLICITUD&idCatGuc=PR',
       icon: 'agenda',
-    },
-  ],
-  'Otros departamentos': [
-    {
-      label: 'PACS Alicante',
-      href: 'https://c2imzfp.san.gva.es/ZFP',
-      icon: 'xray',
-    },
-    {
-      label: 'PACS Valencia',
-      href: 'https://c1imzfp.san.gva.es/ZFP',
-      icon: 'xray',
-    },
-    {
-      label: 'PACS Castellón',
-      href: 'https://c3imzfp.san.gva.es/ZFP',
-      icon: 'xray',
     },
   ],
 };
@@ -121,6 +110,7 @@ const documentosInteres: LinkItem[] = [
   {
     label: 'Solicitudes Personal',
     href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL',
+    intranet: true,
   },
   {
     label: 'Teléfonos Urgencias (credenciales CS)',
@@ -138,6 +128,7 @@ const documentosInteres: LinkItem[] = [
   {
     label: 'Plantilla Protocolos',
     href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F00.-PLANTILLA%20DE%20PROTOCOLO&files=modelo%20de%20protocolo.docx',
+    intranet: true,
   },
   {
     label: 'Hoja firma guardias residentes',
@@ -334,7 +325,15 @@ function Icon({ name }: { name: IconKey }) {
   }
 }
 
-function LinkList({ items }: { items: { label: string; href: string; icon?: IconKey }[] }) {
+function IntranetIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-.696-3.534c.63 0 1.332-.288 2.196-1.458l.911-1.22a.334.334 0 0 0-.074-.472.38.38 0 0 0-.505.06l-1.475 1.679a.241.241 0 0 1-.279.061.211.211 0 0 1-.12-.244l1.858-7.446a.499.499 0 0 0-.575-.613l-3.35.613a.35.35 0 0 0-.276.258l-.086.334a.25.25 0 0 0 .243.312h1.73l-1.476 5.922c-.054.234-.144.63-.144.918 0 .666.396 1.296 1.422 1.296zm1.83-10.536c.702 0 1.242-.414 1.386-1.044.036-.144.054-.306.054-.414 0-.504-.396-.972-1.134-.972-.702 0-1.242.414-1.386 1.044a1.868 1.868 0 0 0-.054.414c0 .504.396.972 1.134.972z" />
+    </svg>
+  );
+}
+
+function LinkList({ items }: { items: LinkItem[] }) {
   return (
     <ul className="space-y-2">
       {items.map((it) => (
@@ -351,7 +350,16 @@ function LinkList({ items }: { items: { label: string; href: string; icon?: Icon
                   <Icon name={it.icon} />
                 </span>
               ) : null}
-              {it.label}
+              <span>{it.label}</span>
+              {it.intranet ? (
+                <span
+                  className="ml-1 text-[#6b7f83]"
+                  title="accesible solo intranet"
+                  aria-label="accesible solo intranet"
+                >
+                  <IntranetIcon />
+                </span>
+              ) : null}
             </a>
           ) : (
             <span>{it.label}</span>
@@ -427,7 +435,10 @@ export default function HomePage() {
             </div>
             <div className="space-y-1">
               {latestChangelog.map((entry) => (
-                <div key={`${entry.date}-${entry.title}`} className="flex flex-wrap items-center gap-3">
+                <div
+                  key={`${entry.date}-${entry.title}`}
+                  className="flex flex-wrap items-center gap-3"
+                >
                   <span className="text-xs text-[#6b7f83]">{entry.date}</span>
                   <span className="font-semibold text-slate-900">{entry.title}</span>
                   {entry.summary ? (
@@ -442,7 +453,7 @@ export default function HomePage() {
 
       <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-4">
         <h2 className="text-xl font-semibold">Enlaces Corporativos</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {Object.entries(enlacesCorporativos).map(([grupo, items]) => (
             <div key={grupo} className="space-y-2">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-[#516f75]">

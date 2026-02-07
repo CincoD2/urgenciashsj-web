@@ -16,6 +16,44 @@ function normalize(text: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+const STANDY_STANDARD_DRUGS = [
+  "AMIODARONA",
+  "NALOXONA",
+  "DOBUTAMINA",
+  "NIMODIPINO",
+  "DOPAMINA",
+  "NITROGLICERINA",
+  "FLECAINIDA",
+  "NITROPRUSIATO",
+  "FLUMAZENILO",
+  "OCTREOTIDO",
+  "FUROSEMIDA",
+  "SODIO HIPERTONICO",
+  "HEPARINA",
+  "SOMATOSTATINA",
+  "LABETALOL",
+  "TEOFILINA",
+  "MAGNESIO SULFATO",
+  "VALPROICO",
+  "MORFINA",
+  "VERNAKALANT",
+  "N-ACETILCISTEINA",
+];
+
+const STANDY_RESTRICTED_DRUGS = [
+  "CISATRACURIO",
+  "ESMOLOL",
+  "FUROSEMIDA CONC",
+  "LEVOSIMENDAN",
+  "MIDAZOLAM",
+  "NORADRENALINA",
+  "PROCAINAMIDA",
+  "SALBUTAMOL",
+  "URAPIDIL",
+];
+
+const STANDY_ALL_DRUGS = [...STANDY_STANDARD_DRUGS, ...STANDY_RESTRICTED_DRUGS];
+
 function loadProtocolos(): SearchItem[] {
   const dir = path.join(process.cwd(), "content", "protocolos");
   if (!fs.existsSync(dir)) return [];
@@ -94,7 +132,145 @@ function loadPages(): SearchItem[] {
   ];
 }
 
+function loadStandycalcBrandNames(): string[] {
+  const filePath = path.join(
+    process.cwd(),
+    "src",
+    "app",
+    "escalas",
+    "standycalc",
+    "standycalc-data.json"
+  );
+  if (!fs.existsSync(filePath)) return [];
+  let data: { sheets?: Record<string, { cells?: Record<string, { v?: string }> }> } = {};
+  try {
+    data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    return [];
+  }
+  const sheets = ["MEZCLAS ESTANDAR", "MEZCLAS RESTRINGIDAS"];
+  const names = new Set<string>();
+
+  for (const sheetName of sheets) {
+    const cells = data.sheets?.[sheetName]?.cells;
+    if (!cells) continue;
+    for (const cell of Object.values(cells)) {
+      const v = cell?.v;
+      if (!v) continue;
+      const text = String(v);
+      const parenMatches = text.match(/\(([^)]+)\)/g) ?? [];
+      for (const match of parenMatches) {
+        const inner = match.slice(1, -1);
+        if (!/[®™]/.test(inner)) continue;
+        const cleaned = inner.replace(/[®™]/g, "").trim();
+        if (!cleaned) continue;
+        cleaned
+          .split(/[;,/]/)
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .forEach((t) => names.add(t));
+      }
+      const directMatches =
+        text.match(/([A-Za-z0-9ÁÉÍÓÚÜÑñ][A-Za-z0-9ÁÉÍÓÚÜÑñ+ \\-]{1,})[®™]/g) ?? [];
+      for (const m of directMatches) {
+        const cleaned = m.replace(/[®™]/g, "").trim();
+        if (cleaned) names.add(cleaned);
+      }
+    }
+  }
+
+  return Array.from(names).sort((a, b) => a.localeCompare(b, "es"));
+}
+
+function loadStandycalcBrandMap(): Record<string, string> {
+  const filePath = path.join(
+    process.cwd(),
+    "src",
+    "app",
+    "escalas",
+    "standycalc",
+    "standycalc-data.json"
+  );
+  if (!fs.existsSync(filePath)) return {};
+  let data: { sheets?: Record<string, { cells?: Record<string, { v?: string }> }> } = {};
+  try {
+    data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    return {};
+  }
+  const sheets = ["MEZCLAS ESTANDAR", "MEZCLAS RESTRINGIDAS"];
+  const drugHeaders: Record<number, string>[] = [];
+
+  for (const sheetName of sheets) {
+    const cells = data.sheets?.[sheetName]?.cells;
+    if (!cells) continue;
+    const headers: Record<number, string> = {};
+    for (const [ref, cell] of Object.entries(cells)) {
+      if (!ref.startsWith("B") || !cell?.v) continue;
+      const row = Number(ref.slice(1));
+      const value = String(cell.v);
+      const normalized = normalize(value);
+      const match = STANDY_ALL_DRUGS.find((drug) => normalized.includes(normalize(drug)));
+      if (match) headers[row] = match;
+    }
+    drugHeaders.push(headers);
+  }
+
+  const brandMap = new Map<string, string>();
+  for (let i = 0; i < sheets.length; i++) {
+    const sheetName = sheets[i];
+    const cells = data.sheets?.[sheetName]?.cells;
+    if (!cells) continue;
+    const headers = drugHeaders[i] ?? {};
+    const headerRows = Object.keys(headers)
+      .map((r) => Number(r))
+      .sort((a, b) => a - b);
+
+    for (const [ref, cell] of Object.entries(cells)) {
+      const v = cell?.v;
+      if (!v) continue;
+      const text = String(v);
+      if (!text.includes("®") && !text.includes("™")) continue;
+      const row = Number(ref.match(/\d+/)?.[0] ?? 0);
+      if (!row) continue;
+      const headerRow = headerRows
+        .filter((r) => r <= row)
+        .slice(-1)[0];
+      if (!headerRow || row - headerRow > 6) continue;
+      const drug = headers[headerRow];
+      if (!drug) continue;
+      const parenMatches = text.match(/\(([^)]+)\)/g) ?? [];
+      const names: string[] = [];
+      for (const match of parenMatches) {
+        const inner = match.slice(1, -1);
+        if (!/[®™]/.test(inner)) continue;
+        const cleaned = inner.replace(/[®™]/g, "").trim();
+        if (!cleaned) continue;
+        cleaned
+          .split(/[;,/]/)
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .forEach((t) => names.push(t));
+      }
+      const directMatches =
+        text.match(/([A-Za-z0-9ÁÉÍÓÚÜÑñ][A-Za-z0-9ÁÉÍÓÚÜÑñ+ \\-]{1,})[®™]/g) ?? [];
+      for (const m of directMatches) {
+        const cleaned = m.replace(/[®™]/g, "").trim();
+        if (cleaned) names.push(cleaned);
+      }
+      for (const name of names) {
+        if (!brandMap.has(name)) brandMap.set(name, drug);
+      }
+    }
+  }
+
+  return Object.fromEntries(brandMap.entries());
+}
+
 function loadTools(): SearchItem[] {
+  const brandNames = loadStandycalcBrandNames();
+  const brandMap = loadStandycalcBrandMap();
+  const brandContent = brandNames.join(" ");
   const items = [
     { title: "Depurador SIA", url: "/escalas/depuradorTtos" },
     {
@@ -104,7 +280,8 @@ function loadTools(): SearchItem[] {
         "standycalc perfusion perfusiones dilucion diluciones farmacia farmacos fármacos mezclas infusion infusiones " +
         "amiodarona naloxona dobutamina nimodipino dopamina nitroglicerina flecainida nitroprusiato flumazenilo " +
         "octreotido furosemida sodio hipertonico heparina somatostatina labetalol teofilina magnesio sulfato " +
-        "valproico morfina vernakalant n-acetilcisteina",
+        "valproico morfina vernakalant n-acetilcisteina " +
+        brandContent,
     },
     ...[
       "AMIODARONA",
@@ -142,9 +319,25 @@ function loadTools(): SearchItem[] {
       url: `/escalas/standycalc?drug=${encodeURIComponent(drug)}`,
       content: `standycalc ${drug.toLowerCase()} ${drug}`,
     })),
+    {
+      title: "Dormicum (STANDyCALC®)",
+      url: `/escalas/standycalc?drug=${encodeURIComponent("MIDAZOLAM")}`,
+      content: "standycalc dormicum midazolam",
+    },
+    ...brandNames.map((brand) => ({
+      title: `${brand} (STANDyCALC®)`,
+      url: brandMap[brand]
+        ? `/escalas/standycalc?drug=${encodeURIComponent(brandMap[brand])}`
+        : "/escalas/standycalc",
+      content: `standycalc ${brand.toLowerCase()} ${brand}`,
+    })),
     { title: "Inhaladores", url: "/inhaladores" },
     { title: "Anion GAP", url: "/escalas/anion-gap" },
-    { title: "CHA2DS2-VA", url: "/escalas/cha2ds2va" },
+    {
+      title: "CHA2DS2-VA",
+      url: "/escalas/cha2ds2va",
+      content: "chads chadsva chads-vasc cha2ds2va",
+    },
     { title: "CURB-65", url: "/escalas/curb65" },
     { title: "Glasgow", url: "/escalas/glasgow" },
     { title: "Gradiente A-a O2", url: "/escalas/gradiente-aa-o2" },
@@ -156,6 +349,7 @@ function loadTools(): SearchItem[] {
     { title: "PSI", url: "/escalas/psi" },
     { title: "qSOFA", url: "/escalas/qsofa" },
     { title: "SaFi", url: "/escalas/safi" },
+    { title: "SOFA", url: "/escalas/sofa" },
     { title: "TAm (PAM)", url: "/escalas/tam" },
     { title: "TIMI SCACEST", url: "/escalas/timi-scacest" },
     { title: "TIMI SCASEST", url: "/escalas/timi-scasest" },
