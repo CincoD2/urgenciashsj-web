@@ -1,0 +1,254 @@
+---
+title: 'Cribado VIH/VHC/VHB en Urgencias'
+description: 'El cribado de VIH y hepatitis C en los Servicios de Urgencias es una intervención coste-efectiva que permite reducir el diagnóstico tardío, mejorar el pronóstico individual y disminuir la transmisión comunitaria. La identificación sistemática de determinados supuestos clínicos en Urgencias convierte a este ámbito en un punto clave para el diagnóstico precoz y la vinculación temprana a atención especializada.'
+date: '2026-02-07'
+tags:
+  [
+    'Urgencias',
+    'VIH',
+    'Hepatitis C',
+    'Cribado',
+    'Diagnóstico precoz',
+    'Salud pública',
+    'Servicios de Urgencias',
+    'SEMES',
+    'Deja tu Huella',
+    'Consentimiento informado',
+    'Coste-efectividad',
+    'Enfermedades infecciosas',
+    'ITS',
+    'Zóster',
+    'Trombopenia',
+    'plaquetopenia',
+    'NAC',
+    'Neumonía Adquirida en la Comunidad',
+  ]
+---
+
+### Solicita Serología de VIH/VHB/VHC a todo paciente que acuda a urgencias con alguna de estas sospechas
+
+<div className="px-2 pb-2 pt-1 [&_figure]:my-0 [&_figure]:flex [&_figure]:flex-col [&_figure]:items-center [&_figure]:justify-center [&_figcaption]:text-sm [&_figcaption]:mt-[-35px] [&_figcaption]:text-center [&_figcaption]:min-h-[2.5rem] [&_figcaption]:leading-tight">
+  <div className="grid grid-cols-3 gap-0 place-items-center">
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/nac.png" alt="NAC" width={104} height={104} caption="NAC" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/its.png" alt="ITS" width={104} height={104} caption="ITS" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/ppe.png" alt="PPE" width={104} height={104} caption="PPE" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/smn.png" alt="Síndrome mononucleósido" width={104} height={104} caption="SMN" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/zoster.png" alt="Zóster" width={104} height={104} caption="VVZ" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/chemsex.png" alt="Chemsex" width={104} height={104} caption="ChemSex" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/endem.png" alt="Endemia" width={104} height={104} caption="Países ↑ Prevalencia" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image src="/img/cribavih/fod.png" alt="Fiebre sin foco" width={104} height={104} caption="Fiebre sin foco" />
+    </div>
+    <div className="flex flex-col items-center text-center">
+      <Image
+        src="/img/cribavih/plaquetopenia.png"
+        alt="Plaquetopenia"
+        width={104}
+        height={104}
+        caption="Plaquetopenia"
+      />
+    </div>
+
+  </div>
+</div>
+<Checklist
+  items={[
+    {
+      text: (
+        <>
+          <strong>NAC</strong>: Neumonía Adquirida en la Comunidad en pacientes entre 16 y 65 años.
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>ITS</strong>: Infección de transmisión sexual (gonococia, sífilis...).
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>PPE</strong>: Profilaxis PostExposición. Exposición de riesgo frente a una fuente
+          con estado serológico frente al VIH positivo o desconocido tanto ocupacional como no
+          ocupacional (sexual).
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>SMN</strong>: Síndrome Mononucleósico consistente en fiebre, adenopatías,
+          faringitis y exantemas cutáneos. Asociar el resto de serologías que se solicitan como
+          parte del despistaje para el diagnóstico final.
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>VVZ</strong>: Herpes Zóster. Se recomienda la realización de una serología para el
+          VIH de carácter no urgente en todas aquellas personas atendidas en los SU con diagnóstico
+          de HZ menores de 65 años sin otros factores predisponentes conocidos para padecer HZ.
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>ChemSex</strong>: Se considera chemsex al uso intencionado de drogas
+          estimulantes para tener relaciones sexuales por un periodo largo de tiempo (que puede
+          durar desde horas hasta varios días). Se recomienda la realización de una serología de
+          carácter no urgente para el VIH en todos los pacientes en los que se sospeche que haya
+          existido práctica de chemsex actual o previa.
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>
+            <WorldMapPopup label="Países ↑ Prevalencia" />
+          </strong>
+          : Se considera alta prevalencia un VIH
+          superior al 1%. 
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>Fiebre sin foco</strong>: Fiebre sin causa aparente.
+        </>
+      ),
+      checked: true,
+    },
+    {
+      text: (
+        <>
+          <strong>Plaquetopenia</strong>: Trombopenia de etiología no filiada.
+        </>
+      ),
+      checked: true,
+    },
+  ]}
+/>
+### Introducción
+
+La infección por VIH continúa siendo un problema relevante de salud pública, fundamentalmente por la infección oculta y el diagnóstico tardío, asociados a peor pronóstico clínico, mayor morbimortalidad y aumento de la transmisión comunitaria. El diagnóstico precoz permite iniciar tratamiento de forma temprana, mejorar la evolución clínica individual y reducir de manera significativa la transmisibilidad.
+
+Los Servicios de Urgencias (SU) constituyen un punto estratégico para el cribado, ya que atienden a población joven, pacientes con menor contacto con otros niveles asistenciales y cuadros clínicos con mayor prevalencia de infección oculta. Los datos del programa **Deja tu Huella** muestran que aproximadamente uno de cada cinco nuevos diagnósticos de VIH en España se realiza en Urgencias, mediante una estrategia de cribado dirigido coste-efectiva, con claro impacto asistencial y poblacional.
+
+Por este motivo, SEMES recomienda la solicitud sistemática de serología de VIH —y de forma concomitante de hepatitis C— en determinados escenarios clínicos atendidos en los SU.
+
+### Supuestos clínicos en los que se recomienda solicitar serología
+
+- Neumonía adquirida en la comunidad entre los 16 y 65 años.
+- Herpes zóster entre los 16 y 65 años.
+- Síndrome mononucleósido.
+- Infección de transmisión sexual.
+- Profilaxis posexposición frente al VIH.
+- Práctica de chemsex.
+- Fiebre sin foco.
+- Plaquetopenia de etiología no aclarada.
+- Personas migrantes procedentes de países con alta prevalencia de VIH (>1%), sin serología previa documentada.
+
+Cuando se solicita serología de VIH, se recomienda incluir de forma simultánea la serología de hepatitis C, dado que ambas infecciones comparten vías de transmisión y la prevalencia de VHC no diagnosticada en Urgencias es superior a la de la población general.
+
+### Información al paciente y consentimiento
+
+La realización de la serología requiere información previa al paciente y consentimiento, que puede ser verbal, dejando constancia en la historia clínica. El paciente puede rechazar la prueba sin que ello afecte a la calidad de la atención sanitaria recibida.
+
+Los resultados positivos deben comunicarse directamente al paciente, garantizando la confidencialidad y la derivación precoz a atención especializada. Las recomendaciones contemplan tanto estrategias de inclusión voluntaria (opt-in) como de exclusión voluntaria (opt-out), siempre que estén protocolizadas por el centro y respeten los derechos del paciente.
+
+<Note>
+  <span>
+    Puedes hacer uso de [este texto informativo](/dietas?id=cribado_vih_vhc_vhb) para adjuntar en
+    las recomendaciones del informe de alta hospitalaria.
+  </span>
+</Note>
+
+<div className="grid gap-4 md:grid-cols-[1fr_300px] items-start">
+  <Box title="Consideraciones">
+    <div className="text-slate-700 space-y-2 leading-relaxed">
+      <div>
+        En la Historia Clínica constará que se solicita CONSENTIMIENTO VERBAL y que es VOLUNTARIA
+        (macro).
+      </div>
+      <div>
+        La muestra para serología coincidirá con una de las extracciones de sangre que precise el
+        paciente.
+      </div>
+      <div>
+        Se solicitará VIH urgente si se precisa por cuadro clínico o si ayuda en la toma de
+        decisiones.
+      </div>
+      <div className="pt-1"><u>No se realizará cribado</u>:</div>
+      
+        - Casos en los que no exista necesidad clínica y no se haya extraído un tubo previo de serología para cribado.
+        
+        - No vaya a realizarse una extracción por el cuadro clínico.
+
+        - Extracción de escasa cantidad sanguínea, priorizando aquellas determinaciones urgencias más necesarias.
+
+
+    </div>
+
+  </Box>
+  <div className="self-start justify-self-center md:justify-self-end">
+    <div className="text-center text-xs text-slate-500 -mb-7 mt-2">Macro en Orion</div>
+    <div className="[&_figure]:my-0">
+      <Image
+        src="/img/cribavih/consent_verbal.png"
+        alt="Consentimiento verbal"
+        width={300}
+        height={180}
+        caption=""
+      />
+    </div>
+  </div>
+</div>
+### Solicitud
+La solicitud de cribado se realiza a través de Orion Clínic, a través de peticiones de
+Microbiología tal y como se muestra en la imagen.
+<div className="flex justify-center -mt-14 -mb-16">
+  <Image
+    src="/img/cribavih/solicitud.svg"
+    alt="Solicitud de serología"
+    width={1200}
+    height={800}
+    caption=""
+  />
+</div>
+
+<Tip>Para más información visita la web de [Deja Tu Huella](https://dejatuhuella.semes.org/)</Tip>
+
+<Box title="Bibliografía">
+
+- González del Castillo J, et al. Emergencias 2024; 36: 447-459
+
+- González del Castillo J, et al. Emergencias 2020; 32: 416-426
+
+</Box>

@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 type ChecklistItem = {
-  text: string;
+  text: ReactNode;
   checked?: boolean;
 };
 

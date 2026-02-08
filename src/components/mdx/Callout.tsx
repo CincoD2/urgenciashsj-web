@@ -42,7 +42,7 @@ export function Callout({
 }) {
   const style = styles[type] ?? styles.info;
   return (
-    <div className={`my-4 border-l-4 ${style.border} ${style.bg} p-4`}>
+    <div className={`my-4 border-l-4 ${style.border} ${style.bg} p-4 rounded-lg`}>
       <strong className={`block ${style.title}`}>
         {style.icon} {title ?? 'Nota'}
       </strong>

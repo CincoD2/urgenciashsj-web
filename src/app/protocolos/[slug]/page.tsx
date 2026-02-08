@@ -53,7 +53,7 @@ export default async function ProtocoloPage({ params }: { params: Promise<{ slug
   const { default: Content } = await import(`../../../../content/protocolos/${slug}.mdx`);
 
   return (
-    <article className="prose max-w-none">
+    <article className="prose prose-slate max-w-none prose-headings:text-[var(--primary)] prose-p:text-slate-700 prose-li:text-slate-700 prose-strong:text-[var(--primary-dark)] prose-a:text-[var(--primary)] prose-a:no-underline hover:prose-a:text-[var(--primary-dark)] prose-blockquote:border-[var(--primary)] prose-hr:border-slate-200">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">
           {data.title ?? 'Protocolos'}

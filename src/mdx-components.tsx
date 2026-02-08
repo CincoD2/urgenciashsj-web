@@ -4,6 +4,7 @@ import { Pearl } from '@/components/mdx/Pearl';
 import { Note } from '@/components/mdx/Note';
 import { Tip } from '@/components/mdx/Tip';
 import { Checklist } from '@/components/mdx/Checklist';
+import WorldMapPopup from '@/components/mdx/WorldMapPopup';
 import { Warning } from '@/components/mdx/Warning';
 import { Box } from '@/components/mdx/Box';
 import { BoxGrid } from '@/components/mdx/BoxGrid';
@@ -19,6 +20,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Note,
     Tip,
     Checklist,
+    WorldMapPopup,
     Warning,
     Box,
     BoxGrid,
