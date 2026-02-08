@@ -379,6 +379,9 @@ type ChangelogEntry = {
 function loadLatestChangelog(limit: number) {
   const dir = path.join(process.cwd(), 'content/changelog');
   if (!fs.existsSync(dir)) return [];
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
 
   return fs
     .readdirSync(dir)
@@ -393,6 +396,13 @@ function loadLatestChangelog(limit: number) {
         date: (data.date as string) ?? '1970-01-01',
         summary: data.summary as string | undefined,
       };
+    })
+    .filter((entry) => {
+      const parsed = new Date(entry.date);
+      if (Number.isNaN(parsed.getTime())) return false;
+      return (
+        parsed.getFullYear() === currentYear && parsed.getMonth() === currentMonth
+      );
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .slice(0, limit);
