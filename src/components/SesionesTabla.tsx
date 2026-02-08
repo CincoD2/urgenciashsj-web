@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
 type Row = {
   tipo: string;
@@ -8,7 +8,7 @@ type Row = {
   tags: string;
   link: string;
 };
-type SortDir = "asc" | "desc";
+type SortDir = 'asc' | 'desc';
 
 type GvizCell = { v?: unknown; f?: unknown } | null;
 type GvizRow = { c?: GvizCell[] } | null;
@@ -24,14 +24,14 @@ function IntranetIcon() {
 
 function isIntranetLink(link: string): boolean {
   if (!link) return false;
-  if (!link.startsWith("http://") && !link.startsWith("https://")) return false;
+  if (!link.startsWith('http://') && !link.startsWith('https://')) return false;
   try {
     const { hostname } = new URL(link);
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const currentHost = window.location.hostname;
       if (hostname === currentHost) return false;
     }
-    return hostname === "10.192.176.110" || hostname === "vvd17cloud.cs.san.gva.es";
+    return hostname === '10.192.176.110' || hostname === 'vvd17cloud.cs.san.gva.es';
   } catch {
     return false;
   }
@@ -39,10 +39,10 @@ function isIntranetLink(link: string): boolean {
 
 function isInternalLink(link: string): boolean {
   if (!link) return false;
-  if (!link.startsWith("http://") && !link.startsWith("https://")) return false;
+  if (!link.startsWith('http://') && !link.startsWith('https://')) return false;
   try {
     const { hostname } = new URL(link);
-    if (typeof window === "undefined") return false;
+    if (typeof window === 'undefined') return false;
     return hostname === window.location.hostname;
   } catch {
     return false;
@@ -56,21 +56,15 @@ function parseGviz(text: string): GvizResponse {
 }
 
 function cellToString(cell: GvizCell): string {
-  if (!cell) return "";
-  return (cell.f ?? cell.v ?? "").toString();
+  if (!cell) return '';
+  return (cell.f ?? cell.v ?? '').toString();
 }
 
-export default function SesionesTabla({
-  sheetId,
-  gid = "0",
-}: {
-  sheetId: string;
-  gid?: string;
-}) {
-  const [q, setQ] = useState("");
+export default function SesionesTabla({ sheetId, gid = '0' }: { sheetId: string; gid?: string }) {
+  const [q, setQ] = useState('');
   const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [sortDir, setSortDir] = useState<SortDir>('asc');
 
   useEffect(() => {
     let cancelled = false;
@@ -79,7 +73,7 @@ export default function SesionesTabla({
       try {
         setError(null);
         const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq&gid=${gid}`;
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(url, { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const text = await res.text();
         const gviz = parseGviz(text);
@@ -97,7 +91,7 @@ export default function SesionesTabla({
         if (!cancelled) setRows(out);
       } catch (e: unknown) {
         if (cancelled) return;
-        const message = e instanceof Error ? e.message : "Error cargando datos";
+        const message = e instanceof Error ? e.message : 'Error cargando datos';
         setError(message);
       }
     }
@@ -121,21 +115,21 @@ export default function SesionesTabla({
         });
 
     return [...base].sort((a, b) => {
-      const primary = a.titulo.localeCompare(b.titulo, "es", {
-        sensitivity: "base",
+      const primary = a.titulo.localeCompare(b.titulo, 'es', {
+        sensitivity: 'base',
         numeric: true,
       });
-      if (primary !== 0) return sortDir === "asc" ? primary : -primary;
-      const secondary = a.tipo.localeCompare(b.tipo, "es", {
-        sensitivity: "base",
+      if (primary !== 0) return sortDir === 'asc' ? primary : -primary;
+      const secondary = a.tipo.localeCompare(b.tipo, 'es', {
+        sensitivity: 'base',
         numeric: true,
       });
-      return sortDir === "asc" ? secondary : -secondary;
+      return sortDir === 'asc' ? secondary : -secondary;
     });
   }, [q, rows, sortDir]);
 
   const toggleSort = () => {
-    setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
   };
 
   return (
@@ -153,6 +147,18 @@ export default function SesionesTabla({
           placeholder="Busca palabras clave..."
           className="buscador-input"
         />
+        {q ? (
+          <button
+            type="button"
+            onClick={() => setQ('')}
+            className="buscador-clear"
+            aria-label="Borrar búsqueda"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 6l12 12M18 6l-12 12" />
+            </svg>
+          </button>
+        ) : null}
       </div>
 
       {error && (
@@ -172,21 +178,17 @@ export default function SesionesTabla({
                   className="inline-flex items-center gap-2 font-semibold"
                   onClick={toggleSort}
                   aria-label={`Ordenar por Título ${
-                    sortDir === "asc" ? "descendente" : "ascendente"
+                    sortDir === 'asc' ? 'descendente' : 'ascendente'
                   }`}
                 >
                   Título - Autor - Fecha
                   <span aria-hidden className="text-xs opacity-90">
-                    {sortDir === "asc" ? "↑" : "↓"}
+                    {sortDir === 'asc' ? '↑' : '↓'}
                   </span>
                 </button>
               </th>
-              <th className="px-3 py-3 text-left w-[40%] hidden sm:table-cell">
-                Tags
-              </th>
-              <th className="px-3 py-3 text-center w-[5%] hidden sm:table-cell">
-                Link
-              </th>
+              <th className="px-3 py-3 text-left w-[40%] hidden sm:table-cell">Tags</th>
+              <th className="px-3 py-3 text-center w-[5%] hidden sm:table-cell">Link</th>
             </tr>
           </thead>
 
@@ -195,11 +197,11 @@ export default function SesionesTabla({
               <tr
                 key={`${r.titulo}-${idx}`}
                 className={`border-t border-[#dfe9eb] hover:bg-[#dfe9eb]/60 cursor-pointer ${
-                  r.link && isInternalLink(r.link) ? "bg-[#f1f6f7]" : ""
+                  r.link && isInternalLink(r.link) ? 'bg-[#f1f6f7]' : ''
                 }`}
                 onClick={() => {
                   if (!r.link) return;
-                  window.open(r.link, "_blank", "noopener,noreferrer");
+                  window.open(r.link, '_blank', 'noopener,noreferrer');
                 }}
               >
                 <td className="px-3 py-3">{r.tipo}</td>
@@ -217,9 +219,7 @@ export default function SesionesTabla({
                     ) : null}
                   </span>
                 </td>
-                <td className="px-3 py-3 italic hidden sm:table-cell">
-                  {r.tags}
-                </td>
+                <td className="px-3 py-3 italic hidden sm:table-cell">{r.tags}</td>
                 <td className="px-3 py-3 text-center hidden sm:table-cell">
                   {r.link ? (
                     isIntranetLink(r.link) ? (
@@ -231,10 +231,10 @@ export default function SesionesTabla({
                         <IntranetIcon />
                       </span>
                     ) : (
-                      "🔗"
+                      '🔗'
                     )
                   ) : (
-                    ""
+                    ''
                   )}
                 </td>
               </tr>
@@ -251,9 +251,7 @@ export default function SesionesTabla({
         </table>
       </div>
 
-      <div className="text-xs text-slate-500">
-        Fuente: Google Sheets (gid {gid})
-      </div>
+      <div className="text-xs text-slate-500">Fuente: Recopilación propia y archivos Intranet</div>
     </div>
   );
 }

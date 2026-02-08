@@ -42,6 +42,7 @@ function isIntranetLink(link: string): boolean {
 
 function isInternalLink(link: string): boolean {
   if (!link) return false;
+  if (link.startsWith('/')) return true;
   if (!link.startsWith('http://') && !link.startsWith('https://')) return false;
   try {
     const { hostname } = new URL(link);
@@ -167,6 +168,18 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
           placeholder="Busca palabras clave..."
           className="buscador-input"
         />
+        {q ? (
+          <button
+            type="button"
+            onClick={() => setQ('')}
+            className="buscador-clear"
+            aria-label="Borrar búsqueda"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 6l12 12M18 6l-12 12" />
+            </svg>
+          </button>
+        ) : null}
       </div>
 
       {error && (
@@ -215,7 +228,7 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
               <tr
                 key={`${r.titulo}-${idx}`}
                 className={`border-t border-[#dfe9eb] hover:bg-[#dfe9eb]/60 cursor-pointer ${
-                  r.link && isInternalLink(r.link) ? 'bg-[#f1f6f7]' : ''
+                  r.link && isInternalLink(r.link) ? 'fila-interna' : ''
                 }`}
                 onClick={() => {
                   if (!r.link) return;
@@ -277,7 +290,7 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
         </table>
       </div>
 
-      <div className="text-xs text-slate-500">Fuente: Google Sheets (gid {gid})</div>
+      <div className="text-xs text-slate-500">Fuente: Archivos Intranet</div>
     </div>
   );
 }
