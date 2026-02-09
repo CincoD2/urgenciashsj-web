@@ -1,173 +1,186 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import matter from 'gray-matter';
-import Link from 'next/link';
+import fs from "node:fs";
+import path from "node:path";
+import matter from "gray-matter";
+import Link from "next/link";
 
-type LinkItem = { label: string; href: string; icon?: IconKey; intranet?: boolean };
+type LinkItem = {
+  label: string;
+  href: string;
+  icon?: IconKey;
+  endIcon?: EndIconKey;
+  intranet?: boolean;
+};
 
 const observacion: LinkItem[] = [
   {
-    label: 'Relevo Observación',
-    href: 'https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing',
+    label: "Relevo Observación",
+    href: "https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing",
   },
   {
-    label: 'Esquema Observación',
-    href: 'https://drive.google.com/file/d/1KQaem_gE9AXnI6FSg_TIbVFba4vmGwCW/view?usp=sharing',
+    label: "Esquema Observación",
+    href: "https://drive.google.com/file/d/1KQaem_gE9AXnI6FSg_TIbVFba4vmGwCW/view?usp=sharing",
+  },
+  {
+    label: "Hoja Informativa UHD",
+    href: "https://drive.google.com/file/d/1XfV0FDX5U6wWhKX0DVWnEhiwGl3lXbKI/view?usp=drive_link",
   },
 ];
 
 type IconKey =
-  | 'person'
-  | 'money'
-  | 'internet'
-  | 'mail'
-  | 'book'
-  | 'grad'
-  | 'computer'
-  | 'wrench'
-  | 'flask'
-  | 'xray'
-  | 'drop'
-  | 'agenda';
+  | "person"
+  | "money"
+  | "internet"
+  | "mail"
+  | "book"
+  | "grad"
+  | "computer"
+  | "wrench"
+  | "flask"
+  | "xray"
+  | "drop"
+  | "agenda";
+
+type EndIconKey = "phoneSheet";
 
 const enlacesCorporativos: Record<string, LinkItem[]> = {
   Personal: [
     {
-      label: 'Portal del Empleado GVA',
-      href: 'https://vvd17portalempleado.cs.san.gva.es/',
-      icon: 'person',
+      label: "Portal del Empleado GVA",
+      href: "https://vvd17portalempleado.cs.san.gva.es/",
+      icon: "person",
       intranet: true,
     },
     {
-      label: 'Nóminas San Juan',
-      href: 'https://nomina.san.gva.es/es/',
-      icon: 'money',
+      label: "Nóminas San Juan",
+      href: "https://nomina.san.gva.es/es/",
+      icon: "money",
     },
     {
-      label: 'Gestor Identidades (GVA)',
-      href: 'https://idm.san.gva.es/sspr',
-      icon: 'person',
+      label: "Gestor Identidades (GVA)",
+      href: "https://idm.san.gva.es/sspr",
+      icon: "person",
     },
     {
-      label: 'Intranet Privada San Juan',
-      href: 'https://intranet17.cs.san.gva.es/',
-      icon: 'internet',
+      label: "Intranet Privada San Juan",
+      href: "https://intranet17.cs.san.gva.es/",
+      icon: "internet",
       intranet: true,
     },
   ],
   Utilidades: [
     {
-      label: 'Mail Corporativo',
-      href: 'https://outlook.office365.com/',
-      icon: 'mail',
+      label: "Mail Corporativo",
+      href: "https://outlook.office365.com/",
+      icon: "mail",
     },
     {
-      label: 'Biblioteca',
-      href: 'https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac',
-      icon: 'book',
+      label: "Biblioteca",
+      href: "https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac",
+      icon: "book",
     },
     {
-      label: 'Portal Formación (EVES)',
-      href: 'https://eves.san.gva.es/es/',
-      icon: 'grad',
+      label: "Portal Formación (EVES)",
+      href: "https://eves.san.gva.es/es/",
+      icon: "grad",
     },
     {
-      label: 'Informática',
-      href: 'https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/',
-      icon: 'computer',
+      label: "Informática",
+      href: "https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/",
+      icon: "computer",
       intranet: true,
     },
   ],
   Departamento: [
     {
-      label: 'GestLab (HSJ)',
-      href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
-      icon: 'flask',
+      label: "GestLab (HSJ)",
+      href: "https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?",
+      icon: "flask",
       intranet: true,
     },
 
     {
-      label: 'Visor RX (HSJ)',
-      href: 'https://vvd17zfpa.cs.san.gva.es/ZFP/',
-      icon: 'xray',
+      label: "Visor RX (HSJ)",
+      href: "https://vvd17zfpa.cs.san.gva.es/ZFP/",
+      icon: "xray",
       intranet: true,
     },
     {
-      label: 'Taonet-Sintrom',
-      href: 'http://10.192.176.103:8080/tao/servlet/KYNTAOController',
-      icon: 'drop',
+      label: "Taonet-Sintrom",
+      href: "http://10.192.176.103:8080/tao/servlet/KYNTAOController",
+      icon: "drop",
       intranet: true,
     },
     {
-      label: 'Citas AP',
-      href: 'https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=5&idioma=es&idProcGuc=2888&idSubfaseGuc=SOLICITUD&idCatGuc=PR',
-      icon: 'agenda',
+      label: "Citas AP",
+      href: "https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=5&idioma=es&idProcGuc=2888&idSubfaseGuc=SOLICITUD&idCatGuc=PR",
+      icon: "agenda",
     },
   ],
 };
 
 const documentosInteres: LinkItem[] = [
   {
-    label: 'Solicitudes Personal',
-    href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL',
+    label: "Solicitudes Personal",
+    href: "https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL",
     intranet: true,
   },
   {
-    label: 'Teléfonos Urgencias (credenciales CS)',
-    href: 'https://sanjuan.san.gva.es/listin/',
+    label: "Hoja de teléfonos más usados Urgencias",
+    href: "https://gvaes-my.sharepoint.com/:b:/r/personal/dieguez_san_gva_es/Documents/Shared_GVA/listintel_urghsj.pdf?csf=1&web=1&e=e0QIiW",
+    endIcon: "phoneSheet",
   },
   {
-    label: 'Oxigenoterapia Linde | Indicaciones',
-    href: 'https://www.lindemedicaldirect.com/es/lite/app/Modules/Application/Main/Main.html#!/Startup',
+    label: "Teléfonos Urgencias (credenciales CS)",
+    href: "https://sanjuan.san.gva.es/listin/",
   },
   {
-    label: 'Perfiles Glucémicos Completos',
-    href: 'https://drive.google.com/file/d/1w8JIsDIsdrLVSAdGt3i9jfFyFzx-XR67/view?usp=sharing',
+    label: "Oxigenoterapia Linde | Indicaciones",
+    href: "https://www.lindemedicaldirect.com/es/lite/app/Modules/Application/Main/Main.html#!/Startup",
+  },
+  {
+    label: "Perfiles Glucémicos Completos",
+    href: "https://drive.google.com/file/d/1w8JIsDIsdrLVSAdGt3i9jfFyFzx-XR67/view?usp=sharing",
   },
 
   {
-    label: 'Plantilla Protocolos',
-    href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F00.-PLANTILLA%20DE%20PROTOCOLO&files=modelo%20de%20protocolo.docx',
+    label: "Plantilla Protocolos",
+    href: "https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F00.-PLANTILLA%20DE%20PROTOCOLO&files=modelo%20de%20protocolo.docx",
     intranet: true,
   },
   {
-    label: 'Hoja firma guardias residentes',
-    href: 'https://drive.google.com/file/d/1yjGxQNaHLHtdOYXpRmCZ-Oq_H9HEfKtG/view?usp=sharing',
-  },
-  {
-    label: 'Hoja Informativa UHD',
-    href: 'https://drive.google.com/file/d/1XfV0FDX5U6wWhKX0DVWnEhiwGl3lXbKI/view?usp=drive_link',
+    label: "Hoja firma guardias residentes",
+    href: "https://drive.google.com/file/d/1yjGxQNaHLHtdOYXpRmCZ-Oq_H9HEfKtG/view?usp=sharing",
   },
 ];
 
 const enlacesInteres: LinkItem[] = [
   {
-    label: 'AEMPS',
-    href: 'http://www.aemps.gob.es/cima/fichasTecnicas.do?metodo=detalleForm',
+    label: "AEMPS",
+    href: "http://www.aemps.gob.es/cima/fichasTecnicas.do?metodo=detalleForm",
   },
-  { label: 'Fármacos Lactancia', href: 'http://e-lactancia.org/' },
+  { label: "Fármacos Lactancia", href: "http://e-lactancia.org/" },
   {
-    label: 'Equivalencias Mórficos',
-    href: 'https://lamochiladelresi.wordpress.com/wp-content/uploads/2019/07/tabla_de_equivalencia_aproximada_entre_opioides_2014.pdf',
+    label: "Equivalencias Mórficos",
+    href: "https://lamochiladelresi.wordpress.com/wp-content/uploads/2019/07/tabla_de_equivalencia_aproximada_entre_opioides_2014.pdf",
   },
-  { label: 'UpToDate', href: 'http://www.uptodate.com/contents/search' },
+  { label: "UpToDate", href: "http://www.uptodate.com/contents/search" },
   {
-    label: 'Intoxicaciones (MurciaSalud)',
-    href: 'http://www.murciasalud.es/toxiconet.php?op=listado_protocolos&idsec=4014',
+    label: "Intoxicaciones (MurciaSalud)",
+    href: "http://www.murciasalud.es/toxiconet.php?op=listado_protocolos&idsec=4014",
   },
   {
-    label: 'CIE oficial',
-    href: 'https://eciemaps.mscbs.gob.es/ecieMaps/browser/indexMapping.html',
+    label: "CIE oficial",
+    href: "https://eciemaps.mscbs.gob.es/ecieMaps/browser/indexMapping.html",
   },
 ];
 
 const calendarEmbed =
-  'https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA';
+  "https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA";
 
 function Icon({ name }: { name: IconKey }) {
-  const common = 'h-4 w-4';
+  const common = "h-4 w-4";
   switch (name) {
-    case 'person':
+    case "person":
       return (
         <svg
           className={common}
@@ -180,7 +193,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M5 21c1.5-4 12.5-4 14 0" />
         </svg>
       );
-    case 'money':
+    case "money":
       return (
         <svg
           className={common}
@@ -194,7 +207,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M7 9v6M17 9v6" />
         </svg>
       );
-    case 'internet':
+    case "internet":
       return (
         <svg
           className={common}
@@ -207,7 +220,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M3 12h18M12 3a12 12 0 0 1 0 18M12 3a12 12 0 0 0 0 18" />
         </svg>
       );
-    case 'mail':
+    case "mail":
       return (
         <svg
           className={common}
@@ -220,7 +233,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M3 7l9 6 9-6" />
         </svg>
       );
-    case 'book':
+    case "book":
       return (
         <svg
           className={common}
@@ -233,7 +246,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M4 4v16a3 3 0 0 1 3-3h10" />
         </svg>
       );
-    case 'grad':
+    case "grad":
       return (
         <svg
           className={common}
@@ -246,7 +259,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M6 10v5c0 2 4 3 6 3s6-1 6-3v-5" />
         </svg>
       );
-    case 'computer':
+    case "computer":
       return (
         <svg
           className={common}
@@ -259,7 +272,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M8 20h8M10 16l-1 4M14 16l1 4" />
         </svg>
       );
-    case 'wrench':
+    case "wrench":
       return (
         <svg
           className={common}
@@ -271,7 +284,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M14 7a4 4 0 0 0-5 5L4 17l3 3 5-5a4 4 0 0 0 5-5z" />
         </svg>
       );
-    case 'flask':
+    case "flask":
       return (
         <svg
           className={common}
@@ -284,7 +297,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M10 2v5l-5 9a3 3 0 0 0 3 4h8a3 3 0 0 0 3-4l-5-9V2" />
         </svg>
       );
-    case 'xray':
+    case "xray":
       return (
         <svg
           className={common}
@@ -297,7 +310,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M9 8h6M9 12h6M9 16h6" />
         </svg>
       );
-    case 'drop':
+    case "drop":
       return (
         <svg
           className={common}
@@ -309,7 +322,7 @@ function Icon({ name }: { name: IconKey }) {
           <path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" />
         </svg>
       );
-    case 'agenda':
+    case "agenda":
       return (
         <svg
           className={common}
@@ -333,6 +346,40 @@ function IntranetIcon() {
   );
 }
 
+function PhoneSheetIcon() {
+  return (
+    <svg
+      viewBox="0 0 15 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4 shrink-0"
+    >
+      <path
+        d="M3.5 8H3V7H3.5C3.77614 7 4 7.22386 4 7.5C4 7.77614 3.77614 8 3.5 8Z"
+        fill="#3d7684"
+      />
+      <path
+        d="M7 10V7H7.5C7.77614 7 8 7.22386 8 7.5V9.5C8 9.77614 7.77614 10 7.5 10H7Z"
+        fill="#3d7684"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M1 1.5C1 0.671573 1.67157 0 2.5 0H10.7071L14 3.29289V13.5C14 14.3284 13.3284 15 12.5 15H2.5C1.67157 15 1 14.3284 1 13.5V1.5ZM3.5 6H2V11H3V9H3.5C4.32843 9 5 8.32843 5 7.5C5 6.67157 4.32843 6 3.5 6ZM7.5 6H6V11H7.5C8.32843 11 9 10.3284 9 9.5V7.5C9 6.67157 8.32843 6 7.5 6ZM10 11V6H13V7H11V8H12V9H11V11H10Z"
+        fill="#3d7684"
+      />
+    </svg>
+  );
+}
+
+function EndIcon({ name }: { name: EndIconKey }) {
+  switch (name) {
+    case "phoneSheet":
+      return <PhoneSheetIcon />;
+  }
+  return null;
+}
+
 function LinkList({ items }: { items: LinkItem[] }) {
   return (
     <ul className="space-y-2">
@@ -351,6 +398,7 @@ function LinkList({ items }: { items: LinkItem[] }) {
                 </span>
               ) : null}
               <span>{it.label}</span>
+              {it.endIcon ? <EndIcon name={it.endIcon} /> : null}
               {it.intranet ? (
                 <span
                   className="ml-1 text-[#6b7f83]"
@@ -377,7 +425,7 @@ type ChangelogEntry = {
 };
 
 function loadLatestChangelog(limit: number) {
-  const dir = path.join(process.cwd(), 'content/changelog');
+  const dir = path.join(process.cwd(), "content/changelog");
   if (!fs.existsSync(dir)) return [];
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -385,15 +433,15 @@ function loadLatestChangelog(limit: number) {
 
   return fs
     .readdirSync(dir)
-    .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
+    .filter((file) => file.endsWith(".md") || file.endsWith(".mdx"))
     .map((file) => {
       const fullPath = path.join(dir, file);
-      const raw = fs.readFileSync(fullPath, 'utf-8');
+      const raw = fs.readFileSync(fullPath, "utf-8");
       const { data } = matter(raw);
 
       return {
-        title: (data.title as string) ?? file.replace(/\.(md|mdx)$/i, ''),
-        date: (data.date as string) ?? '1970-01-01',
+        title: (data.title as string) ?? file.replace(/\.(md|mdx)$/i, ""),
+        date: (data.date as string) ?? "1970-01-01",
         summary: data.summary as string | undefined,
       };
     })
@@ -401,7 +449,8 @@ function loadLatestChangelog(limit: number) {
       const parsed = new Date(entry.date);
       if (Number.isNaN(parsed.getTime())) return false;
       return (
-        parsed.getFullYear() === currentYear && parsed.getMonth() === currentMonth
+        parsed.getFullYear() === currentYear &&
+        parsed.getMonth() === currentMonth
       );
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1))
@@ -417,8 +466,8 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover"
           style={{
-            backgroundImage: 'url(/urg-background.png)',
-            backgroundPosition: 'center 18%',
+            backgroundImage: "url(/urg-background.png)",
+            backgroundPosition: "center 18%",
           }}
         />
         <div className="absolute inset-0 bg-white/60" />
@@ -441,7 +490,9 @@ export default function HomePage() {
               <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
                 Novedades
               </span>
-              <span className="text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
+              <span className="text-xs font-semibold text-[#2b5d68]">
+                Ver todo →
+              </span>
             </div>
             <div className="space-y-1">
               {latestChangelog.map((entry) => (
@@ -450,9 +501,13 @@ export default function HomePage() {
                   className="flex flex-wrap items-center gap-3"
                 >
                   <span className="text-xs text-[#6b7f83]">{entry.date}</span>
-                  <span className="font-semibold text-slate-900">{entry.title}</span>
+                  <span className="font-semibold text-slate-900">
+                    {entry.title}
+                  </span>
                   {entry.summary ? (
-                    <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
+                    <span className="text-xs text-[#7b8f94] ml-2">
+                      — {entry.summary}
+                    </span>
                   ) : null}
                 </div>
               ))}
@@ -495,7 +550,11 @@ export default function HomePage() {
       <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
         <h2 className="text-xl font-semibold">Próximos eventos relacionados</h2>
         <div className="overflow-hidden rounded-md border border-[#dfe9eb]">
-          <iframe title="Calendario de eventos" src={calendarEmbed} className="h-[500px] w-full" />
+          <iframe
+            title="Calendario de eventos"
+            src={calendarEmbed}
+            className="h-[500px] w-full"
+          />
         </div>
       </section>
     </div>
