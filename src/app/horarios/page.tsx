@@ -323,13 +323,12 @@ export default function HorariosPage() {
             <h1 className="text-3xl font-semibold text-[#1f4c57]">Horarios</h1>
           </div>
           <div className="rounded-full border border-[#dfe9eb] bg-white/80 px-3 py-1 text-xs font-semibold uppercase text-slate-500 shadow-sm">
-            {filteredYears.length} anos
+            {filteredYears.length} años
           </div>
         </div>
         <p className="max-w-2xl text-sm text-slate-600">
-          Selecciona un ano y abre el PDF del mes correspondiente. Para editar,
-          anade enlaces en la constante{" "}
-          <span className="font-semibold">HORARIOS</span> de esta pagina.
+          Selecciona un año y abre el PDF del mes correspondiente.
+          <span className="font-semibold">HORARIOS</span> de esta página.
         </p>
       </header>
 
@@ -352,7 +351,7 @@ export default function HorariosPage() {
           </span>
           <input
             type="text"
-            placeholder="Buscar por ano o mes (ej. 2025, marzo)"
+            placeholder="Buscar por año o mes (ej. 2025, marzo)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="buscador-input"
