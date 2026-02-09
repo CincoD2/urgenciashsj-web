@@ -2,8 +2,17 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
+import { HORARIOS, MONTHS, MONTH_ALIASES, MONTH_LABELS } from "@/lib/horariosData";
+
 type SearchItem = {
-  type: "page" | "protocolo" | "dieta" | "sesion" | "herramienta" | "formacion";
+  type:
+    | "page"
+    | "protocolo"
+    | "dieta"
+    | "sesion"
+    | "herramienta"
+    | "formacion"
+    | "horario";
   title: string;
   url: string;
   content: string;
@@ -130,6 +139,66 @@ function loadPages(): SearchItem[] {
     { type: "page", title: "Herramientas", url: "/escalas", content: "escalas herramientas" },
     { type: "page", title: "Eventos", url: "/eventos", content: "eventos calendario agenda" },
   ];
+}
+
+function loadHorarios(): SearchItem[] {
+  const items: SearchItem[] = [
+    {
+      type: "horario",
+      title: "Horarios",
+      url: "/horarios",
+      content: "horarios turnos calendario cuadrante",
+    },
+  ];
+
+  for (const entry of HORARIOS) {
+    const year = entry.year;
+    const yearStr = String(year);
+    const yearShort = yearStr.slice(-2);
+
+    items.push({
+      type: "horario",
+      title: `Horarios ${year}`,
+      url: "/horarios",
+      content: `horarios ${yearStr} ${yearShort}`,
+    });
+
+    MONTHS.forEach((month, idx) => {
+      const url = entry.months[month];
+      if (!url) return;
+
+      const label = MONTH_LABELS[month];
+      const aliases = MONTH_ALIASES[month];
+      const monthNum = String(idx + 1).padStart(2, "0");
+
+      const content = [
+        "horarios",
+        "turnos",
+        label,
+        month,
+        yearStr,
+        yearShort,
+        ...aliases,
+        `${label} ${yearStr}`,
+        `${label} ${yearShort}`,
+        `${monthNum}/${yearStr}`,
+        `${monthNum}/${yearShort}`,
+        `${monthNum}-${yearStr}`,
+        `${monthNum}-${yearShort}`,
+        `${yearStr}-${monthNum}`,
+        `${yearStr}/${monthNum}`,
+      ].join(" ");
+
+      items.push({
+        type: "horario",
+        title: `Horarios ${label} ${year}`,
+        url,
+        content,
+      });
+    });
+  }
+
+  return items;
 }
 
 function loadStandycalcBrandNames(): string[] {
@@ -418,7 +487,14 @@ async function loadAllItems(): Promise<SearchItem[]> {
     loadSheetRows("1ej7zO2m93Fw1WxYZNRgzmiQhKWGIXkYV86p9ZDoDez8", "0", "sesion", "/sesiones"),
   ]);
 
-  const items = [...loadPages(), ...loadProtocolos(), ...loadDietas(), ...protocolosSheet, ...sesionesSheet];
+  const items = [
+    ...loadPages(),
+    ...loadHorarios(),
+    ...loadProtocolos(),
+    ...loadDietas(),
+    ...protocolosSheet,
+    ...sesionesSheet,
+  ];
   cache.set(key, { ts: now, data: items });
   return items;
 }

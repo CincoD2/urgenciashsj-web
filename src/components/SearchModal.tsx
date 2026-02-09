@@ -87,6 +87,8 @@ export default function SearchModal({
               <li key={`${r.type}-${r.url}-${idx}`}>
                 <a
                   href={r.url}
+                  target="_blank"
+                  rel="noreferrer"
                   className="block rounded px-2 py-2 text-sm hover:bg-[#dfe9eb]/60 hover:text-[#3d7684]"
                   onClick={() => {
                     if (r.type === "protocolo") {
@@ -105,6 +107,8 @@ export default function SearchModal({
                       ? "Herramienta"
                       : r.type === "formacion"
                       ? "Formación"
+                      : r.type === "horario"
+                      ? "Horarios"
                       : r.type}
                   </span>
                   {r.title}
@@ -117,3 +121,4 @@ export default function SearchModal({
     </div>
   );
 }
+
