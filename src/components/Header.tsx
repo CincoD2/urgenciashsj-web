@@ -523,6 +523,9 @@ export default function Header() {
           <Link className={navItemClass} href="/dietas">
             Dietas
           </Link>
+          <Link className={navItemClass} href="/horarios">
+            Horarios
+          </Link>
           <Link className={navItemClass} href="/formacion">
             Formación
           </Link>
@@ -904,6 +907,13 @@ export default function Header() {
                 onClick={closeMenusAndScrollTop}
               >
                 Dietas
+              </Link>
+              <Link
+                className="block rounded px-3 py-2 hover:bg-slate-100"
+                href="/horarios"
+                onClick={closeMenusAndScrollTop}
+              >
+                Horarios
               </Link>
               <Link
                 className="block rounded px-3 py-2 hover:bg-slate-100"
