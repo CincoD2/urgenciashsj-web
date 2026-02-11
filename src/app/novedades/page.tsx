@@ -44,51 +44,61 @@ function loadChangelog(): ChangelogEntry[] {
 export default function NovedadesPage() {
   const entries = loadChangelog();
 
-  function renderLineWithLinks(line: string) {
-    const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g;
-    const mdParts = line.split(mdLinkRegex);
+  function renderInlineMarkdown(line: string) {
     const nodes: React.ReactNode[] = [];
+    const tokenRegex =
+      /(\*\*[^*]+\*\*|\[[^\]]+\]\((?:https?:\/\/[^\s)]+|\/[^\s)]+)\)|https?:\/\/[^\s]+)/g;
+    const parts = line.split(tokenRegex);
 
-    for (let i = 0; i < mdParts.length; i += 3) {
-      const textChunk = mdParts[i];
-      const mdLabel = mdParts[i + 1];
-      const mdUrl = mdParts[i + 2];
+    parts.forEach((part, idx) => {
+      if (!part) return;
 
-      if (textChunk) {
-        const parts = textChunk.split(/(https?:\/\/[^\s]+)/g);
-        parts.forEach((part, idx) => {
-          if (part.startsWith('http://') || part.startsWith('https://')) {
-            nodes.push(
-              <a
-                key={`${part}-${i}-${idx}`}
-                href={part}
-                target="_blank"
-                rel="noreferrer"
-                className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#2b5d68]"
-              >
-                {part}
-              </a>
-            );
-          } else if (part) {
-            nodes.push(<span key={`${part}-${i}-${idx}`}>{part}</span>);
-          }
-        });
-      }
-
-      if (mdLabel && mdUrl) {
+      const mdLinkMatch = part.match(
+        /^\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)$/
+      );
+      if (mdLinkMatch) {
+        const [, label, url] = mdLinkMatch;
         nodes.push(
           <a
-            key={`${mdUrl}-${i}`}
-            href={mdUrl}
-            target={mdUrl.startsWith('http') ? '_blank' : undefined}
-            rel={mdUrl.startsWith('http') ? 'noreferrer' : undefined}
+            key={`${idx}-${url}`}
+            href={url}
+            target={url.startsWith('http') ? '_blank' : undefined}
+            rel={url.startsWith('http') ? 'noreferrer' : undefined}
             className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#2b5d68]"
           >
-            {mdLabel}
+            {label}
           </a>
         );
+        return;
       }
-    }
+
+      if (part.startsWith('http://') || part.startsWith('https://')) {
+        nodes.push(
+          <a
+            key={`${idx}-${part}`}
+            href={part}
+            target="_blank"
+            rel="noreferrer"
+            className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#2b5d68]"
+          >
+            {part}
+          </a>
+        );
+        return;
+      }
+
+      const boldMatch = part.match(/^\*\*([^*]+)\*\*$/);
+      if (boldMatch) {
+        nodes.push(
+          <strong key={`${idx}-${boldMatch[1]}`} className="font-semibold text-slate-900">
+            {boldMatch[1]}
+          </strong>
+        );
+        return;
+      }
+
+      nodes.push(<span key={`${idx}-${part}`}>{part}</span>);
+    });
 
     return nodes;
   }
@@ -137,7 +147,7 @@ export default function NovedadesPage() {
                 <div className="mt-3 text-sm text-[#3f5f66]">
                   {entry.body.split('\n').map((line, idx) => (
                     <p key={idx} className="mb-1">
-                      {renderLineWithLinks(line)}
+                      {renderInlineMarkdown(line)}
                     </p>
                   ))}
                 </div>
