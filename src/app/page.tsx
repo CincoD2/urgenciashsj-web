@@ -15,14 +15,22 @@ const observacion: LinkItem[] = [
   {
     label: "Relevo Observación",
     href: "https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing",
+    endIcon: "phoneSheet",
   },
   {
     label: "Esquema Observación",
     href: "https://drive.google.com/file/d/1KQaem_gE9AXnI6FSg_TIbVFba4vmGwCW/view?usp=sharing",
+    endIcon: "phoneSheet",
   },
   {
     label: "Hoja Informativa UHD",
     href: "https://drive.google.com/file/d/1XfV0FDX5U6wWhKX0DVWnEhiwGl3lXbKI/view?usp=drive_link",
+    endIcon: "phoneSheet",
+  },
+  {
+    label: "Plantilla asignación médico N2",
+    href: "https://drive.google.com/file/d/1Gi_J6xWg8lGq5t4PKmA07kSdJKpGYP5Q/view?usp=sharing",
+    endIcon: "phoneSheet",
   },
 ];
 
@@ -140,6 +148,7 @@ const documentosInteres: LinkItem[] = [
   {
     label: "Perfiles Glucémicos Completos",
     href: "https://drive.google.com/file/d/1w8JIsDIsdrLVSAdGt3i9jfFyFzx-XR67/view?usp=sharing",
+    endIcon: "phoneSheet",
   },
 
   {
@@ -150,6 +159,7 @@ const documentosInteres: LinkItem[] = [
   {
     label: "Hoja firma guardias residentes",
     href: "https://drive.google.com/file/d/1yjGxQNaHLHtdOYXpRmCZ-Oq_H9HEfKtG/view?usp=sharing",
+    endIcon: "phoneSheet",
   },
 ];
 
@@ -532,7 +542,7 @@ export default function HomePage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
-          <h2 className="text-xl font-semibold">Observación</h2>
+          <h2 className="text-xl font-semibold">Nivel 2 · Observación</h2>
           <LinkList items={observacion} />
         </section>
 
