@@ -30,6 +30,7 @@ const escalaRoutes = [
   '/escalas/hiperNa',
   '/escalas/hiponatremia',
   '/escalas/idsa',
+  '/escalas/nihss',
   '/escalas/pafi',
   '/escalas/psi',
   '/escalas/qsofa',

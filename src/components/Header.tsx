@@ -399,6 +399,13 @@ export default function Header() {
                 </Link>
                 <Link
                   className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/nihss"
+                  onClick={closeMenus}
+                >
+                  NIHSS
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
                   href="/escalas/gradiente-aa-o2"
                   onClick={closeMenus}
                 >
@@ -434,6 +441,13 @@ export default function Header() {
                 </Link>
                 <Link
                   className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/nihss"
+                  onClick={closeMenus}
+                >
+                  NIHSS
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
                   href="/escalas/pafi"
                   onClick={closeMenus}
                 >
@@ -452,6 +466,13 @@ export default function Header() {
                   onClick={closeMenus}
                 >
                   qSOFA
+                </Link>
+                <Link
+                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                  href="/escalas/sofa"
+                  onClick={closeMenus}
+                >
+                  SOFA
                 </Link>
                 <Link
                   className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
@@ -753,6 +774,16 @@ export default function Header() {
                   }}
                 >
                   Glasgow
+                </Link>
+                <Link
+                  className="rounded px-2 py-1 hover:bg-slate-100"
+                  href="/escalas/nihss"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    closeMenusAndScrollTop();
+                  }}
+                >
+                  NIHSS
                 </Link>
                 <Link
                   className="rounded px-2 py-1 hover:bg-slate-100"

@@ -141,6 +141,17 @@ export default function Escalas() {
             </span>
             Glasgow
           </a>
+          <a className="escala-link-btn" href="/escalas/nihss">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 7h12" />
+                <path d="M6 17h12" />
+                <path d="M9 4v16" />
+                <path d="M15 4v16" />
+              </svg>
+            </span>
+            NIHSS
+          </a>
         </div>
       </section>
 

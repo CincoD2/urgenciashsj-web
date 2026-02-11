@@ -409,6 +409,7 @@ function loadTools(): SearchItem[] {
     },
     { title: "CURB-65", url: "/escalas/curb65" },
     { title: "Glasgow", url: "/escalas/glasgow" },
+    { title: "NIHSS", url: "/escalas/nihss", content: "nihss ictus stroke deficit neurologico" },
     { title: "Gradiente A-a O2", url: "/escalas/gradiente-aa-o2" },
     { title: "HAS-BLED", url: "/escalas/hasbled" },
     { title: "Hipernatremia", url: "/escalas/hiperNa" },

@@ -853,6 +853,10 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.selector-botones-1col {
+  grid-template-columns: 1fr;
+}
+
 .selector-botones-compact {
   gap: 6px;
 }
