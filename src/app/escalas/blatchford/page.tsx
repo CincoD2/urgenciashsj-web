@@ -220,7 +220,7 @@ export default function BlatchfordPage() {
       (item) => `- ${item.label} (+${item.puntos})`
     );
 
-    if (!puedeCalcular || total === null || !pas || !bun || !sexo || !hb) return null;
+    if (!puedeCalcular || total === null || !pas || !bun || !sexo || !hb || !interpretacion) return null;
 
     return `Glasgow-Blatchford Score (GBS)
 - PAS: ${pas.label} mmHg (+${pas.puntos})
