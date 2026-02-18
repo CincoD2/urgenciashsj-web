@@ -1,27 +1,22 @@
 'use client';
 
-import { useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { useState } from 'react';
 
 import AboutModal from '@/components/AboutModal';
 
 export default function Footer() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [showLegal, setShowLegal] = useState(true);
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get('about') !== '1') return;
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('about') !== '1') return;
     setAboutOpen(true);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('about');
-    const next = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-    router.replace(next, { scroll: false });
-  }, [pathname, router, searchParams]);
+    url.searchParams.delete('about');
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }, []);
 
   return (
     <footer id="acerca-de" className="border-t border-[#dfe9eb] mt-12 bg-white">
