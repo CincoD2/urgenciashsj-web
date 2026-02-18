@@ -12,43 +12,43 @@ type Criterio = {
 
 const CRITERIOS: Criterio[] = [
   {
-    id: 'mental',
-    label: 'Estado mental alterado o empeorado',
-    texto: 'Estado mental alterado',
+    id: 'temperatura',
+    label: 'Temperatura ≤ 35 o ≥ 38.5 ºC',
+    texto: 'Temperatura ≤35 o ≥38.5 ºC',
   },
   {
-    id: 'fr',
-    label: 'Frecuencia respiratoria ≥ 22 rpm',
-    texto: 'Frecuencia respiratoria ≥22 rpm',
+    id: 'fc',
+    label: 'Frecuencia cardíaca > 90 lpm',
+    texto: 'Frecuencia cardíaca >90 lpm',
   },
   {
-    id: 'tas',
-    label: 'TAS ≤ 100 mmHg',
-    texto: 'TAS ≤100 mmHg',
+    id: 'fr_paco2',
+    label: 'Frecuencia respiratoria > 20 rpm o PaCO2 < 32 mmHg',
+    texto: 'Frecuencia respiratoria >20 rpm o PaCO2 <32 mmHg',
+  },
+  {
+    id: 'leucocitos',
+    label: 'Leucocitos > 12.000/mm3 o < 4.000/mm3 o > 10% cayados',
+    texto: 'Leucocitos >12.000/mm3 o <4.000/mm3 o >10% cayados',
   },
 ];
 
 function getInterpretacion(puntuacion: number) {
-  if (puntuacion === 1) {
+  if (puntuacion > 2) {
     return {
       texto:
-        'RIESGO INTERMEDIO: Repetir qSOFA frecuentemente y cumplimentar la escala NEWS-2.',
-      color: 'naranja',
-    };
-  }
-  if (puntuacion < 2) {
-    return {
-      texto: 'BAJO RIESGO: Repetir qSOFA frecuentemente. Continuar tratamiento estándar.',
-      color: 'verde',
+        'Más de 2 criterios SIRS: se recomienda ingreso en UCI, independiente del resto de parámetros valorados en BISAP.',
+      color: 'rojo',
     };
   }
   return {
-    texto: 'RIESGO ALTO: Vigilar disfunción orgánica. Pedir lactato. Evaluar con SOFA.',
-    color: 'rojo',
+    texto:
+      'SIRS con 2 o menos criterios: no cumple recomendación de ingreso en UCI por criterio SIRS aislado.',
+    color: 'amarillo',
   };
 }
 
-export default function Qsofa() {
+export default function Sirs() {
   const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
   const haySeleccion = Object.values(seleccion).some(Boolean);
 
@@ -60,14 +60,15 @@ export default function Qsofa() {
 
   const textoInforme = useMemo(() => {
     if (!haySeleccion) return null;
+
     const criteriosSeleccionados = CRITERIOS.filter((c) => seleccion[c.id])
       .map((c) => `- ${c.texto}`)
       .join('\n');
 
-    return `qSOFA
+    return `SIRS (Síndrome de Respuesta Inflamatoria Sistémica)
 ${criteriosSeleccionados}
 
-Puntuación: ${puntuacion}
+Criterios cumplidos: ${puntuacion}
 ${interpretacion.texto}`;
   }, [haySeleccion, seleccion, puntuacion, interpretacion]);
 
@@ -81,8 +82,12 @@ ${interpretacion.texto}`;
 
   return (
     <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
-      <h1 className="text-2xl font-semibold">qSOFA score para identificación de sepsis</h1>
-      <div className="criterios">
+      <h1 className="text-2xl font-semibold">SIRS (Síndrome de Respuesta Inflamatoria Sistémica)</h1>
+      <p className="text-sm text-slate-700">
+        Respuesta inflamatoria no infecciosa definida por la presencia de 2 o más criterios.
+      </p>
+
+      <div className="criterios" style={{ gridTemplateColumns: '1fr' }}>
         {CRITERIOS.map((c) => (
           <button
             key={c.id}
@@ -103,34 +108,12 @@ ${interpretacion.texto}`;
         </div>
 
         <div className={`resultado ${interpretacion.color}`}>
-          <div className="puntos-total">{puntuacion} puntos</div>
+          <div className="puntos-total">{puntuacion} criterios</div>
           <div className="interpretacion">{interpretacion.texto}</div>
-          {puntuacion === 1 && (
-            <div className="mt-2">
-              <a href="/escalas/news-2" className="text-blue-600 hover:underline font-medium">
-                Ir a escala NEWS-2
-              </a>
-            </div>
-          )}
         </div>
       </div>
 
       {textoInforme && <InformeCopiable texto={textoInforme} />}
-
-      <section className="mt-8 space-y-4 text-sm text-slate-700 leading-relaxed">
-        <p>
-          Se trata de un modelo desarrollado en Febrero de 2016 para evaluar la posibilidad de un
-          riesgo alto en pacientes con sospecha de sepsis con escasos parámetros, dejando ya a un
-          lado los criterios del SIRS. Emplea solamente el estado mental alterado (es decir,
-          GCS&lt;15).
-        </p>
-        <p>
-          Una puntuación baja no elimina la posibilidad de sepsis, por lo que se recomienda seguir
-          evaluando al paciente, si sigue siendo sospechoso. Una puntuación alta induce a adoptar
-          medidas más concretas de tratamiento, con medición de lactato, evaluación con SOFA,
-          tratamiento antibiótico y fluidoterapia.
-        </p>
-      </section>
     </main>
   );
 }

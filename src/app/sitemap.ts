@@ -34,6 +34,7 @@ const escalaRoutes = [
   '/escalas/pafi',
   '/escalas/psi',
   '/escalas/qsofa',
+  '/escalas/sirs',
   '/escalas/safi',
   '/escalas/tam',
   '/escalas/timi-scacest',

@@ -39,6 +39,36 @@ export default function Header() {
   const toolsLinkClass = isAuthed
     ? 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm'
     : 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm';
+  const fixedTools = [
+    { label: 'Depurador SIA', href: '/escalas/depuradorTtos' },
+    { label: 'Inhaladores', href: '/inhaladores' },
+    { label: 'StandyCalc® (beta)', href: '/escalas/standycalc' },
+  ];
+  const alphabeticalTools = [
+    { label: 'Anion GAP', href: '/escalas/anion-gap' },
+    { label: 'BISAP', href: '/escalas/bisap' },
+    { label: 'CHA2DS2-VA', href: '/escalas/cha2ds2va' },
+    { label: 'CURB-65', href: '/escalas/curb65' },
+    { label: 'Glasgow', href: '/escalas/glasgow' },
+    { label: 'Gradiente A-a O2', href: '/escalas/gradiente-aa-o2' },
+    { label: 'HAS-BLED', href: '/escalas/hasbled' },
+    { label: 'Hipernatremia', href: '/escalas/hiperNa' },
+    { label: 'Hiponatremia', href: '/escalas/hiponatremia' },
+    { label: 'IDSA/ATS', href: '/escalas/idsa' },
+    { label: 'NEWS-2', href: '/escalas/news-2' },
+    { label: 'NIHSS', href: '/escalas/nihss' },
+    { label: 'PaFi', href: '/escalas/pafi' },
+    { label: 'PSI', href: '/escalas/psi' },
+    { label: 'qSOFA', href: '/escalas/qsofa' },
+    { label: 'SaFi', href: '/escalas/safi' },
+    { label: 'SIRS', href: '/escalas/sirs' },
+    { label: 'SOFA', href: '/escalas/sofa' },
+    { label: 'TAm (PAM)', href: '/escalas/tam' },
+    { label: 'TIMI SCACEST', href: '/escalas/timi-scacest' },
+    { label: 'TIMI SCASEST', href: '/escalas/timi-scasest' },
+    { label: 'Waterfall', href: '/escalas/waterfall' },
+    { label: 'Wells – TVP', href: '/escalas/wells-tvp' },
+  ];
 
   const mobileMenuClass = `lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
     open ? 'max-h-[900px] opacity-100' : 'max-h-0 opacity-0'
@@ -345,170 +375,29 @@ export default function Header() {
                 className="max-h-[50vh] overflow-y-auto pr-1 lg:max-h-[50vh]"
                 onScroll={updateToolsScrollState}
               >
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/depuradorTtos"
-                  onClick={closeMenus}
-                >
-                  Depurador SIA
-                </Link>
+                {fixedTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                    href={tool.href}
+                    onClick={closeMenus}
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
+                {alphabeticalTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
+                    href={tool.href}
+                    onClick={closeMenus}
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
                 <span className="block rounded px-3 py-2 text-sm text-slate-400">
                   Formateo Analítica Orion
                 </span>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/standycalc"
-                  onClick={closeMenus}
-                >
-                  StandyCalc® (beta)
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/inhaladores"
-                  onClick={closeMenus}
-                >
-                  Inhaladores
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/anion-gap"
-                  onClick={closeMenus}
-                >
-                  Anion GAP
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/cha2ds2va"
-                  onClick={closeMenus}
-                >
-                  CHA2DS2-VA
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/curb65"
-                  onClick={closeMenus}
-                >
-                  CURB-65
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/glasgow"
-                  onClick={closeMenus}
-                >
-                  Glasgow
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/nihss"
-                  onClick={closeMenus}
-                >
-                  NIHSS
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/gradiente-aa-o2"
-                  onClick={closeMenus}
-                >
-                  Gradiente A-a O2
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/hasbled"
-                  onClick={closeMenus}
-                >
-                  HAS-BLED
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/hiperNa"
-                  onClick={closeMenus}
-                >
-                  Hipernatremia
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/hiponatremia"
-                  onClick={closeMenus}
-                >
-                  Hiponatremia
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/idsa"
-                  onClick={closeMenus}
-                >
-                  IDSA/ATS
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/nihss"
-                  onClick={closeMenus}
-                >
-                  NIHSS
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/pafi"
-                  onClick={closeMenus}
-                >
-                  PaFi
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/psi"
-                  onClick={closeMenus}
-                >
-                  PSI
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/qsofa"
-                  onClick={closeMenus}
-                >
-                  qSOFA
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/sofa"
-                  onClick={closeMenus}
-                >
-                  SOFA
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/safi"
-                  onClick={closeMenus}
-                >
-                  SaFi
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/tam"
-                  onClick={closeMenus}
-                >
-                  TAm (PAM)
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/timi-scacest"
-                  onClick={closeMenus}
-                >
-                  TIMI SCACEST
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/timi-scasest"
-                  onClick={closeMenus}
-                >
-                  TIMI SCASEST
-                </Link>
-                <Link
-                  className="block rounded px-3 py-2 text-sm hover:bg-slate-100"
-                  href="/escalas/wells-tvp"
-                  onClick={closeMenus}
-                >
-                  Wells – TVP
-                </Link>
               </div>
               <div className="mt-1 flex h-9 items-center justify-center pt-1">
                 <button
@@ -704,217 +593,33 @@ export default function Header() {
               </button>
 
               <div className={toolsMenuClass}>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/depuradorTtos"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Depurador SIA
-                </Link>
+                {fixedTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    className="rounded px-2 py-1 hover:bg-slate-100"
+                    href={tool.href}
+                    onClick={() => {
+                      setToolsOpen(false);
+                      closeMenusAndScrollTop();
+                    }}
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
+                {alphabeticalTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    className="rounded px-2 py-1 hover:bg-slate-100"
+                    href={tool.href}
+                    onClick={() => {
+                      setToolsOpen(false);
+                      closeMenusAndScrollTop();
+                    }}
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
                 <span className="rounded px-2 py-1 text-slate-400">Formateo Analítica Orion</span>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/standycalc"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  StandyCalc® (beta)
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/inhaladores"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Inhaladores
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/anion-gap"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Anion GAP
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/cha2ds2va"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  CHA2DS2-VA
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/curb65"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  CURB-65
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/glasgow"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Glasgow
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/nihss"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  NIHSS
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/gradiente-aa-o2"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Gradiente A-a O2
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/hasbled"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  HAS-BLED
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/hiperNa"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Hipernatremia
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/hiponatremia"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Hiponatremia
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/idsa"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  IDSA/ATS
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/pafi"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  PaFi
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/psi"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  PSI
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/qsofa"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  qSOFA
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/safi"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  SaFi
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/tam"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  TAm (PAM)
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/timi-scacest"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  TIMI SCACEST
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/timi-scasest"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  TIMI SCASEST
-                </Link>
-                <Link
-                  className="rounded px-2 py-1 hover:bg-slate-100"
-                  href="/escalas/wells-tvp"
-                  onClick={() => {
-                    setToolsOpen(false);
-                    closeMenusAndScrollTop();
-                  }}
-                >
-                  Wells – TVP
-                </Link>
               </div>
 
               <div className="my-2 h-px bg-[#dfe9eb]" />

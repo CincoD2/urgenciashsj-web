@@ -9,7 +9,7 @@ export default function Footer() {
   const [showLegal, setShowLegal] = useState(true);
 
   return (
-    <footer className="border-t border-[#dfe9eb] mt-12 bg-white">
+    <footer id="acerca-de" className="border-t border-[#dfe9eb] mt-12 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 text-sm text-[#516f75] space-y-2">
         <div className="flex flex-col items-end gap-2">
           {showLegal ? (

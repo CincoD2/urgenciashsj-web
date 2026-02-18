@@ -403,6 +403,11 @@ function loadTools(): SearchItem[] {
     { title: "Inhaladores", url: "/inhaladores" },
     { title: "Anion GAP", url: "/escalas/anion-gap" },
     {
+      title: "BISAP",
+      url: "/escalas/bisap",
+      content: "bisap pancreatitis aguda gravedad bun urea derrame pleural sirs glasgow",
+    },
+    {
       title: "CHA2DS2-VA",
       url: "/escalas/cha2ds2va",
       content: "chads chadsva chads-vasc cha2ds2va",
@@ -415,14 +420,25 @@ function loadTools(): SearchItem[] {
     { title: "Hipernatremia", url: "/escalas/hiperNa" },
     { title: "Hiponatremia", url: "/escalas/hiponatremia" },
     { title: "IDSA/ATS", url: "/escalas/idsa" },
+    {
+      title: "NEWS-2",
+      url: "/escalas/news-2",
+      content: "news2 news-2 sepsis codigo sepsis alerta temprana deterioro clinico qsofa",
+    },
     { title: "PaFi", url: "/escalas/pafi" },
     { title: "PSI", url: "/escalas/psi" },
     { title: "qSOFA", url: "/escalas/qsofa" },
+    { title: "SIRS", url: "/escalas/sirs", content: "sirs sepsis inflamatoria sistemica bisap uci" },
     { title: "SaFi", url: "/escalas/safi" },
     { title: "SOFA", url: "/escalas/sofa" },
     { title: "TAm (PAM)", url: "/escalas/tam" },
     { title: "TIMI SCACEST", url: "/escalas/timi-scacest" },
     { title: "TIMI SCASEST", url: "/escalas/timi-scasest" },
+    {
+      title: "Waterfall",
+      url: "/escalas/waterfall",
+      content: "waterfall pancreatitis fluidoterapia ringer lactato hipovolemia sobrecarga",
+    },
     { title: "Wells – TVP", url: "/escalas/wells-tvp" },
   ];
   return items.map((it) => ({
