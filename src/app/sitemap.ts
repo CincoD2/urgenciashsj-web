@@ -21,6 +21,7 @@ const staticRoutes = [
 
 const escalaRoutes = [
   '/escalas/anion-gap',
+  '/escalas/blatchford',
   '/escalas/cha2ds2va',
   '/escalas/curb65',
   '/escalas/depuradorTtos',

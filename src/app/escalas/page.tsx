@@ -225,6 +225,17 @@ export default function Escalas() {
             </span>
             BISAP
           </a>
+          <a className="escala-link-btn" href="/escalas/blatchford">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 5h12" />
+                <path d="M8 9h8" />
+                <path d="M10 13h4" />
+                <path d="M5 19h14" />
+              </svg>
+            </span>
+            Blatchford
+          </a>
           <a className="escala-link-btn" href="/escalas/waterfall">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

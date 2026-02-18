@@ -379,7 +379,7 @@ ${pautaSucesiva.texto}
             <option value="72h">72h</option>
           </select>
         </div>
-        <div className="criterios" style={{ gridTemplateColumns: 'repeat(2, minmax(240px, 1fr))' }}>
+        <div className="criterios waterfall-dolor-tolerancia">
           <button
             type="button"
             className={`criterio-btn ${dolorMenor5Sucesiva ? 'activo-verde' : ''}`}
@@ -417,7 +417,7 @@ ${pautaSucesiva.texto}
         </div>
 
         <h3 className="text-sm font-semibold text-[#2b5d68]">Sobrecarga de fluidos</h3>
-        <div className="criterios" style={{ gridTemplateColumns: 'repeat(3, minmax(220px, 1fr))' }}>
+        <div className="criterios waterfall-sobrecarga">
           <button
             type="button"
             className={`criterio-btn ${sobrecargaImagen ? 'activo-naranja' : ''} ${

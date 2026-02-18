@@ -335,28 +335,41 @@ export default function News2Page() {
 }
 
 function Selector({ title, options, selected, onSelect }: SelectorProps) {
+  const getColorClass = (points: number) =>
+    points === 0
+      ? 'activo-verde'
+      : points === 1
+        ? 'activo-amarillo'
+        : points === 2
+          ? 'activo-naranja'
+          : 'activo-rojo';
+
   return (
     <div className="space-y-2">
       <h2 className="text-sm font-semibold text-slate-700">{title}</h2>
+      <div className="grid gap-2 sm:hidden">
+        {options.map((option) => (
+          <button
+            key={`mobile-${option.id}`}
+            type="button"
+            className={`criterio-btn ${selected?.id === option.id ? getColorClass(option.points) : ''}`}
+            onClick={() => onSelect(option)}
+          >
+            <span>{option.label}</span>
+            <span className="puntos">{option.points}</span>
+          </button>
+        ))}
+      </div>
       <div
-        className="grid gap-2"
+        className="hidden gap-2 sm:grid"
         style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
       >
         {options.map((option) => {
-          const colorClass =
-            option.points === 0
-              ? 'activo-verde'
-              : option.points === 1
-                ? 'activo-amarillo'
-                : option.points === 2
-                  ? 'activo-naranja'
-                  : 'activo-rojo';
-
           return (
             <button
-              key={option.id}
+              key={`desktop-${option.id}`}
               type="button"
-              className={`criterio-btn ${selected?.id === option.id ? colorClass : ''}`}
+              className={`criterio-btn ${selected?.id === option.id ? getColorClass(option.points) : ''}`}
               onClick={() => onSelect(option)}
             >
               <span>{option.label}</span>

@@ -47,6 +47,7 @@ export default function Header() {
   const alphabeticalTools = [
     { label: 'Anion GAP', href: '/escalas/anion-gap' },
     { label: 'BISAP', href: '/escalas/bisap' },
+    { label: 'Blatchford', href: '/escalas/blatchford' },
     { label: 'CHA2DS2-VA', href: '/escalas/cha2ds2va' },
     { label: 'CURB-65', href: '/escalas/curb65' },
     { label: 'Glasgow', href: '/escalas/glasgow' },

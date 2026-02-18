@@ -107,6 +107,8 @@ export default function SearchModal({
                       ? "Herramienta"
                       : r.type === "formacion"
                       ? "Formación"
+                      : r.type === "page"
+                      ? "Web"
                       : r.type === "horario"
                       ? "Horarios"
                       : r.type}
@@ -121,4 +123,3 @@ export default function SearchModal({
     </div>
   );
 }
-
