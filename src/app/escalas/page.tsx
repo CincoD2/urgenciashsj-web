@@ -285,6 +285,16 @@ export default function Escalas() {
             </span>
             Hiponatremia
           </a>
+          <a className="escala-link-btn" href="/escalas/urea-bun">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 7h16" />
+                <path d="M4 12h10" />
+                <path d="M4 17h8" />
+              </svg>
+            </span>
+            Urea-BUN
+          </a>
         </div>
       </section>
 

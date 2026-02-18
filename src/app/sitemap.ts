@@ -39,6 +39,7 @@ const escalaRoutes = [
   '/escalas/tam',
   '/escalas/timi-scacest',
   '/escalas/timi-scasest',
+  '/escalas/urea-bun',
   '/escalas/wells-tvp',
 ];
 

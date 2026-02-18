@@ -66,6 +66,7 @@ export default function Header() {
     { label: 'TAm (PAM)', href: '/escalas/tam' },
     { label: 'TIMI SCACEST', href: '/escalas/timi-scacest' },
     { label: 'TIMI SCASEST', href: '/escalas/timi-scasest' },
+    { label: 'Urea-BUN', href: '/escalas/urea-bun' },
     { label: 'Waterfall', href: '/escalas/waterfall' },
     { label: 'Wells – TVP', href: '/escalas/wells-tvp' },
   ];
@@ -431,7 +432,7 @@ export default function Header() {
             Sesiones
           </Link>
           <Link className={navItemClass} href="/dietas">
-            Dietas
+            Recomendaciones
           </Link>
           <Link className={navItemClass} href="/horarios">
             Horarios
@@ -642,7 +643,7 @@ export default function Header() {
                 href="/dietas"
                 onClick={closeMenusAndScrollTop}
               >
-                Dietas
+                Recomendaciones
               </Link>
               <Link
                 className="block rounded px-3 py-2 hover:bg-slate-100"

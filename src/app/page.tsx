@@ -503,17 +503,16 @@ export default function HomePage() {
               </span>
               <span className="text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {latestChangelog.map((entry) => (
-                <div
-                  key={`${entry.date}-${entry.title}`}
-                  className="flex flex-wrap items-center gap-3"
-                >
-                  <span className="text-xs text-[#6b7f83]">{entry.date}</span>
-                  <span className="font-semibold text-slate-900">{entry.title}</span>
-                  {entry.summary ? (
-                    <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
-                  ) : null}
+                <div key={`${entry.date}-${entry.title}`} className="grid grid-cols-[88px_1fr] gap-x-3">
+                  <span className="text-xs text-[#6b7f83] pt-0.5">{entry.date}</span>
+                  <div className="min-w-0">
+                    <span className="font-semibold text-slate-900">{entry.title}</span>
+                    {entry.summary ? (
+                      <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
+                    ) : null}
+                  </div>
                 </div>
               ))}
             </div>

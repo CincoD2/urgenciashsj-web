@@ -434,6 +434,7 @@ function loadTools(): SearchItem[] {
     { title: "TAm (PAM)", url: "/escalas/tam" },
     { title: "TIMI SCACEST", url: "/escalas/timi-scacest" },
     { title: "TIMI SCASEST", url: "/escalas/timi-scasest" },
+    { title: "Urea-BUN", url: "/escalas/urea-bun", content: "urea bun azotemia conversion unidades" },
     {
       title: "Waterfall",
       url: "/escalas/waterfall",
