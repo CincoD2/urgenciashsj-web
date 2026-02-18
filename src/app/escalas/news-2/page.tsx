@@ -10,6 +10,13 @@ type Option = {
   points: number;
 };
 
+type SelectorProps = {
+  title: string;
+  options: Option[];
+  selected: Option | null;
+  onSelect: (option: Option) => void;
+};
+
 const FR_OPTIONS: Option[] = [
   { id: 'fr_lte_8', label: '≤8', points: 3 },
   { id: 'fr_9_11', label: '9-11', points: 1 },
@@ -327,7 +334,7 @@ export default function News2Page() {
   );
 }
 
-function Selector({ title, options, selected, onSelect }) {
+function Selector({ title, options, selected, onSelect }: SelectorProps) {
   return (
     <div className="space-y-2">
       <h2 className="text-sm font-semibold text-slate-700">{title}</h2>
