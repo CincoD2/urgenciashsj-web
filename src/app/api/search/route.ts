@@ -426,6 +426,18 @@ function loadTools(): SearchItem[] {
       url: '/escalas/nihss',
       content: 'nihss ictus stroke deficit neurologico ait',
     },
+    {
+      title: 'Rankin modificada (mRS)',
+      url: '/escalas/mrs',
+      content:
+        'rankin mrs escala rankin modificada discapacidad funcional autonomia autonomía dependencia rehabilitacion rehabilitación ictus ait clasificacion ordinal clasificación ordinal infarto hemorragia hsa subdural',
+    },
+    {
+      title: 'Padua (TEV)',
+      url: '/escalas/padua',
+      content:
+        'padua padua score riesgo tromboembolico riesgo tromboembólico profilaxis farmacologica profilaxis farmacológica hospitalizacion medica hospitalización médica movilidad reducida cancer activo cáncer activo trombofilia tev tromboembolismo venoso',
+    },
     { title: 'Gradiente A-a O2', url: '/escalas/gradiente-aa-o2' },
     {
       title: 'HAS-BLED',

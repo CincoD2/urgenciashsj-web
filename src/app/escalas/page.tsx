@@ -152,6 +152,16 @@ export default function Escalas() {
             </span>
             NIHSS
           </a>
+          <a className="escala-link-btn" href="/escalas/mrs">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v10" />
+                <path d="M8 11h8" />
+              </svg>
+            </span>
+            Rankin modificada (mRS)
+          </a>
         </div>
       </section>
 
@@ -263,6 +273,17 @@ export default function Escalas() {
               </svg>
             </span>
             Wells – TVP
+          </a>
+          <a className="escala-link-btn" href="/escalas/padua">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 3v18" />
+                <path d="M6 8h12" />
+                <path d="M7 12h10" />
+                <path d="M8 16h8" />
+              </svg>
+            </span>
+            Padua (TEV)
           </a>
         </div>
       </section>

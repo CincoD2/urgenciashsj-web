@@ -32,6 +32,7 @@ const escalaRoutes = [
   '/escalas/hiponatremia',
   '/escalas/idsa',
   '/escalas/nihss',
+  '/escalas/mrs',
   '/escalas/pafi',
   '/escalas/psi',
   '/escalas/qsofa',
