@@ -53,9 +53,7 @@ export default function NovedadesPage() {
     parts.forEach((part, idx) => {
       if (!part) return;
 
-      const mdLinkMatch = part.match(
-        /^\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)$/
-      );
+      const mdLinkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)$/);
       if (mdLinkMatch) {
         const [, label, url] = mdLinkMatch;
         nodes.push(
@@ -106,7 +104,6 @@ export default function NovedadesPage() {
   return (
     <section className="mx-auto w-full max-w-7xl space-y-6">
       <header className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#3d7684]">Changelog</p>
         <h1 className="text-2xl font-semibold text-slate-900">Novedades en UrgenciasHSJ.es</h1>
         <p className="text-sm text-[#516f75]">
           Cambios recientes y mejoras en urgenciashsj.es, con enlaces a las páginas afectadas.
