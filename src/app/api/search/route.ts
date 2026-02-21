@@ -56,6 +56,24 @@ const STANDY_RESTRICTED_DRUGS = [
 
 const STANDY_ALL_DRUGS = [...STANDY_STANDARD_DRUGS, ...STANDY_RESTRICTED_DRUGS];
 
+function loadProtocolTagsBySlug(): Record<string, string> {
+  const dir = path.join(process.cwd(), 'content', 'protocolos');
+  if (!fs.existsSync(dir)) return {};
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.mdx'));
+  const isProd = process.env.NODE_ENV === 'production';
+  const entries = files
+    .map((file) => file.replace(/\.mdx$/, ''))
+    .filter((slug) => !(isProd && slug === 'ejemplo-componentes'))
+    .map((slug) => {
+      const full = path.join(dir, `${slug}.mdx`);
+      const raw = fs.readFileSync(full, 'utf8');
+      const { data } = matter(raw);
+      const tags = ((data as { tags?: string[] }).tags ?? []).join(' ');
+      return [slug, tags] as const;
+    });
+  return Object.fromEntries(entries);
+}
+
 function loadProtocolos(): SearchItem[] {
   const dir = path.join(process.cwd(), 'content', 'protocolos');
   if (!fs.existsSync(dir)) return [];
@@ -68,11 +86,12 @@ function loadProtocolos(): SearchItem[] {
       const full = path.join(dir, `${slug}.mdx`);
       const raw = fs.readFileSync(full, 'utf8');
       const { data, content } = matter(raw);
+      const tags = ((data as { tags?: string[] }).tags ?? []).join(' ');
       return {
         type: 'protocolo',
         title: (data as { title?: string }).title ?? slug,
         url: `/protocolos/${slug}`,
-        content: `${(data as { description?: string }).description ?? ''}\n${content}`,
+        content: `${(data as { description?: string }).description ?? ''}\n${tags}\n${content}`,
       };
     });
 }
@@ -97,7 +116,7 @@ function loadDietas(): SearchItem[] {
   return index.map((it) => {
     const ruta = it.ruta ?? '';
     const id = it.id ?? it.titulo ?? '';
-    const dietasUrl = id ? `/dietas?id=${encodeURIComponent(id)}` : '/dietas';
+    const dietasUrl = id ? `/macros?id=${encodeURIComponent(id)}` : '/macros';
     let content = '';
     if (ruta) {
       const rel = ruta.replace(/^\/+/, '');
@@ -108,7 +127,7 @@ function loadDietas(): SearchItem[] {
     }
     return {
       type: 'dieta',
-      title: it.titulo ?? 'Dietas y recomendaciones',
+      title: it.titulo ?? 'Macros',
       url: dietasUrl,
       content: `${(it.tags ?? []).join(' ')} ${(it.sistemas ?? []).join(' ')} ${content}`,
     };
@@ -120,7 +139,7 @@ function loadPages(): SearchItem[] {
     { type: 'page', title: 'Inicio', url: '/', content: 'inicio recursos urgencias' },
     { type: 'page', title: 'Protocolos', url: '/protocolos', content: 'protocolos' },
     { type: 'page', title: 'Sesiones', url: '/sesiones', content: 'sesiones' },
-    { type: 'page', title: 'Dietas', url: '/dietas', content: 'dietas recomendaciones' },
+    { type: 'page', title: 'Macros', url: '/macros', content: 'dietas recomendaciones macros' },
     {
       type: 'formacion',
       title: 'Formación',
@@ -328,6 +347,7 @@ function loadStandycalcBrandMap(): Record<string, string> {
 }
 
 function loadTools(): SearchItem[] {
+  const protocolTagsBySlug = loadProtocolTagsBySlug();
   const brandNames = loadStandycalcBrandNames();
   const brandMap = loadStandycalcBrandMap();
   const brandContent = brandNames.join(' ');
@@ -500,12 +520,16 @@ function loadTools(): SearchItem[] {
         'wells tvp trombosis venosa profunda riesgo tromboembolismo venoso profundo etev tvs',
     },
   ];
-  return items.map((it) => ({
-    type: 'herramienta',
-    title: it.title,
-    url: it.url,
-    content: it.content ?? `herramientas escalas ${it.title}`,
-  }));
+  return items.map((it) => {
+    const toolSlug = it.url.split('?')[0].replace('/escalas/', '');
+    const protocolTags = protocolTagsBySlug[toolSlug] ?? '';
+    return {
+      type: 'herramienta' as const,
+      title: it.title,
+      url: it.url,
+      content: `${it.content ?? `herramientas escalas ${it.title}`} ${protocolTags}`.trim(),
+    };
+  });
 }
 
 type GvizCell = { v?: unknown; f?: unknown } | null;
@@ -552,8 +576,22 @@ async function loadSheetRows(
 const cache = new Map<string, { ts: number; data: SearchItem[] }>();
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
+function getLatestMtime(dirPath: string): number {
+  if (!fs.existsSync(dirPath)) return 0;
+  const files = fs.readdirSync(dirPath);
+  let latest = fs.statSync(dirPath).mtimeMs;
+  for (const file of files) {
+    const full = path.join(dirPath, file);
+    const stat = fs.statSync(full);
+    if (stat.mtimeMs > latest) latest = stat.mtimeMs;
+  }
+  return latest;
+}
+
 async function loadAllItems(): Promise<SearchItem[]> {
-  const key = 'all';
+  const protocolosMtime = getLatestMtime(path.join(process.cwd(), 'content', 'protocolos'));
+  const dietasMtime = getLatestMtime(path.join(process.cwd(), 'public', 'dietas_recom'));
+  const key = `all:${protocolosMtime}:${dietasMtime}`;
   const now = Date.now();
   const cached = cache.get(key);
   if (cached && now - cached.ts < CACHE_TTL_MS) return cached.data;

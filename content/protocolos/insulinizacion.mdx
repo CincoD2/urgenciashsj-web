@@ -1,0 +1,411 @@
+---
+title: 'Tratamiento de la Hiperglucemia en el hospital con Insulina S.C.'
+description: 'Protocolo elaborado por el Servicio de Endocrinología y Nutrición del Hospital Universitario San Juan de Alicante para la insulinización al ingreso hospitalario. Establece pautas basal-prandial-corrección según tipo de diabetes, situación prandial y glucemia, e incluye algoritmo de corrección y manejo de hipoglucemia.'
+date: '2026-02-21'
+tags:
+  [
+    'Insulinización',
+    'Diabetes',
+    'Hiperglucemia',
+    'Hipoglucemia',
+    'Insulina',
+    'Glargina',
+    'NPH',
+    'Detemir',
+    'Aspart',
+    'Lispro',
+    'Glucagón',
+    'Endocrino',
+    'Ayunas',
+    'DM tipo 1',
+    'DM tipo 2',
+    'Diabetes Mellitus',
+    'Glucemia',
+    'Dextros',
+    'Insulina basal',
+  ]
+pdf: '/pdfs/20260221 Insulinización para ingreso.pdf'
+---
+
+Protocolo elaborado por el Servicio de Endocrinología y Nutrición del Hospital Universitario San Juan de Alicante para la insulinización al ingreso hospitalario de pacientes con Diabetes o hiperglucemia. Establece pautas basal-prandial-corrección según tipo de diabetes, situación prandial y glucemia, e incluye algoritmo de corrección y manejo de hipoglucemia.
+
+<Tip>
+  Usa la [Calculadora de Insulinización](/escalas/insulinizacion) para la pauta según diagnóstico,
+  situación prandial y peso.
+</Tip>
+### Pauta inicial según diagnóstico y situación prandial
+
+<DataTable
+  headers={[
+    {
+      content: 'Diagnóstico al ingreso',
+      className: 'bg-[var(--muted-bg)] text-[var(--foreground)]',
+    },
+    { content: 'Situación prandial', className: 'bg-[var(--muted-bg)] text-[var(--foreground)]' },
+    {
+      content: 'Pauta de tratamiento con insulina',
+      className: 'bg-[var(--muted-bg)] text-[var(--foreground)]',
+    },
+  ]}
+  rows={[
+    [
+      {
+        content: 'DM-1 de inicio',
+        rowSpan: 2,
+        className: 'bg-[#c7d5de] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Basal + Corrección (c/ 6h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Basal + Prandial + Corrección (De, Co, Ce, 24:00)', className: 'bg-white' },
+    ],
+    [
+      {
+        content: 'DM-1 conocida',
+        rowSpan: 2,
+        className: 'bg-[#c7d5de] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Basal + Corrección (c/ 6h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Basal + Prandial + Corrección (De, Co, Ce ± 24:00)', className: 'bg-white' },
+    ],
+    [
+      {
+        content: 'DM-2 con solo dieta previa o 1 fármaco oral y glucemia al ingreso <150',
+        rowSpan: 2,
+        className: 'bg-[#e8e1c6] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Corrección (c/ 8h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Corrección (De, Co, Ce)', className: 'bg-white' },
+    ],
+    [
+      {
+        content: 'DM-2 con dieta previa o 1 fármaco oral y glucemia al ingreso ≥150',
+        rowSpan: 2,
+        className: 'bg-[#e8e1c6] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Basal + Corrección (c/ 6-8h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Basal + Prandial + Corrección (De, Co, Ce ± 24:00)', className: 'bg-white' },
+    ],
+    [
+      {
+        content: 'DM-2 con 2 o más fármacos orales, o insulina previa',
+        rowSpan: 2,
+        className: 'bg-[#e8e1c6] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Basal + Corrección (c/ 6-8h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Basal + Prandial + Corrección (De, Co, Ce ± 24:00)', className: 'bg-white' },
+    ],
+    [
+      {
+        content: 'Hiperglucemia no conocida y glucemia al ingreso <150',
+        rowSpan: 2,
+        className: 'bg-[#b9cdd9] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Corrección (c/ 8h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Corrección (De, Co, Ce)', className: 'bg-white' },
+    ],
+    [
+      {
+        content: 'Hiperglucemia no conocida y glucemia al ingreso ≥150',
+        rowSpan: 2,
+        className: 'bg-[#b9cdd9] font-semibold align-middle',
+      },
+      { content: 'Ayunas', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+      { content: 'Basal + Corrección (c/ 6-8h)', className: 'bg-[color:rgba(61,118,132,0.22)]' },
+    ],
+    [
+      { content: 'Ingesta', className: 'bg-white' },
+      { content: 'Basal + Prandial + Corrección (De, Co, Ce ± 24:00)', className: 'bg-white' },
+    ],
+  ]}
+/>
+
+<div className="not-prose my-4 grid gap-4 md:grid-cols-2">
+  <DataTable
+    rows={[
+      [
+        {
+          content: 'INSULINA BASAL: Detemir, Glargina, NPH',
+          colSpan: 4,
+          className: 'bg-[var(--primary)] text-white text-center font-semibold',
+        },
+      ],
+      [
+        { content: 'Peso (Kg)', className: 'bg-[#c7d5de] font-semibold text-center' },
+        { content: 'Dosis (UI)', className: 'bg-[var(--muted-bg)] font-semibold text-center' },
+        { content: 'Peso (Kg)', className: 'bg-[#c7d5de] font-semibold text-center' },
+        { content: 'Dosis (UI)', className: 'bg-[var(--muted-bg)] font-semibold text-center' },
+      ],
+      [
+        { content: '<60', className: 'text-center' },
+        { content: '12', className: 'text-center' },
+        { content: '81-85', className: 'text-center' },
+        { content: '26', className: 'text-center' },
+      ],
+      [
+        { content: '61-65', className: 'text-center' },
+        { content: '14', className: 'text-center' },
+        { content: '86-90', className: 'text-center' },
+        { content: '28', className: 'text-center' },
+      ],
+      [
+        { content: '66-70', className: 'text-center' },
+        { content: '16', className: 'text-center' },
+        { content: '91-95', className: 'text-center' },
+        { content: '30', className: 'text-center' },
+      ],
+      [
+        { content: '71-75', className: 'text-center' },
+        { content: '18', className: 'text-center' },
+        { content: '96-100', className: 'text-center' },
+        { content: '32', className: 'text-center' },
+      ],
+      [
+        { content: '76-80', className: 'text-center' },
+        { content: '22', className: 'text-center' },
+        { content: '>100', className: 'text-center' },
+        { content: '34', className: 'text-center' },
+      ],
+    ]}
+  />
+
+  <DataTable
+    rows={[
+      [
+        {
+          content: 'INSULINA PRANDIAL: Aspart, Lispro',
+          colSpan: 2,
+          className: 'bg-[var(--accent)] text-white text-center font-semibold',
+        },
+      ],
+      [
+        { content: 'Peso (Kg)', className: 'w-1/2 bg-[#c7d5de] font-semibold text-center' },
+        { content: 'Dosis / comida (UI)', className: 'w-1/2 bg-[var(--muted-bg)] font-semibold text-center' },
+      ],
+      [{ content: '<60', className: 'w-1/2 text-center' }, { content: '2', className: 'w-1/2 text-center' }],
+      [{ content: '61-70', className: 'w-1/2 text-center' }, { content: '3', className: 'w-1/2 text-center' }],
+      [{ content: '71-80', className: 'w-1/2 text-center' }, { content: '4', className: 'w-1/2 text-center' }],
+      [{ content: '81-90', className: 'w-1/2 text-center' }, { content: '5', className: 'w-1/2 text-center' }],
+      [{ content: '>90', className: 'w-1/2 text-center' }, { content: '6', className: 'w-1/2 text-center' }],
+    ]}
+  />
+</div>
+
+<DataTable
+  rows={[
+    [
+      {
+        content: 'PAUTA DE CORRECCIÓN (según dosis total de insulina o peso): Aspart, Lispro',
+        colSpan: 5,
+        className: 'bg-yellow-300 text-center font-semibold',
+      },
+    ],
+    [
+      {
+        content: 'Insulina total',
+        className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center',
+      },
+      { content: '≤35 UI', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '36-60 UI', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '61-90 UI', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '>90 UI', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+    ],
+    [
+      { content: 'Peso', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '≤60 Kg', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '61-90 Kg', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '91-150 Kg', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: '>150 Kg', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+    ],
+    [
+      { content: 'Glucemia', className: 'w-1/5 bg-[var(--muted-bg)] font-semibold text-center' },
+      { content: 'PAUTA 1', className: 'w-1/5 bg-[#c7d5de] font-semibold text-center' },
+      { content: 'PAUTA 2', className: 'w-1/5 bg-[#c7d5de] font-semibold text-center' },
+      {
+        content: (
+          <>
+            PAUTA 3
+            <br />
+            Consultar Endocrino
+          </>
+        ),
+        className: 'w-1/5 bg-[#e8e1c6] font-semibold text-center',
+      },
+      {
+        content: (
+          <>
+            PAUTA 4
+            <br />
+            Consultar Endocrino
+          </>
+        ),
+        className: 'w-1/5 bg-[#e8e1c6] font-semibold text-center',
+      },
+    ],
+    [
+      { content: '<70', className: 'bg-[#b4645b] text-white font-semibold text-center' },
+      {
+        content: 'PROTOCOLO DE HIPOGLUCEMIA. No administrar insulina prandial',
+        colSpan: 4,
+        className: 'bg-[#b4645b] text-white font-semibold text-center',
+      },
+    ],
+    [
+      { content: '71-80', className: 'text-center' },
+      { content: '-1', className: 'bg-[#c7d5de] text-center' },
+      { content: '-1', className: 'bg-[#c7d5de] text-center' },
+      { content: '-2', className: 'bg-[#e8e1c6] text-center' },
+      { content: '-2', className: 'bg-[#e8e1c6] text-center' },
+    ],
+    [
+      { content: '81-150', className: 'text-center' },
+      { content: '0', className: 'bg-[#c7d5de] text-center' },
+      { content: '0', className: 'bg-[#c7d5de] text-center' },
+      { content: '0', className: 'bg-[#e8e1c6] text-center' },
+      { content: '0', className: 'bg-[#e8e1c6] text-center' },
+    ],
+    [
+      { content: '151-200', className: 'text-center' },
+      { content: '1', className: 'bg-[#c7d5de] text-center' },
+      { content: '2', className: 'bg-[#c7d5de] text-center' },
+      { content: '3', className: 'bg-[#e8e1c6] text-center' },
+      { content: '4', className: 'bg-[#e8e1c6] text-center' },
+    ],
+    [
+      { content: '201-250', className: 'text-center' },
+      { content: '2', className: 'bg-[#c7d5de] text-center' },
+      { content: '4', className: 'bg-[#c7d5de] text-center' },
+      { content: '6', className: 'bg-[#e8e1c6] text-center' },
+      { content: '8', className: 'bg-[#e8e1c6] text-center' },
+    ],
+    [
+      { content: '251-300', className: 'text-center' },
+      { content: '3', className: 'bg-[#c7d5de] text-center' },
+      { content: '6', className: 'bg-[#c7d5de] text-center' },
+      { content: '9', className: 'bg-[#e8e1c6] text-center' },
+      { content: '12', className: 'bg-[#e8e1c6] text-center' },
+    ],
+    [
+      { content: '301-350', className: 'text-center' },
+      { content: '4', className: 'bg-[#c7d5de] text-center' },
+      { content: '8', className: 'bg-[#c7d5de] text-center' },
+      { content: '12', className: 'bg-[#e8e1c6] text-center' },
+      { content: '16', className: 'bg-[#e8e1c6] text-center' },
+    ],
+    [
+      { content: '>150', className: 'text-center' },
+      { content: '5', className: 'bg-[#c7d5de] text-center' },
+      { content: '10', className: 'bg-[#c7d5de] text-center' },
+      { content: '15', className: 'bg-[#e8e1c6] text-center' },
+      { content: '20', className: 'bg-[#e8e1c6] text-center' },
+    ],
+  ]}
+/>
+<Warning>
+  Si tratamiento con corticoides pautar según dosis total de insulina (no según peso)
+</Warning>
+<DataTable
+  rows={[
+    [
+      {
+        content: 'PROTOCOLO DE HIPOGLUCEMIA',
+        colSpan: 4,
+        className: 'bg-[#b4645b] text-white text-center font-semibold',
+      },
+    ],
+    [
+      {
+        content: 'Diagnóstico',
+        rowSpan: 2,
+        className: 'bg-[var(--muted-bg)] font-semibold align-middle',
+      },
+      { content: 'Sospecha clínica', className: 'bg-[var(--muted-bg)] font-semibold' },
+      {
+        content:
+          'Temblor, taquicardia, sudoración, mareo, ansiedad, hambre, visión borrosa, cefalea, irritabilidad, convulsiones, coma',
+        colSpan: 2,
+        className: 'bg-[var(--muted-bg)]',
+      },
+    ],
+    [
+      { content: 'Confirmación', className: 'bg-[var(--muted-bg)] font-semibold' },
+      { content: 'Glucemia ≤ 70 mg/dL', colSpan: 2, className: 'bg-[var(--muted-bg)]' },
+    ],
+    [
+      {
+        content: 'Tratamiento',
+        rowSpan: 6,
+        className: 'bg-[var(--muted-bg)] font-semibold align-middle',
+      },
+      {
+        content: 'Consciente y capaz de ingerir',
+        rowSpan: 2,
+        className: 'bg-[#cdbfb5] font-semibold align-middle',
+      },
+      { content: '1º', className: 'bg-[#cdbfb5] text-center font-semibold' },
+      {
+        content: 'Ingesta de 20 g de HC absorción rápida (1 zumo o 3 sobres de azúcar)',
+        className: 'bg-[#cdbfb5]',
+      },
+    ],
+    [
+      { content: '2º', className: 'bg-[#cdbfb5] text-center font-semibold' },
+      {
+        content:
+          'Ingesta de 10 g de HC de absorción lenta (3 galletas) si falta más de 1 hora hasta la comida programada',
+        className: 'bg-[#cdbfb5]',
+      },
+    ],
+    [
+      {
+        content: 'Inconsciente o Incapaz de ingerir o Ayunas',
+        rowSpan: 3,
+        className: 'bg-[#c99800] font-semibold align-middle',
+      },
+      { content: '1º', className: 'bg-[#c99800] text-center font-semibold' },
+      {
+        content:
+          '20 g de glucosa IV (Glucosa 33%, 60mL). Si acceso venoso no disponible: Glucagón 1 mg IM/sc (alerta por riesgo de náuseas o vómitos)',
+        className: 'bg-[#c99800]',
+      },
+    ],
+    [
+      { content: '2º', className: 'bg-[#c99800] text-center font-semibold' },
+      { content: 'Suero glucosado 5% a 100 mL/h', className: 'bg-[#c99800]' },
+    ],
+    [
+      { content: '3º', className: 'bg-[#c99800] text-center font-semibold' },
+      { content: 'Avisar a Médico', className: 'bg-[#c99800]' },
+    ],
+    [
+      {
+        content:
+          'Repetir glucemia capilar c/ 15 minutos hasta que sea >80 mg/dL. Si persiste glucemia ≤ 70 mg/dL, repetir secuencia de tratamiento',
+        colSpan: 3,
+        className: 'bg-[#b9cdd9] font-semibold',
+      },
+    ],
+  ]}
+/>

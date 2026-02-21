@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { usePathname } from 'next/navigation';
 import SearchModal from './SearchModal';
 import { signOut, useSession } from 'next-auth/react';
 import { ChangePasswordState, changePassword } from '@/app/change-password/actions';
@@ -20,8 +19,6 @@ export default function Header() {
   const toolsScrollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
-  const pathname = usePathname();
-  const isHome = pathname === '/';
   const { data: session, status } = useSession();
   const isAuthed = status === 'authenticated';
   const emailLabel = session?.user?.email?.split('@')[0];
@@ -32,6 +29,7 @@ export default function Header() {
     changePassword,
     {}
   );
+  const isChangePasswordOpen = showChangePassword && !changeState?.ok;
   const changePasswordRef = useRef<HTMLDivElement | null>(null);
   const navItemClass = isAuthed
     ? 'rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm'
@@ -56,6 +54,7 @@ export default function Header() {
     { label: 'Hipernatremia', href: '/escalas/hiperNa' },
     { label: 'Hiponatremia', href: '/escalas/hiponatremia' },
     { label: 'IDSA/ATS', href: '/escalas/idsa' },
+    { label: 'Insulinización', href: '/escalas/insulinizacion' },
     { label: 'NEWS-2', href: '/escalas/news-2' },
     { label: 'NIHSS', href: '/escalas/nihss' },
     { label: 'PaFi', href: '/escalas/pafi' },
@@ -84,12 +83,6 @@ export default function Header() {
     setToolsOpen(false);
     setOpen(false);
   };
-
-  useEffect(() => {
-    if (changeState?.ok) {
-      setShowChangePassword(false);
-    }
-  }, [changeState?.ok]);
 
   const stopToolsScroll = () => {
     if (toolsScrollTimer.current) {
@@ -434,8 +427,8 @@ export default function Header() {
           <Link className={navItemClass} href="/sesiones">
             Sesiones
           </Link>
-          <Link className={navItemClass} href="/dietas">
-            Recomendaciones
+          <Link className={navItemClass} href="/macros">
+            Macros
           </Link>
           <Link className={navItemClass} href="/horarios">
             Horarios
@@ -643,10 +636,10 @@ export default function Header() {
               </Link>
               <Link
                 className="block rounded px-3 py-2 hover:bg-slate-100"
-                href="/dietas"
+                href="/macros"
                 onClick={closeMenusAndScrollTop}
               >
-                Recomendaciones
+                Macros
               </Link>
               <Link
                 className="block rounded px-3 py-2 hover:bg-slate-100"
@@ -683,7 +676,7 @@ export default function Header() {
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {isAuthed &&
-        showChangePassword &&
+        isChangePasswordOpen &&
         typeof document !== 'undefined' &&
         createPortal(
           <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 px-4">

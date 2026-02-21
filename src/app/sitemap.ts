@@ -10,7 +10,7 @@ const staticRoutes = [
   '/protocolos',
   '/eventos',
   '/formacion',
-  '/dietas',
+  '/macros',
   '/inhaladores',
   '/calculadoras',
   '/escalas',

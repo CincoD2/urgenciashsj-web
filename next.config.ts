@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/dietas',
+        destination: '/macros',
+        permanent: true,
+      },
+      {
         source: '/calculadoras/depurador-ttos',
         destination: '/escalas/depuradorTtos',
         permanent: true,

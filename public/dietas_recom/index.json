@@ -84,6 +84,25 @@
     "sistemas": ["digestivo"]
   },
   {
+    "id": "SARNA",
+    "titulo": "Sarna",
+    "ruta": "/dietas_recom/sarna.txt",
+    "tags": [
+      "recomendacion",
+      "dermatológico",
+      "infeccioso",
+      "escabiosis",
+      "sarna",
+      "sarcoptes scabiei",
+      "prurito",
+      "pápulas",
+      "vesículas",
+      "costras",
+      "surcos"
+    ],
+    "sistemas": ["dermatológico", "infeccioso"]
+  },
+  {
     "id": "GEA",
     "titulo": "GEA",
     "ruta": "/dietas_recom/GEA.txt",
