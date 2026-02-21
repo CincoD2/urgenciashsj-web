@@ -235,7 +235,7 @@ export default function InsulinizacionEscala() {
       }${calculo.requiereInterconsultaEndocrino ? ' (Hoja de Interconsulta a Endocrino)' : ''}:`
     );
     lineasPauta.push(
-      calculo.pautaCorreccionTexto
+      (calculo.pautaCorreccionTexto ?? '')
         .split('\n')
         .map((linea: string) => `  ${linea}`)
         .join('\n')
