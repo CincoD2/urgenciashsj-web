@@ -260,7 +260,7 @@ ${lineasPauta.join('\n')}`;
     <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Insulinización al ingreso</h1>
-        <PdfDownloadButton href="/pdfs/20260221 Insulinización para ingreso.pdf" />
+        <PdfDownloadButton href="/pdfs/20260221-insulinizacion-ingreso.pdf" />
       </div>
       <p className="text-sm text-slate-700">
         Calculadora basada en el{' '}
