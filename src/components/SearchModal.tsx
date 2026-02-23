@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { trackEvent } from "@/lib/analytics";
 
@@ -16,11 +16,13 @@ export default function SearchModal({
   const [q, setQ] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
+  const trackedNoResultQueries = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!open) {
       setQ("");
       setResults([]);
+      trackedNoResultQueries.current.clear();
     }
   }, [open]);
 
@@ -36,7 +38,24 @@ export default function SearchModal({
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await res.json();
-        if (!cancelled) setResults(data.results ?? []);
+        if (!cancelled) {
+          const nextResults = data.results ?? [];
+          setResults(nextResults);
+
+          const normalizedQuery = query.trim().toLowerCase();
+          if (
+            query.length >= 3 &&
+            nextResults.length === 0 &&
+            !trackedNoResultQueries.current.has(normalizedQuery)
+          ) {
+            trackedNoResultQueries.current.add(normalizedQuery);
+            trackEvent("search_no_results", {
+              query,
+              source: "search_modal",
+              page_path: window.location.pathname,
+            });
+          }
+        }
       } catch {
         if (!cancelled) setResults([]);
       } finally {

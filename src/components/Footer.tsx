@@ -60,12 +60,7 @@ export default function Footer() {
               className="inline-flex items-center underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] shrink-0"
               aria-label="Ocultar aviso legal"
             >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 20 20"
-                className="h-4 w-4"
-                fill="currentColor"
-              >
+              <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor">
                 <path d="M5.2 7.3a1 1 0 0 1 1.4 0L10 10.7l3.4-3.4a1 1 0 1 1 1.4 1.4l-4.1 4.1a1 1 0 0 1-1.4 0L5.2 8.7a1 1 0 0 1 0-1.4Z" />
               </svg>
             </button>
@@ -92,7 +87,7 @@ export default function Footer() {
         </div>
         <div className="grid items-center gap-3 md:grid-cols-[1fr_auto_1fr]">
           <div className="flex flex-wrap items-center gap-3 md:justify-self-start">
-            <span>© {new Date().getFullYear()} urgenciashsj.es</span>
+            <span>© {new Date().getFullYear()} · SDZ · urgenciashsj.es</span>
             <span className="text-[#dfe9eb]">•</span>
           </div>
           <div className="text-center">
