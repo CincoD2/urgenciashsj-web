@@ -51,8 +51,8 @@ export default function Footer() {
 
   return (
     <footer id="acerca-de" className="border-t border-[#dfe9eb] mt-12 bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-6 text-sm text-[#516f75] space-y-2">
-        <div className="flex flex-col items-end gap-2">
+      <div className="mx-auto max-w-7xl px-4 py-4 text-sm text-[#516f75] space-y-3 md:py-6">
+        <div className="flex flex-col items-end gap-1.5 md:gap-2">
           {showLegal ? (
             <button
               type="button"
@@ -66,8 +66,8 @@ export default function Footer() {
             </button>
           ) : null}
           <div
-            className={`self-start overflow-hidden transition-all duration-300 ${
-              showLegal ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+            className={`self-start overflow-hidden text-xs leading-relaxed md:text-sm ${
+              showLegal ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
             }`}
           >
             <span>
@@ -85,19 +85,18 @@ export default function Footer() {
             </span>
           </div>
         </div>
-        <div className="grid items-center gap-3 md:grid-cols-[1fr_auto_1fr]">
-          <div className="flex flex-wrap items-center gap-3 md:justify-self-start">
+        <div className="space-y-1.5 md:space-y-0">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center md:justify-between md:text-left">
             <span>© {new Date().getFullYear()} · SDZ · urgenciashsj.es</span>
-            <span className="text-[#dfe9eb]">•</span>
+            {lastUpdatedLabel ? (
+              <span className="text-xs md:text-sm">Actualizado: {lastUpdatedLabel}</span>
+            ) : null}
           </div>
-          <div className="text-center">
-            {lastUpdatedLabel ? <span>Última actualización: {lastUpdatedLabel}</span> : null}
-          </div>
-          <div className="flex flex-wrap items-center gap-3 md:justify-self-end">
+          <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
             <button
               type="button"
               onClick={() => setAboutOpen(true)}
-              className="inline-flex items-center gap-2 underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684]"
+              className="inline-flex items-center gap-2 underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-xs md:text-sm"
             >
               <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-current text-[10px] font-semibold leading-none">
                 i
@@ -108,7 +107,7 @@ export default function Footer() {
               <button
                 type="button"
                 onClick={() => setShowLegal(true)}
-                className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684]"
+                className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-xs md:text-sm"
               >
                 Aviso legal
               </button>
