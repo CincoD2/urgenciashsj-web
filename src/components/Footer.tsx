@@ -85,18 +85,13 @@ export default function Footer() {
             </span>
           </div>
         </div>
-        <div className="space-y-1.5 md:space-y-0">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center md:justify-between md:text-left">
-            <span>© {new Date().getFullYear()} · SDZ · urgenciashsj.es</span>
-            {lastUpdatedLabel ? (
-              <span className="text-xs md:text-sm">Actualizado: {lastUpdatedLabel}</span>
-            ) : null}
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
+        <div className="space-y-1.5 md:hidden">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {lastUpdatedLabel ? <span className="text-xs">Actualizado: {lastUpdatedLabel}</span> : null}
             <button
               type="button"
               onClick={() => setAboutOpen(true)}
-              className="inline-flex items-center gap-2 underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-xs md:text-sm"
+              className="inline-flex items-center gap-2 underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-xs"
             >
               <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-current text-[10px] font-semibold leading-none">
                 i
@@ -107,10 +102,42 @@ export default function Footer() {
               <button
                 type="button"
                 onClick={() => setShowLegal(true)}
-                className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-xs md:text-sm"
+                className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-xs"
               >
                 Aviso legal
               </button>
+            ) : null}
+          </div>
+          <div className="text-center text-xs">© {new Date().getFullYear()} · SDZ · urgenciashsj.es</div>
+        </div>
+
+        <div className="hidden items-center gap-3 md:grid md:grid-cols-[1fr_auto_1fr]">
+          <div className="flex flex-wrap items-center gap-3 md:justify-self-start">
+            <span>© {new Date().getFullYear()} · SDZ · urgenciashsj.es</span>
+            <span className="text-[#dfe9eb]">•</span>
+          </div>
+          <div className="text-center">
+            {lastUpdatedLabel ? <span>Última actualización: {lastUpdatedLabel}</span> : null}
+          </div>
+          <div className="flex flex-wrap items-center gap-2 md:justify-self-end">
+            <button
+              type="button"
+              onClick={() => setAboutOpen(true)}
+              className="inline-flex items-center gap-2 underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-sm"
+            >
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-current text-[10px] font-semibold leading-none">
+                i
+              </span>
+              <b>Acerca de esta web</b>
+            </button>
+            {!showLegal ? (
+                <button
+                  type="button"
+                  onClick={() => setShowLegal(true)}
+                  className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#3d7684] text-sm"
+                >
+                  Aviso legal
+                </button>
             ) : null}
           </div>
         </div>
