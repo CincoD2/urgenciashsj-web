@@ -8,6 +8,7 @@ import AboutModal from '@/components/AboutModal';
 export default function Footer() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [showLegal, setShowLegal] = useState(true);
+  const [lastUpdatedLabel, setLastUpdatedLabel] = useState('');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -16,6 +17,36 @@ export default function Footer() {
     setAboutOpen(true);
     url.searchParams.delete('about');
     window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadLastUpdated() {
+      try {
+        const res = await fetch('/api/site-meta', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = (await res.json()) as { lastUpdated?: string };
+        if (!data.lastUpdated) return;
+        const parsed = new Date(data.lastUpdated);
+        if (Number.isNaN(parsed.getTime())) return;
+
+        const formatted = new Intl.DateTimeFormat('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).format(parsed);
+
+        if (!cancelled) setLastUpdatedLabel(formatted);
+      } catch {
+        // Silently ignore footer metadata errors.
+      }
+    }
+
+    loadLastUpdated();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -59,12 +90,15 @@ export default function Footer() {
             </span>
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="grid items-center gap-3 md:grid-cols-[1fr_auto_1fr]">
+          <div className="flex flex-wrap items-center gap-3 md:justify-self-start">
             <span>© {new Date().getFullYear()} urgenciashsj.es</span>
             <span className="text-[#dfe9eb]">•</span>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="text-center">
+            {lastUpdatedLabel ? <span>Última actualización: {lastUpdatedLabel}</span> : null}
+          </div>
+          <div className="flex flex-wrap items-center gap-3 md:justify-self-end">
             <button
               type="button"
               onClick={() => setAboutOpen(true)}

@@ -56,6 +56,107 @@ const STANDY_RESTRICTED_DRUGS = [
 
 const STANDY_ALL_DRUGS = [...STANDY_STANDARD_DRUGS, ...STANDY_RESTRICTED_DRUGS];
 
+const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: string }> = {
+  '/escalas/standycalc': {
+    title: 'STANDyCALC®',
+    extraContent:
+      'standycalc perfusion perfusiones dilucion diluciones farmacia farmacos fármacos mezclas infusion infusiones ' +
+      'amiodarona naloxona dobutamina nimodipino dopamina nitroglicerina flecainida nitroprusiato flumazenilo ' +
+      'octreotido furosemida sodio hipertonico heparina somatostatina labetalol teofilina magnesio sulfato ' +
+      'valproico morfina vernakalant n-acetilcisteina',
+  },
+  '/escalas/blatchford': {
+    title: 'Glasgow-Blatchford Bleeding Score',
+    extraContent:
+      'blatchford glasgow-blatchford gbs hda hemorragia digestiva hemorragia digestiva alta melenas melena sangrado ulcera úlcera hematemesis bun urea endoscopia gastroscopia EDA',
+  },
+  '/escalas/cha2ds2va': {
+    title: 'CHA2DS2-VA',
+    extraContent:
+      'chads chadsva chads-vasc cha2ds2va fibrilacion auricular anticoagulacion riesgo ictus trombo embolismo',
+  },
+  '/escalas/curb65': {
+    title: 'CURB-65',
+    extraContent: 'curb curb65 curb-65 neumonia gravedad uci mortalidad',
+  },
+  '/escalas/mrs': {
+    title: 'Rankin modificada (mRS)',
+    extraContent:
+      'rankin mrs escala rankin modificada discapacidad funcional autonomia autonomía dependencia rehabilitacion rehabilitación ictus ait clasificacion ordinal clasificación ordinal infarto hemorragia hsa subdural',
+  },
+  '/escalas/news-2': {
+    title: 'NEWS-2',
+    extraContent: 'news2 news-2 sepsis codigo sepsis alerta temprana deterioro clinico qsofa',
+  },
+  '/escalas/padua': {
+    title: 'Padua (TEV)',
+    extraContent:
+      'padua padua score riesgo tromboembolico riesgo tromboembólico profilaxis farmacologica profilaxis farmacológica hospitalizacion medica hospitalización médica movilidad reducida cancer activo cáncer activo trombofilia tev tromboembolismo venoso',
+  },
+  '/escalas/qsofa': {
+    title: 'qSOFA',
+    extraContent:
+      'qsofa quick sofa sofa sepsis codigo sepsis alerta temprana deterioro clinico news2 news-2',
+  },
+  '/escalas/sofa': {
+    title: 'SOFA',
+    extraContent: 'sofa sepsis fallo organico disfuncion organica mortalidad',
+  },
+  '/escalas/tam': {
+    title: 'TAm (PAM)',
+  },
+  '/escalas/timi-scacest': {
+    title: 'TIMI SCACEST',
+    extraContent: 'timi scacest sindrome coronario agudo con elevacion segmento st riesgo mortalidad',
+  },
+  '/escalas/timi-scasest': {
+    title: 'TIMI SCASEST',
+  },
+  '/escalas/wells-tvp': {
+    title: 'Wells – TVP',
+    extraContent: 'wells tvp trombosis venosa profunda riesgo tromboembolismo venoso profundo etev tvs',
+  },
+  '/escalas/idsa': {
+    title: 'IDSA/ATS',
+    extraContent: 'idsa/ats idsa ats neumonia gravedad uci mortalidad',
+  },
+};
+
+function slugToTitle(slug: string) {
+  const normalized = slug
+    .replace(/[-_]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .trim();
+  if (!normalized) return slug;
+  return normalized
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => {
+      if (/^[A-Z0-9-]+$/.test(part)) return part;
+      return part[0]?.toUpperCase() + part.slice(1);
+    })
+    .join(' ');
+}
+
+function walkEscalasRoutes(dirPath: string, routePrefix: string): string[] {
+  if (!fs.existsSync(dirPath)) return [];
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+  const routes: string[] = [];
+
+  for (const entry of entries) {
+    if (entry.name.startsWith('_')) continue;
+    const fullPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      const childRoute = `${routePrefix}/${entry.name}`;
+      const pageFile = path.join(fullPath, 'page.tsx');
+      if (fs.existsSync(pageFile)) routes.push(childRoute);
+      routes.push(...walkEscalasRoutes(fullPath, childRoute));
+    }
+  }
+
+  return routes;
+}
+
 function loadProtocolTagsBySlug(): Record<string, string> {
   const dir = path.join(process.cwd(), 'content', 'protocolos');
   if (!fs.existsSync(dir)) return {};
@@ -350,186 +451,51 @@ function loadTools(): SearchItem[] {
   const protocolTagsBySlug = loadProtocolTagsBySlug();
   const brandNames = loadStandycalcBrandNames();
   const brandMap = loadStandycalcBrandMap();
-  const brandContent = brandNames.join(' ');
-  const items = [
-    { title: 'Depurador SIA', url: '/escalas/depuradorTtos' },
-    {
-      title: 'STANDyCALC®',
-      url: '/escalas/standycalc',
-      content:
-        'standycalc perfusion perfusiones dilucion diluciones farmacia farmacos fármacos mezclas infusion infusiones ' +
-        'amiodarona naloxona dobutamina nimodipino dopamina nitroglicerina flecainida nitroprusiato flumazenilo ' +
-        'octreotido furosemida sodio hipertonico heparina somatostatina labetalol teofilina magnesio sulfato ' +
-        'valproico morfina vernakalant n-acetilcisteina ' +
-        brandContent,
-    },
-    ...[
-      'AMIODARONA',
-      'NALOXONA',
-      'DOBUTAMINA',
-      'NIMODIPINO',
-      'DOPAMINA',
-      'NITROGLICERINA',
-      'FLECAINIDA',
-      'NITROPRUSIATO',
-      'FLUMAZENILO',
-      'OCTREOTIDO',
-      'FUROSEMIDA',
-      'SODIO HIPERTONICO',
-      'HEPARINA',
-      'SOMATOSTATINA',
-      'LABETALOL',
-      'TEOFILINA',
-      'MAGNESIO SULFATO',
-      'VALPROICO',
-      'MORFINA',
-      'VERNAKALANT',
-      'N-ACETILCISTEINA',
-      'CISATRACURIO',
-      'ESMOLOL',
-      'FUROSEMIDA CONC',
-      'LEVOSIMENDAN',
-      'MIDAZOLAM',
-      'NORADRENALINA',
-      'PROCAINAMIDA',
-      'SALBUTAMOL',
-      'URAPIDIL',
-    ].map((drug) => ({
+  const routes = walkEscalasRoutes(path.join(process.cwd(), 'src', 'app', 'escalas'), '/escalas');
+
+  const routeItems = routes.map((route) => {
+    const slug = route.replace('/escalas/', '');
+    const metadata = TOOL_METADATA_BY_ROUTE[route] ?? {};
+    const title = metadata.title ?? slugToTitle(slug);
+    const protocolTags = protocolTagsBySlug[slug] ?? '';
+    return {
+      type: 'herramienta' as const,
+      title,
+      url: route,
+      content: `${metadata.extraContent ?? `herramientas escalas ${title} ${slug}`} ${protocolTags}`.trim(),
+    };
+  });
+
+  const standycalcExtraItems = [
+    ...STANDY_ALL_DRUGS.map((drug) => ({
+      type: 'herramienta' as const,
       title: `${drug} (STANDyCALC®)`,
       url: `/escalas/standycalc?drug=${encodeURIComponent(drug)}`,
       content: `standycalc ${drug.toLowerCase()} ${drug}`,
     })),
     {
+      type: 'herramienta' as const,
       title: 'Dormicum (STANDyCALC®)',
       url: `/escalas/standycalc?drug=${encodeURIComponent('MIDAZOLAM')}`,
       content: 'standycalc dormicum midazolam',
     },
     ...brandNames.map((brand) => ({
+      type: 'herramienta' as const,
       title: `${brand} (STANDyCALC®)`,
       url: brandMap[brand]
         ? `/escalas/standycalc?drug=${encodeURIComponent(brandMap[brand])}`
         : '/escalas/standycalc',
       content: `standycalc ${brand.toLowerCase()} ${brand}`,
     })),
-    { title: 'Inhaladores', url: '/inhaladores' },
-    { title: 'Anion GAP', url: '/escalas/anion-gap' },
-    {
-      title: 'BISAP',
-      url: '/escalas/bisap',
-      content: 'bisap pancreatitis aguda gravedad bun urea derrame pleural sirs glasgow',
-    },
-    {
-      title: 'Glasgow-Blatchford Bleeding Score',
-      url: '/escalas/blatchford',
-      content:
-        'blatchford glasgow-blatchford gbs hda hemorragia digestiva hemorragia digestiva alta melenas melena sangrado ulcera úlcera hematemesis bun urea endoscopia gastroscopia EDA',
-    },
-    {
-      title: 'CHA2DS2-VA',
-      url: '/escalas/cha2ds2va',
-      content:
-        'chads chadsva chads-vasc cha2ds2va fibrilacion auricular anticoagulacion riesgo ictus trombo embolismo',
-    },
-    {
-      title: 'CURB-65',
-      url: '/escalas/curb65',
-      content: 'curb curb65 curb-65 neumonia gravedad uci mortalidad',
-    },
-    {
-      title: 'Glasgow',
-      url: '/escalas/glasgow',
-      content:
-        'glasgow coma escala glasgow coma scale gcs nivel conciencia traumatismo craneoencefalico tce ictus',
-    },
-    {
-      title: 'NIHSS',
-      url: '/escalas/nihss',
-      content: 'nihss ictus stroke deficit neurologico ait',
-    },
-    {
-      title: 'Rankin modificada (mRS)',
-      url: '/escalas/mrs',
-      content:
-        'rankin mrs escala rankin modificada discapacidad funcional autonomia autonomía dependencia rehabilitacion rehabilitación ictus ait clasificacion ordinal clasificación ordinal infarto hemorragia hsa subdural',
-    },
-    {
-      title: 'Padua (TEV)',
-      url: '/escalas/padua',
-      content:
-        'padua padua score riesgo tromboembolico riesgo tromboembólico profilaxis farmacologica profilaxis farmacológica hospitalizacion medica hospitalización médica movilidad reducida cancer activo cáncer activo trombofilia tev tromboembolismo venoso',
-    },
-    { title: 'Gradiente A-a O2', url: '/escalas/gradiente-aa-o2' },
-    {
-      title: 'HAS-BLED',
-      url: '/escalas/hasbled',
-      content: 'hasbled has-bled sangrado anticoagulacion fibrilacion auricular riesgo sangrado',
-    },
-    { title: 'Hipernatremia', url: '/escalas/hiperNa' },
-    { title: 'Hiponatremia', url: '/escalas/hiponatremia' },
-    {
-      title: 'IDSA/ATS',
-      url: '/escalas/idsa',
-      content: 'idsa/ats idsa ats neumonia gravedad uci mortalidad',
-    },
-    {
-      title: 'NEWS-2',
-      url: '/escalas/news-2',
-      content: 'news2 news-2 sepsis codigo sepsis alerta temprana deterioro clinico qsofa',
-    },
-    { title: 'PaFi', url: '/escalas/pafi' },
-    { title: 'PSI', url: '/escalas/psi', content: 'psi neumonia gravedad uci mortalidad' },
-    {
-      title: 'qSOFA',
-      url: '/escalas/qsofa',
-      content:
-        'qsofa quick sofa sofa sepsis codigo sepsis alerta temprana deterioro clinico news2 news-2',
-    },
-    {
-      title: 'SIRS',
-      url: '/escalas/sirs',
-      content: 'sirs sepsis inflamatoria sistemica bisap uci',
-    },
-    { title: 'SaFi', url: '/escalas/safi' },
-    {
-      title: 'SOFA',
-      url: '/escalas/sofa',
-      content: 'sofa sepsis fallo organico disfuncion organica mortalidad',
-    },
-    { title: 'TAm (PAM)', url: '/escalas/tam' },
-    {
-      title: 'TIMI SCACEST',
-      url: '/escalas/timi-scacest',
-      content: 'timi scacest sindrome coronario agudo con elevacion segmento st riesgo mortalidad',
-    },
-    { title: 'TIMI SCASEST', url: '/escalas/timi-scasest' },
-    {
-      title: 'Urea-BUN',
-      url: '/escalas/urea-bun',
-      content:
-        'urea bun azotemia conversion unidades nitrogeno ureico insuficiencia renal prerenal renal postrenal',
-    },
-    {
-      title: 'Waterfall',
-      url: '/escalas/waterfall',
-      content: 'waterfall pancreatitis fluidoterapia ringer lactato hipovolemia sobrecarga',
-    },
-    {
-      title: 'Wells – TVP',
-      url: '/escalas/wells-tvp',
-      content:
-        'wells tvp trombosis venosa profunda riesgo tromboembolismo venoso profundo etev tvs',
-    },
   ];
-  return items.map((it) => {
-    const toolSlug = it.url.split('?')[0].replace('/escalas/', '');
-    const protocolTags = protocolTagsBySlug[toolSlug] ?? '';
-    return {
-      type: 'herramienta' as const,
-      title: it.title,
-      url: it.url,
-      content: `${it.content ?? `herramientas escalas ${it.title}`} ${protocolTags}`.trim(),
-    };
-  });
+
+  const unique = new Map<string, SearchItem>();
+  for (const item of [...routeItems, ...standycalcExtraItems]) {
+    const key = `${item.url}::${item.title}`;
+    if (!unique.has(key)) unique.set(key, item);
+  }
+
+  return Array.from(unique.values());
 }
 
 type GvizCell = { v?: unknown; f?: unknown } | null;

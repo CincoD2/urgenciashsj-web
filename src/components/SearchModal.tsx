@@ -105,8 +105,12 @@ export default function SearchModal({
                   <span className="mr-2 rounded bg-[#dfe9eb]/70 px-2 py-0.5 text-[10px] uppercase text-[#516f75]">
                     {r.type === "herramienta"
                       ? "Herramienta"
+                      : r.type === "dieta"
+                      ? "Macro"
                       : r.type === "formacion"
                       ? "Formación"
+                      : r.type === "sesion"
+                      ? "Sesión"
                       : r.type === "page"
                       ? "Web"
                       : r.type === "horario"

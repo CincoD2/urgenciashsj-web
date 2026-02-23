@@ -105,9 +105,7 @@ export default function NovedadesPage() {
     <section className="mx-auto w-full max-w-7xl space-y-6">
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold text-slate-900">Novedades en UrgenciasHSJ.es</h1>
-        <p className="text-sm text-[#516f75]">
-          Cambios recientes y mejoras en urgenciashsj.es, con enlaces a las páginas afectadas.
-        </p>
+        <p className="text-sm text-[#516f75]">Cambios recientes y mejoras en urgenciashsj.es.</p>
       </header>
 
       {entries.length === 0 ? (
@@ -147,18 +145,6 @@ export default function NovedadesPage() {
                       {renderInlineMarkdown(line)}
                     </p>
                   ))}
-                </div>
-              )}
-
-              {entry.link && (
-                <div className="mt-4">
-                  <Link
-                    href={entry.link}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#3d7684] hover:text-[#2b5d68]"
-                  >
-                    Ver novedades
-                    <span aria-hidden>→</span>
-                  </Link>
                 </div>
               )}
             </article>
