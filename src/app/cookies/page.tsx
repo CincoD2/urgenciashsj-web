@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Política de cookies | urgenciashsj.es',
+  title: 'Política de cookies',
   description: 'Información sobre el uso de cookies en urgenciashsj.es',
 };
 

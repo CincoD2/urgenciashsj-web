@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CookieNotice from '@/components/CookieNotice';
 import Providers from '@/components/Providers';
+import PageTitleSync from '@/components/PageTitleSync';
 
 const encodeSans = Encode_Sans({
   variable: '--font-encode-sans',
@@ -20,7 +21,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es'),
-  title: 'urgenciashsj.es',
+  title: {
+    default: 'urgenciashsj.es',
+    template: 'urgenciashsj.es · %s',
+  },
   description: 'Herramientas y protocolos para Urgencias',
   alternates: {
     canonical: './',
@@ -68,6 +72,7 @@ export default function RootLayout({
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
         <Providers>
+          <PageTitleSync />
           <Header />
           <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>
           <Footer />

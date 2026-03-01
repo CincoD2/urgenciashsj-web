@@ -4,7 +4,7 @@ import matter from 'gray-matter';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Novedades | urgenciashsj.es',
+  title: 'Novedades',
   description: 'Cambios y novedades del sitio',
 };
 
