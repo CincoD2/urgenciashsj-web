@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import Link from 'next/link';
+import { getTopConsultedPages } from '@/lib/ga4';
 
 type LinkItem = {
   label: string;
@@ -432,18 +433,14 @@ function LinkList({ items }: { items: LinkItem[] }) {
   );
 }
 
-type ChangelogEntry = {
-  title: string;
-  date: string;
-  summary?: string;
+type TopPage = {
+  path: string;
+  views: number;
 };
 
 function loadLatestChangelog(limit: number) {
   const dir = path.join(process.cwd(), 'content/changelog');
   if (!fs.existsSync(dir)) return [];
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth();
 
   return fs
     .readdirSync(dir)
@@ -461,15 +458,30 @@ function loadLatestChangelog(limit: number) {
     })
     .filter((entry) => {
       const parsed = new Date(entry.date);
-      if (Number.isNaN(parsed.getTime())) return false;
-      return parsed.getFullYear() === currentYear && parsed.getMonth() === currentMonth;
+      return !Number.isNaN(parsed.getTime());
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .slice(0, limit);
 }
 
-export default function HomePage() {
+function formatTopPageLabel(pathname: string) {
+  return pathname
+    .replace(/^\/+|\/+$/g, '')
+    .split('/')
+    .filter(Boolean)
+    .map((segment) => decodeURIComponent(segment).replace(/[-_]+/g, ' '))
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(' / ');
+}
+
+function formatViews(value: number) {
+  return new Intl.NumberFormat('es-ES').format(value);
+}
+
+export default async function HomePage() {
   const latestChangelog = loadLatestChangelog(3);
+  const topPages = await getTopConsultedPages(5);
+  const showHighlights = latestChangelog.length > 0 || topPages.length > 0;
 
   return (
     <div className="space-y-10">
@@ -491,33 +503,69 @@ export default function HomePage() {
         </div>
       </section>
 
-      {latestChangelog.length > 0 && (
-        <Link
-          href="/novedades"
-          className="block rounded-2xl border border-[#cfe2e6] bg-[#eef6f8] p-4 transition hover:border-[#b8d3da] hover:bg-[#e6f2f5]"
-        >
-          <div className="space-y-2 text-sm text-[#3f5f66]">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
-                Novedades
-              </span>
-              <span className="text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
-            </div>
-            <div className="space-y-1.5">
-              {latestChangelog.map((entry) => (
-                <div key={`${entry.date}-${entry.title}`} className="grid grid-cols-[88px_1fr] gap-x-3">
-                  <span className="text-xs text-[#6b7f83] pt-0.5">{entry.date}</span>
-                  <div className="min-w-0">
-                    <span className="font-semibold text-slate-900">{entry.title}</span>
-                    {entry.summary ? (
-                      <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
-                    ) : null}
-                  </div>
+      {showHighlights && (
+        <div className="grid gap-4 lg:grid-cols-3">
+          {latestChangelog.length > 0 ? (
+            <Link
+              href="/novedades"
+              className="block rounded-2xl border border-[#cfe2e6] bg-[#eef6f8] p-4 transition hover:border-[#b8d3da] hover:bg-[#e6f2f5] lg:col-span-2"
+            >
+              <div className="space-y-2 text-sm text-[#3f5f66]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
+                    Novedades
+                  </span>
+                  <span className="text-xs font-semibold text-[#2b5d68]">Ver todo →</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        </Link>
+                <div className="space-y-1.5">
+                  {latestChangelog.map((entry) => (
+                    <div
+                      key={`${entry.date}-${entry.title}`}
+                      className="grid grid-cols-[88px_1fr] gap-x-3"
+                    >
+                      <span className="text-xs text-[#6b7f83] pt-0.5">{entry.date}</span>
+                      <div className="min-w-0">
+                        <span className="font-semibold text-slate-900">{entry.title}</span>
+                        {entry.summary ? (
+                          <span className="text-xs text-[#7b8f94] ml-2">— {entry.summary}</span>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Link>
+          ) : null}
+
+          {topPages.length > 0 ? (
+            <section className="rounded-2xl border border-[#c8dde3] bg-[#e8f2f4] p-4">
+              <div className="space-y-2 text-sm text-[#3f5f66]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
+                    Top consultadas
+                  </span>
+                  <span className="text-xs text-[#6b7f83]">30 días</span>
+                </div>
+                <div className="space-y-0.5">
+                  {topPages.map((page: TopPage) => (
+                    <Link
+                      key={page.path}
+                      href={page.path}
+                      className="flex items-start justify-between gap-3 rounded-md px-2 py-0.5 hover:bg-[#f3f8f9]"
+                    >
+                      <span className="min-w-0 truncate font-medium text-slate-900">
+                        {formatTopPageLabel(page.path)}
+                      </span>
+                      <span className="shrink-0 text-xs text-[#6b7f83]">
+                        {formatViews(page.views)}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+          ) : null}
+        </div>
       )}
 
       <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-4">
