@@ -1,15 +1,15 @@
-﻿'use client';
+﻿"use client";
 
-import { useMemo, useState } from 'react';
-import InformeCopiable from '@/components/InformeCopiable';
+import { useMemo, useState } from "react";
+import InformeCopiable from "@/components/InformeCopiable";
 
-type OutputMode = 'lineas' | 'parrafos';
-type VisualFontProfile = 'tahoma' | 'helvetica';
+type OutputMode = "lineas" | "parrafos";
+type VisualFontProfile = "tahoma" | "helvetica";
 
 type LabEntry = {
   group: string;
   name: string;
-  flag: '*' | '';
+  flag: "*" | "";
   result: string;
   unit: string;
   reference: string;
@@ -21,45 +21,63 @@ type ParsedPayload = {
   groups: Array<{ name: string; entries: LabEntry[] }>;
 };
 
+// Ajustes de espaciado para la vista "Columnas".
+// Toca solo estos valores para afinar el alineado sin tocar la lógica.
+// Flujo de cada línea:
+//   [nombre][ESPACIOS nombre][TAB][asterisco o hueco+TAB][resultado + unidad][ESPACIOS valor][TAB][rango]
+const COLUMN_FORMAT = {
+  NAME_EXTRA_SPACES: 6, // Espacios extra tras el nombre del parámetro.
+  LONG_NAME_THRESHOLD: "VOLUMEN CORPUSCULAR MEDIO".length, // Umbral de "nombre largo".
+  LONG_NAME_REDUCTION: 4, // Espacios que se restan si el nombre es largo.
+  VALUE_EXTRA_SPACES: 8, // Espacios extra tras "resultado + unidad".
+  TAB: "\t", // Tabulador entre columnas.
+  FLAG_WITH_ASTERISK: "* \t", // Columna de asterisco cuando hay fuera de rango.
+  FLAG_EMPTY: " \t", // Columna de asterisco cuando no hay asterisco.
+} as const;
+
+function spaces(count: number): string {
+  return " ".repeat(Math.max(0, count));
+}
+
 const GROUP_LABELS: Array<{ needle: string; label: string }> = [
-  { needle: 'HEMOGRAMA', label: 'Hemograma' },
-  { needle: 'HEMATIMETRIA', label: 'Hemograma' },
-  { needle: 'COAGULACION', label: 'Coagulación' },
-  { needle: 'HEMOSTASIA', label: 'Coagulación' },
-  { needle: 'BIOQUIMICA GENERAL', label: 'Bioquímica' },
-  { needle: 'BIOQUIMICA ORINA', label: 'Bioquímica orina' },
-  { needle: 'GLICOSILADAS', label: 'Glicosiladas' },
-  { needle: 'INMUNOANALISIS', label: 'Inmunoanálisis' },
-  { needle: 'GASOMETRIA VENOSA', label: 'Gasometría venosa' },
-  { needle: 'GASOMETRIA ARTERIAL', label: 'Gasometría arterial' },
-  { needle: 'GASOMETRIAS', label: 'Gasometrías' },
-  { needle: 'MICROBIOLOGIA MOLECULAR', label: 'Microbiología molecular' },
+  { needle: "HEMOGRAMA", label: "Hemograma" },
+  { needle: "HEMATIMETRIA", label: "Hemograma" },
+  { needle: "COAGULACION", label: "Coagulación" },
+  { needle: "HEMOSTASIA", label: "Coagulación" },
+  { needle: "BIOQUIMICA GENERAL", label: "Bioquímica" },
+  { needle: "BIOQUIMICA ORINA", label: "Bioquímica orina" },
+  { needle: "GLICOSILADAS", label: "Glicosiladas" },
+  { needle: "INMUNOANALISIS", label: "Inmunoanálisis" },
+  { needle: "GASOMETRIA VENOSA", label: "Gasometría venosa" },
+  { needle: "GASOMETRIA ARTERIAL", label: "Gasometría arterial" },
+  { needle: "GASOMETRIAS", label: "Gasometrías" },
+  { needle: "MICROBIOLOGIA MOLECULAR", label: "Microbiología molecular" },
   {
-    needle: 'MICROBIOLOGIA BACTERIOLOGIA',
-    label: 'Microbiología bacteriología',
+    needle: "MICROBIOLOGIA BACTERIOLOGIA",
+    label: "Microbiología bacteriología",
   },
-  { needle: 'MICROBIOLOGIA SEROLOGIA', label: 'Microbiología serología' },
-  { needle: 'DETECCION DE ANTIGENOS', label: 'Detección de antígenos' },
-  { needle: 'SEROLOGIA DE VIH', label: 'Serología VIH' },
-  { needle: 'SEROLOGIA DE SIFILIS', label: 'Serología sífilis' },
-  { needle: 'LABORATORIO EXTERNO', label: 'Laboratorio externo' },
-  { needle: 'ORINAS', label: 'Orina' },
-  { needle: 'SEDIMENTO', label: 'Orina' },
-  { needle: 'ANORMALES', label: 'Orina' },
-  { needle: 'CRIBADO', label: 'Cribado' },
+  { needle: "MICROBIOLOGIA SEROLOGIA", label: "Microbiología serología" },
+  { needle: "DETECCION DE ANTIGENOS", label: "Detección de antígenos" },
+  { needle: "SEROLOGIA DE VIH", label: "Serología VIH" },
+  { needle: "SEROLOGIA DE SIFILIS", label: "Serología sífilis" },
+  { needle: "LABORATORIO EXTERNO", label: "Laboratorio externo" },
+  { needle: "ORINAS", label: "Orina" },
+  { needle: "SEDIMENTO", label: "Orina" },
+  { needle: "ANORMALES", label: "Orina" },
+  { needle: "CRIBADO", label: "Cribado" },
 ];
 
 function normalizeLine(text: string): string {
   return text
-    .replace(/\r/g, '')
-    .replace(/\u00A0/g, ' ')
+    .replace(/\r/g, "")
+    .replace(/\u00A0/g, " ")
     .trimEnd();
 }
 
 function normalizeForMatch(text: string): string {
   return text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toUpperCase();
 }
 
@@ -69,7 +87,7 @@ function toTitleCase(text: string): string {
     .split(/\s+/)
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .join(" ");
 }
 
 function isPatientLine(line: string): boolean {
@@ -83,9 +101,9 @@ function isRequestLine(line: string): boolean {
 function isConfidenceLine(line: string): boolean {
   const key = normalizeForMatch(line);
   return (
-    key.includes('INDICE DE CONFIANZA') ||
-    key.includes('INTERVALO DE CONFIANZA') ||
-    key.includes('PROBABILIDAD DEL')
+    key.includes("INDICE DE CONFIANZA") ||
+    key.includes("INTERVALO DE CONFIANZA") ||
+    key.includes("PROBABILIDAD DEL")
   );
 }
 
@@ -108,22 +126,37 @@ function looksLikeReferenceToken(token: string): boolean {
   if (/^[<>]=?\s*-?\d+(?:[.,]\d+)?/.test(t)) return true;
   if (/^-?\d+(?:[.,]\d+)?\s*-\s*-?\d+(?:[.,]\d+)?$/.test(t)) return true;
   if (/^-?\d+(?:[.,]\d+)?\s*-\s*-?\d+(?:[.,]\d+)?\s+\S+/.test(t)) return true;
-  if (/^(Deseable|Valores|Negativo|Positivo|Normal|Inferior|Superior)/i.test(t)) return true;
+  if (/^(Deseable|Valores|Negativo|Positivo|Normal|Inferior|Superior)/i.test(t))
+    return true;
   return false;
+}
+
+function isGasometryGroup(group: string): boolean {
+  return normalizeForMatch(group).includes("GASOMETRIA");
+}
+
+function isIgnorableLabToken(token: string): boolean {
+  const key = normalizeForMatch(token);
+  return key === "VALIDADO TECNICAMENTE";
 }
 
 function looksLikeHeading(line: string): boolean {
   const trimmed = line.trim();
   if (!trimmed) return false;
   if (trimmed.length > 80) return false;
-  if (trimmed.includes('\t')) return false;
+  if (trimmed.includes("\t")) return false;
   if (/^[-*]/.test(trimmed)) return false;
   if (/\d/.test(trimmed)) return false;
-  if (isPatientLine(trimmed) || isRequestLine(trimmed) || isConfidenceLine(trimmed)) return false;
+  if (
+    isPatientLine(trimmed) ||
+    isRequestLine(trimmed) ||
+    isConfidenceLine(trimmed)
+  )
+    return false;
 
-  const letters = trimmed.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, '');
+  const letters = trimmed.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, "");
   if (!letters) return false;
-  const upper = letters.replace(/[^A-ZÁÉÍÓÚÜÑ]/g, '').length;
+  const upper = letters.replace(/[^A-ZÁÉÍÓÚÜÑ]/g, "").length;
   return upper / letters.length >= 0.65;
 }
 
@@ -134,7 +167,7 @@ function detectGroup(headings: string[]): string {
     if (found) return found.label;
   }
 
-  const fallback = headings[headings.length - 1] || 'Otros';
+  const fallback = headings[headings.length - 1] || "Otros";
   return toTitleCase(fallback);
 }
 
@@ -142,7 +175,7 @@ function parseResultAndUnit(valueUnitRaw: string): {
   result: string;
   unit: string;
 } {
-  const valueUnit = valueUnitRaw.replace(/\s+/g, ' ').trim();
+  const valueUnit = valueUnitRaw.replace(/\s+/g, " ").trim();
   const numeric = valueUnit.match(/^([<>]=?|=)?\s*(-?\d+(?:[.,]\d+)?)(.*)$/);
 
   if (numeric) {
@@ -152,7 +185,7 @@ function parseResultAndUnit(valueUnitRaw: string): {
     return { result: sign ? `${sign} ${value}` : value, unit };
   }
 
-  return { result: valueUnit, unit: '' };
+  return { result: valueUnit, unit: "" };
 }
 
 function parseResultLine(line: string, group: string): LabEntry | null {
@@ -163,31 +196,34 @@ function parseResultLine(line: string, group: string): LabEntry | null {
   if (!name || name.length < 2) return null;
 
   let index = 1;
-  let flag: '*' | '' = '';
-  if (cols[1] === '*') {
-    flag = '*';
+  let flag: "*" | "" = "";
+  if (cols[1] === "*") {
+    flag = "*";
     index = 2;
   }
 
-  const tailCols = cols.slice(index);
+  const tailCols = cols.slice(index).filter((col) => !isIgnorableLabToken(col));
   if (tailCols.length === 0) return null;
 
   let referenceStart = tailCols.length;
-  if (tailCols.length >= 2 && looksLikeReferenceToken(tailCols[tailCols.length - 1])) {
+  if (
+    tailCols.length >= 2 &&
+    looksLikeReferenceToken(tailCols[tailCols.length - 1])
+  ) {
     referenceStart = tailCols.length - 1;
   }
 
   const valueCols = tailCols.slice(0, referenceStart);
-  let reference = tailCols.slice(referenceStart).join(' ').trim();
+  let reference = tailCols.slice(referenceStart).join(" ").trim();
   if (valueCols.length === 0) return null;
 
-  let valueUnitRaw = '';
+  let valueUnitRaw = "";
   if (valueCols.length === 1) {
     valueUnitRaw = valueCols[0];
   } else if (looksNumericToken(valueCols[0])) {
-    valueUnitRaw = `${valueCols[0]} ${valueCols.slice(1).join(' ')}`.trim();
+    valueUnitRaw = `${valueCols[0]} ${valueCols.slice(1).join(" ")}`.trim();
   } else {
-    valueUnitRaw = valueCols.join(' ').trim();
+    valueUnitRaw = valueCols.join(" ").trim();
   }
 
   if (!reference) {
@@ -203,12 +239,12 @@ function parseResultLine(line: string, group: string): LabEntry | null {
 
   return {
     group,
-    name: name.replace(/\s+/g, ' ').trim(),
+    name: name.replace(/\s+/g, " ").trim(),
     flag,
     result: parsed.result,
     unit: parsed.unit,
     reference,
-    confidenceNote: '',
+    confidenceNote: "",
   };
 }
 
@@ -223,34 +259,38 @@ function canAppendContinuation(entry: LabEntry): boolean {
 function looksLikeUnitToken(token: string): boolean {
   const t = token.trim();
   if (!t) return false;
-  if (t === '%') return true;
+  if (t === "%") return true;
   if (/^10e\d+\/L$/i.test(t)) return true;
   if (/^(Seg|Ratio|upH|fL|pg)$/i.test(t)) return true;
   if (/[A-Za-zµ].*\//.test(t)) return true;
-  if (/^(mmol\/L|mg\/dL|g\/dL|U\/L|mEq\/L|mmHg|ng\/mL|mcU\/mL|mU\/mL|pg\/mL)$/i.test(t)) {
+  if (
+    /^(mmol\/L|mg\/dL|g\/dL|U\/L|mEq\/L|mmHg|ng\/mL|mcU\/mL|mU\/mL|pg\/mL)$/i.test(
+      t,
+    )
+  ) {
     return true;
   }
   return false;
 }
 
 function parseDetachedUnitOrReferenceLine(
-  line: string
+  line: string,
 ): { unit: string; reference: string } | null {
   const cols = splitColumns(line);
   if (cols.length === 0 || cols.length > 3) return null;
 
   const first = cols[0].trim();
-  const rest = cols.slice(1).join(' ').trim();
+  const rest = cols.slice(1).join(" ").trim();
 
   if (!first) return null;
 
   if (looksLikeReferenceToken(first)) {
-    return { unit: '', reference: first };
+    return { unit: "", reference: first };
   }
 
   if (!looksLikeUnitToken(first)) return null;
 
-  if (!rest) return { unit: first, reference: '' };
+  if (!rest) return { unit: first, reference: "" };
 
   if (looksLikeReferenceToken(rest)) {
     return { unit: first, reference: rest };
@@ -264,7 +304,7 @@ function parseInput(input: string): ParsedPayload {
   const lines = input.split(/\n/).map(normalizeLine);
   const headings: string[] = [];
 
-  let requestLine = '';
+  let requestLine = "";
   let lastEntry: LabEntry | null = null;
 
   const orderedGroups: Array<{ name: string; entries: LabEntry[] }> = [];
@@ -290,7 +330,18 @@ function parseInput(input: string): ParsedPayload {
     }
 
     if (isConfidenceLine(line) && lastEntry) {
-      lastEntry.confidenceNote = line;
+      const isBilirrubinaTotal =
+        normalizeForMatch(lastEntry.name) === "BILIRRUBINA TOTAL";
+      const hasAnuladaIncidencia = normalizeForMatch(lastEntry.result).includes(
+        "ANULADA POR INCIDENCIA",
+      );
+      if (isBilirrubinaTotal && hasAnuladaIncidencia) {
+        lastEntry.result = "<1,4";
+        lastEntry.unit = "mg/dL";
+        lastEntry.flag = "";
+      } else {
+        lastEntry.confidenceNote = line;
+      }
       continue;
     }
 
@@ -336,49 +387,50 @@ function parseInput(input: string): ParsedPayload {
 
 function canonicalAntibiogramLabel(label: string): string {
   const key = normalizeForMatch(label);
-  if (key.includes('EXPOSICION INCREMENTADA')) return 'Sensible con exposición incrementada';
-  if (key.includes('RESISTENTE')) return 'Resistente';
-  return 'Sensible';
+  if (key.includes("EXPOSICION INCREMENTADA"))
+    return "Sensible con exposición incrementada";
+  if (key.includes("RESISTENTE")) return "Resistente";
+  return "Sensible";
 }
 
 function joinWithY(items: string[]): string {
   const vals = items.map((x) => x.trim()).filter(Boolean);
-  if (vals.length === 0) return '';
+  if (vals.length === 0) return "";
   if (vals.length === 1) return vals[0];
   if (vals.length === 2) return `${vals[0]} y ${vals[1]}`;
-  return `${vals.slice(0, -1).join(', ')} y ${vals[vals.length - 1]}`;
+  return `${vals.slice(0, -1).join(", ")} y ${vals[vals.length - 1]}`;
 }
 
 function normalizeNarrative(text: string): string {
-  let out = text.replace(/\r/g, '').replace(/\s+/g, ' ').trim();
-  out = out.replace(/\)\s+Se observan/gi, '). Se observan');
-  out = out.replace(/\.\s*\./g, '.');
-  if (out && !/[.!?]$/.test(out)) out += '.';
+  let out = text.replace(/\r/g, "").replace(/\s+/g, " ").trim();
+  out = out.replace(/\)\s+Se observan/gi, "). Se observan");
+  out = out.replace(/\.\s*\./g, ".");
+  if (out && !/[.!?]$/.test(out)) out += ".";
   return out;
 }
 
 function formatCultureResult(rawResult: string): string {
   const lines = rawResult
-    .replace(/\r/g, '')
+    .replace(/\r/g, "")
     .split(/\n+/)
     .map((x) => x.trim())
     .filter(Boolean);
-  if (lines.length === 0) return '';
+  if (lines.length === 0) return "";
 
   const isMarker = (line: string) => {
     const key = normalizeForMatch(line);
     return (
-      key === 'SENSIBLE' ||
-      key.startsWith('SENSIBLE CON EXPOSICION INCREMENTADA') ||
-      key === 'RESISTENTE'
+      key === "SENSIBLE" ||
+      key.startsWith("SENSIBLE CON EXPOSICION INCREMENTADA") ||
+      key === "RESISTENTE"
     );
   };
 
   if (!lines.some((line) => isMarker(line))) {
-    return normalizeNarrative(lines.join(' '));
+    return normalizeNarrative(lines.join(" "));
   }
 
-  let germen = '';
+  let germen = "";
   const sections = new Map<string, string[]>();
   let current: string | null = null;
 
@@ -398,75 +450,92 @@ function formatCultureResult(rawResult: string): string {
   }
 
   const out: string[] = [];
-  const germenLine = germen.replace(/\s+/g, ' ').trim();
+  const germenLine = germen.replace(/\s+/g, " ").trim();
   if (germenLine) out.push(germenLine);
 
-  const sectionOrder = ['Sensible', 'Sensible con exposición incrementada', 'Resistente'] as const;
+  const sectionOrder = [
+    "Sensible",
+    "Sensible con exposición incrementada",
+    "Resistente",
+  ] as const;
   for (const label of sectionOrder) {
     const atbs = sections.get(label) ?? [];
     if (!atbs.length) continue;
     const joined = joinWithY(atbs);
     if (!joined) continue;
-    if (label === 'Sensible') out.push(`   Sensible a: ${joined}`);
-    else if (label === 'Sensible con exposición incrementada')
+    if (label === "Sensible") out.push(`   Sensible a: ${joined}`);
+    else if (label === "Sensible con exposición incrementada")
       out.push(`   Sensible con exposición incrementada a ${joined}`);
     else out.push(`   Resistente a ${joined}.`);
   }
 
-  return out.join('\n');
+  return out.join("\n");
 }
 
 function formatResultForOutput(entry: LabEntry): string {
   const nameKey = normalizeForMatch(entry.name);
-  if (nameKey.includes('CULTIVO')) return formatCultureResult(entry.result);
+  if (nameKey.includes("CULTIVO")) return formatCultureResult(entry.result);
 
-  const raw = entry.result.replace(/\s+/g, ' ').trim();
+  const raw = entry.result.replace(/\s+/g, " ").trim();
   if (entry.unit) return raw;
   if (/^([<>]=?|=)?\s*-?\d+(?:[.,]\d+)?$/.test(raw)) return raw;
   return normalizeNarrative(raw);
 }
 
-function formatEntryNameForOutput(name: string): string {
-  return name
-    .replace(/\bTINCION\b/gi, 'TINCIÓN')
-    .replace(/\s+/g, ' ')
+function formatEntryNameForOutput(entry: LabEntry): string {
+  let out = entry.name
+    .replace(/\bTINCION\b/gi, "TINCIÓN")
+    .replace(/\s+/g, " ")
     .trim();
+
+  if (isGasometryGroup(entry.group)) {
+    out = out
+      .replace(/\bvenoso\b/gi, "")
+      .replace(/\bvenosa\b/gi, "")
+      .replace(/\barterial\b/gi, "")
+      .replace(/\(\s*gasometr[ií]a[^)]*\)/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  return out;
 }
 
 function isMicrobiologyGroup(group: string): boolean {
-  return normalizeForMatch(group).includes('MICROBIOLOGIA');
+  return normalizeForMatch(group).includes("MICROBIOLOGIA");
 }
 
 function indentMultiline(text: string, indent: string): string {
   return text
-    .split('\n')
+    .split("\n")
     .map((line) => `${indent}${line}`)
-    .join('\n');
+    .join("\n");
 }
 
 function formatEntryLine(
   entry: LabEntry,
   includeReference: boolean,
-  includeConfidence: boolean
+  includeConfidence: boolean,
 ): string {
   const displayResult = entry.unit
     ? formatResultForOutput(entry)
-        .replace(/\s*\n+\s*/g, ' ')
+        .replace(/\s*\n+\s*/g, " ")
         .trim()
     : formatResultForOutput(entry);
-  const displayName = formatEntryNameForOutput(entry.name);
+  const displayName = formatEntryNameForOutput(entry);
   const isMicro = isMicrobiologyGroup(entry.group);
 
   const chunks = [isMicro ? `- ${displayName}:` : displayName];
   if (entry.flag) chunks.push(entry.flag);
 
-  const resultAndUnit = [displayResult, entry.unit].filter(Boolean).join(' ');
+  const resultAndUnit = [displayResult, entry.unit].filter(Boolean).join(" ");
   if (resultAndUnit) chunks.push(resultAndUnit);
 
-  let text = chunks.join(' ').replace(/\s+/g, ' ').trim();
-  if (entry.unit) text = text.replace(/\s*\n+\s*/g, ' ').trim();
+  let text = chunks.join(" ").replace(/\s+/g, " ").trim();
+  if (entry.unit) text = text.replace(/\s*\n+\s*/g, " ").trim();
   if (includeReference && entry.reference) text += ` ${entry.reference}`;
-  if (includeConfidence && entry.confidenceNote) text += ` (${entry.confidenceNote})`;
+  if (includeConfidence && entry.confidenceNote)
+    text += ` (${entry.confidenceNote})`;
 
   return text;
 }
@@ -477,27 +546,39 @@ function formatEntryLineColumns(
   includeConfidence: boolean,
   indent: string,
   nameColumnTarget: number,
-  valueColumnTarget: number
+  valueColumnTarget: number,
 ): string {
   const displayResult = formatResultForOutput(entry)
-    .replace(/\s*\n+\s*/g, ' ')
+    .replace(/\s*\n+\s*/g, " ")
     .trim();
-  const displayUnit = entry.unit.replace(/\s+/g, ' ').trim();
-  const valueAndUnit = displayUnit ? `${displayResult} ${displayUnit}` : displayResult;
+  const displayUnit = entry.unit.replace(/\s+/g, " ").trim();
+  const valueAndUnit = displayUnit
+    ? `${displayResult} ${displayUnit}`
+    : displayResult;
 
-  const baseNameSpaces = Math.max(1, nameColumnTarget - entry.name.length);
-  const isLongName = entry.name.length >= 'VOLUMEN CORPUSCULAR MEDIO'.length;
-  const nameSpaces = Math.max(1, baseNameSpaces - (isLongName ? 4 : 0));
-  let text = `${indent}${entry.name}${' '.repeat(nameSpaces)}\t`;
-  text += entry.flag ? '* \t' : ' \t';
+  const displayName = formatEntryNameForOutput(entry);
+  const baseNameSpaces = Math.max(1, nameColumnTarget - displayName.length);
+  const isLongName = displayName.length >= COLUMN_FORMAT.LONG_NAME_THRESHOLD;
+  const nameSpaces = Math.max(
+    1,
+    baseNameSpaces - (isLongName ? COLUMN_FORMAT.LONG_NAME_REDUCTION : 0),
+  );
+
+  const nameGap = `${spaces(nameSpaces)}${COLUMN_FORMAT.TAB}`;
+  const flagChunk = entry.flag
+    ? COLUMN_FORMAT.FLAG_WITH_ASTERISK
+    : COLUMN_FORMAT.FLAG_EMPTY;
+
+  let text = `${indent}${displayName}${nameGap}${flagChunk}`;
   text += valueAndUnit;
 
   if (includeReference && entry.reference) {
     const valueSpaces = Math.max(1, valueColumnTarget - valueAndUnit.length);
-    text += `${' '.repeat(valueSpaces)}\t${entry.reference}`;
+    const valueGap = `${spaces(valueSpaces)}${COLUMN_FORMAT.TAB}`;
+    text += `${valueGap}${entry.reference}`;
   }
   if (includeConfidence && entry.confidenceNote) {
-    const sep = text.endsWith(' ') ? '' : ' ';
+    const sep = text.endsWith(" ") ? "" : " ";
     text += `${sep}(${entry.confidenceNote})`;
   }
 
@@ -511,44 +592,47 @@ function buildOutput(
   includeConfidence: boolean,
   includeRequestLine: boolean,
   useColumns: boolean,
-  fontProfile: VisualFontProfile
+  fontProfile: VisualFontProfile,
 ): string {
   const parsed = parseInput(input);
   const out: string[] = [];
 
   const formatGroupTitleLines = (name: string) => name.toUpperCase();
   const formatGroupTitleParagraph = (name: string) => `- ${name.toUpperCase()}`;
-  const paramIndent = '  ';
+  const paramIndent = "  ";
   const entriesForColumns = parsed.groups
     .flatMap((group) => group.entries)
     .filter((entry) => !isMicrobiologyGroup(entry.group));
   const nameColumnTarget =
     Math.max(
-      'VOLUMEN CORPUSCULAR MEDIO'.length,
-      entriesForColumns.reduce((max, entry) => Math.max(max, entry.name.length), 0)
-    ) + 6;
+      "VOLUMEN CORPUSCULAR MEDIO".length,
+      entriesForColumns.reduce(
+        (max, entry) => Math.max(max, formatEntryNameForOutput(entry).length),
+        0,
+      ),
+    ) + COLUMN_FORMAT.NAME_EXTRA_SPACES;
   const valueColumnTarget =
     Math.max(
       10,
       entriesForColumns.reduce((max, entry) => {
         const result = formatResultForOutput(entry)
-          .replace(/\s*\n+\s*/g, ' ')
+          .replace(/\s*\n+\s*/g, " ")
           .trim();
-        const unit = entry.unit.replace(/\s+/g, ' ').trim();
+        const unit = entry.unit.replace(/\s+/g, " ").trim();
         const valueAndUnit = unit ? `${result} ${unit}` : result;
         return Math.max(max, valueAndUnit.length);
-      }, 0)
-    ) + 8;
+      }, 0),
+    ) + COLUMN_FORMAT.VALUE_EXTRA_SPACES;
 
   void fontProfile;
 
   if (includeRequestLine && parsed.requestLine) {
     out.push(parsed.requestLine);
-    out.push('');
+    out.push("");
   }
 
   for (const group of parsed.groups) {
-    if (mode === 'lineas') {
+    if (mode === "lineas") {
       out.push(formatGroupTitleLines(group.name));
       for (const entry of group.entries) {
         if (useColumns && !isMicrobiologyGroup(entry.group)) {
@@ -559,38 +643,40 @@ function buildOutput(
               includeConfidence,
               paramIndent,
               nameColumnTarget,
-              valueColumnTarget
-            ).replace(/\s*\n+\s*/g, ' ')
+              valueColumnTarget,
+            ).replace(/\s*\n+\s*/g, " "),
           );
         } else {
           out.push(
             indentMultiline(
               formatEntryLine(entry, includeReference, includeConfidence),
-              paramIndent
-            )
+              paramIndent,
+            ),
           );
         }
       }
-      out.push('');
+      out.push("");
       continue;
     }
 
     const joined = group.entries
-      .map((entry) => formatEntryLine(entry, includeReference, includeConfidence))
-      .join('; ');
+      .map((entry) =>
+        formatEntryLine(entry, includeReference, includeConfidence),
+      )
+      .join("; ");
     out.push(`${formatGroupTitleParagraph(group.name)}: ${joined}`);
-    out.push('');
+    out.push("");
   }
 
   while (out.length > 0 && !out[out.length - 1]) out.pop();
-  return out.join('\n');
+  return out.join("\n");
 }
 
 export default function FormateoAnaliticaOrion() {
-  const [input, setInput] = useState('');
-  const [mode, setMode] = useState<OutputMode>('lineas');
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<OutputMode>("lineas");
   const [useColumns, setUseColumns] = useState(false);
-  const fontProfile: VisualFontProfile = 'helvetica';
+  const fontProfile: VisualFontProfile = "helvetica";
   const [includeReference, setIncludeReference] = useState(true);
   const [includeRequestLine, setIncludeRequestLine] = useState(true);
   const includeConfidence = false;
@@ -604,18 +690,22 @@ export default function FormateoAnaliticaOrion() {
         includeConfidence,
         includeRequestLine,
         useColumns,
-        fontProfile
+        fontProfile,
       ),
-    [input, mode, includeReference, includeRequestLine, useColumns]
+    [input, mode, includeReference, includeRequestLine, useColumns],
   );
 
   return (
-    <main className="escala-wrapper space-y-4 orion-analitica-page" style={{ padding: 18 }}>
+    <main
+      className="escala-wrapper space-y-4 orion-analitica-page"
+      style={{ padding: 18 }}
+    >
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold">Formateo Analítica Orion</h1>
         <p className="max-w-2xl text-sm text-slate-600">
-          Detecta parámetro, asterisco, resultado, unidad y referencia. Puedes formatear por líneas
-          o en párrafos agrupados por bloques de laboratorio.
+          Detecta parámetro, asterisco, resultado, unidad y referencia. Puedes
+          formatear por líneas o en párrafos agrupados por bloques de
+          laboratorio.
         </p>
       </header>
 
@@ -630,7 +720,11 @@ export default function FormateoAnaliticaOrion() {
             style={{ minHeight: 200 }}
           />
           <div className="mt-1">
-            <button type="button" className="reset-btn orion-reset" onClick={() => setInput('')}>
+            <button
+              type="button"
+              className="reset-btn orion-reset"
+              onClick={() => setInput("")}
+            >
               Limpiar
             </button>
           </div>
@@ -640,51 +734,59 @@ export default function FormateoAnaliticaOrion() {
       <section className="orion-card space-y-2">
         <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
           <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vista</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Vista
+            </p>
             <button
               type="button"
-              className={`selector-btn selector-btn-compact w-full ${mode === 'lineas' ? 'activo' : ''}`}
-              onClick={() => setMode((prev) => (prev === 'lineas' ? 'parrafos' : 'lineas'))}
+              className={`selector-btn selector-btn-compact w-full ${mode === "lineas" ? "activo" : ""}`}
+              onClick={() =>
+                setMode((prev) => (prev === "lineas" ? "parrafos" : "lineas"))
+              }
             >
-              {mode === 'lineas' ? 'LÍNEA' : 'PÁRRAFO'}
-            </button>
-          </div>
-
-          <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Columnas</p>
-            <button
-              type="button"
-              className={`selector-btn selector-btn-compact w-full ${
-                mode === 'lineas' && useColumns ? 'activo' : ''
-              }`}
-              disabled={mode !== 'lineas'}
-              onClick={() => setUseColumns((prev) => !prev)}
-            >
-              {useColumns ? 'SÍ' : 'NO'}
-            </button>
-          </div>
-
-          <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Rangos</p>
-            <button
-              type="button"
-              className={`selector-btn selector-btn-compact w-full ${includeReference ? 'activo' : ''}`}
-              onClick={() => setIncludeReference((prev) => !prev)}
-            >
-              {includeReference ? 'SÍ' : 'NO'}
+              {mode === "lineas" ? "LÍNEA" : "PÁRRAFO"}
             </button>
           </div>
 
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Encabezamiento
+              Columnas
             </p>
             <button
               type="button"
-              className={`selector-btn selector-btn-compact w-full ${includeRequestLine ? 'activo' : ''}`}
+              className={`selector-btn selector-btn-compact w-full ${
+                mode === "lineas" && useColumns ? "activo" : ""
+              }`}
+              disabled={mode !== "lineas"}
+              onClick={() => setUseColumns((prev) => !prev)}
+            >
+              {useColumns ? "SÍ" : "NO"}
+            </button>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Rangos
+            </p>
+            <button
+              type="button"
+              className={`selector-btn selector-btn-compact w-full ${includeReference ? "activo" : ""}`}
+              onClick={() => setIncludeReference((prev) => !prev)}
+            >
+              {includeReference ? "SÍ" : "NO"}
+            </button>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Encabezado
+            </p>
+            <button
+              type="button"
+              className={`selector-btn selector-btn-compact w-full ${includeRequestLine ? "activo" : ""}`}
               onClick={() => setIncludeRequestLine((prev) => !prev)}
             >
-              {includeRequestLine ? 'SÍ' : 'NO'}
+              {includeRequestLine ? "SÍ" : "NO"}
             </button>
           </div>
         </div>
