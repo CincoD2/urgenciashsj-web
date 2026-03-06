@@ -1,0 +1,20 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/404-summary?period=daily",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/404-summary?period=weekly",
+      "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/external-link-summary?period=daily",
+      "schedule": "30 7 * * *"
+    },
+    {
+      "path": "/api/cron/external-link-summary?period=weekly",
+      "schedule": "30 8 * * 1"
+    }
+  ]
+}

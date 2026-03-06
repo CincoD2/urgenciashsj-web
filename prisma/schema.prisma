@@ -71,3 +71,28 @@ model AppSettings {
   warningSeconds Int      @default(30)
   updatedAt      DateTime @updatedAt
 }
+
+model BrokenLinkHit {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+}
+
+model ExternalLinkCheck {
+  id         String   @id @default(cuid())
+  sourcePath String?
+  targetUrl  String
+  finalUrl   String?
+  statusCode Int?
+  isError    Boolean  @default(false)
+  error      String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([isError, createdAt])
+}

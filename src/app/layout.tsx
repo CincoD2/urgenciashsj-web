@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import CookieNotice from '@/components/CookieNotice';
 import Providers from '@/components/Providers';
 import PageTitleSync from '@/components/PageTitleSync';
+import OutboundLinkInterceptor from '@/components/OutboundLinkInterceptor';
 
 const encodeSans = Encode_Sans({
   variable: '--font-encode-sans',
@@ -72,6 +73,7 @@ export default function RootLayout({
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
         <Providers>
+          <OutboundLinkInterceptor />
           <PageTitleSync />
           <Header />
           <main className="mx-auto w-full max-w-7xl px-4 py-6 flex-1">{children}</main>

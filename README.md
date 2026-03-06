@@ -1,5 +1,63 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## 404 Tracking + Email Summary
+
+This project includes an automatic broken-link report flow:
+
+- Every rendered `404` page sends a tracking event to `/api/track-404`.
+- Events are stored in Prisma model `BrokenLinkHit`.
+- Vercel Cron calls `/api/cron/404-summary`:
+  - Daily: last 24 hours.
+  - Weekly: last 7 days.
+- The route sends an email with top broken paths and top referrers.
+
+## Outbound External Link Tracking
+
+External links clicked by users are tracked through `/out`:
+
+- A client-side interceptor rewrites external clicks to `/out?to=...&from=...`.
+- `/out` checks the destination URL (`HEAD`, fallback `GET`) and stores:
+  - `statusCode`
+  - `isError` (true for 4xx/5xx or request failures)
+  - `targetUrl`, `finalUrl`, `sourcePath`
+- Then the user is redirected to the destination URL.
+
+Cron summaries:
+
+- `GET /api/cron/external-link-summary?period=daily`
+- `GET /api/cron/external-link-summary?period=weekly`
+
+Both send an email to `BROKEN_LINK_REPORT_TO` with top failing external URLs.
+
+### Required environment variables
+
+- `BROKEN_LINK_REPORT_TO`: destination email(s), comma-separated if needed.
+- `BROKEN_LINK_CRON_SECRET`: shared secret for manual cron runs (optional for Vercel Cron, required for manual requests).
+- Existing SMTP vars are reused:
+  - `SMTP_HOST`
+  - `SMTP_PORT`
+  - `SMTP_USER`
+  - `SMTP_PASS`
+  - `CONTACT_FROM_EMAIL` (optional; fallback to `SMTP_USER`)
+
+### Manual trigger
+
+Run daily report manually:
+
+`GET /api/cron/404-summary?period=daily&secret=YOUR_BROKEN_LINK_CRON_SECRET`
+
+Run weekly report manually:
+
+`GET /api/cron/404-summary?period=weekly&secret=YOUR_BROKEN_LINK_CRON_SECRET`
+
+Run external links daily report manually:
+
+`GET /api/cron/external-link-summary?period=daily&secret=YOUR_BROKEN_LINK_CRON_SECRET`
+
+Run external links weekly report manually:
+
+`GET /api/cron/external-link-summary?period=weekly&secret=YOUR_BROKEN_LINK_CRON_SECRET`
+
 ## Getting Started
 
 First, run the development server:
