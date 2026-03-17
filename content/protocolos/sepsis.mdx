@@ -1,21 +1,261 @@
 ---
 title: Sepsis en Urgencias
-description: Manejo inicial de la sepsis y shock séptico en urgencias
+description: Protocolo del Código Sepsis en Urgencias (CIPAM) que establece criterios de sospecha, activación y manejo inicial de pacientes con infección grave o shock séptico. Incluye algoritmos de detección precoz, determinación de lactato, obtención de cultivos, inicio inmediato de antibioterapia y medidas de resucitación hemodinámica basadas en las recomendaciones de la Surviving Sepsis Campaign.
+date: '2024-04-10'
+pdf: 'https://gvaes-my.sharepoint.com/:b:/r/personal/dieguez_san_gva_es/Documents/Shared_GVA/C%C3%B3digo%20Sepsis%20en%20Urgencias%20(CIPAM)%20v2024.pdf?csf=1&web=1&e=71htHL'
+tags:
+  [
+    'Sepsis',
+    'Código sepsis',
+    'Urgencias',
+    'Shock séptico',
+    'Infección grave',
+    'Antibioterapia precoz',
+    'Lactato',
+    'Biomarcadores sepsis',
+    'Reanimación con fluidos',
+    'Protocolo sepsis',
+    'CIPAM',
+    'Surviving Sepsis Campaign',
+    'Manejo precoz sepsis',
+    'Estratificación de riesgo infección',
+  ]
 ---
 
-# Sepsis en Urgencias
+## Detección y activación - triaje
 
-## Definición
+<div className="not-prose my-4 rounded-lg border border-[var(--border)] bg-[var(--card)] p-4">
+  <div className="grid gap-4 lg:grid-cols-3">
+    <div className="lg:col-span-2">
+      <div className="rounded-t-md bg-[#0f4b9a] px-3 py-2 text-sm font-bold uppercase tracking-wide text-white">
+        Detección y activación - Triage
+      </div>
+      <div className="space-y-2 rounded-b-md border border-t-0 bg-white p-3 text-sm">
+        <div className="rounded border border-gray-300 px-3 py-2 text-center font-medium">
+          Sospecha de infección
+        </div>
+        <div className="text-center text-base font-bold text-[#0f4b9a]">↓</div>
+        <div className="grid gap-2 md:grid-cols-2 md:items-center">
+          <div className="rounded border border-red-300 bg-red-50 px-3 py-2 text-center font-semibold text-red-700">
+            qSOFA ≥ 2
+          </div>
+          <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-center">
+            qSOFA &lt; 2 + persiste sospecha o FR ≥ 22
+          </div>
+        </div>
+        <div className="text-center text-base font-bold text-[#0f4b9a]">↓</div>
+        <div className="grid gap-2 md:grid-cols-2">
+          <div className="rounded border-2 border-red-500 bg-red-50 px-3 py-2 text-center font-bold text-red-700">
+            CÓDIGO SEPSIS
+          </div>
+          <div className="rounded border border-amber-400 bg-amber-50 px-3 py-2 text-center font-semibold">
+            NEWS2 ≥ 5
+          </div>
+        </div>
+        <div className="text-center text-base font-bold text-[#0f4b9a]">↓</div>
+        <div className="grid gap-2 md:grid-cols-2">
+          <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2">
+            <div className="text-center font-semibold">SI</div>
+            <div className="text-center">Prioridad 1-2 · Rotulación · Aviso N2</div>
+          </div>
+          <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2">
+            <div className="text-center font-semibold">NO</div>
+            <div className="text-center">Vigilancia y reclasificación</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-Disfunción orgánica potencialmente mortal causada por una respuesta desregulada del huésped a la infección.
+    <div className="space-y-3">
+      <div className="rounded-md border bg-white">
+        <div className="rounded-t-md bg-[#0f4b9a] px-3 py-2 text-xs font-bold uppercase tracking-wide text-white">
+          qSOFA
+        </div>
+        <DataTable
+          headers={['Criterio', 'Puntos']}
+          rows={[
+            ['FR ≥ 22 rpm', '1'],
+            ['TAS ≤ 100 mmHg', '1'],
+            ['Consciencia alterada', '1'],
+          ]}
+        />
+      </div>
+      <div className="rounded-md border bg-white">
+        <div className="rounded-t-md bg-[#0f4b9a] px-3 py-2 text-xs font-bold uppercase tracking-wide text-white">
+          NEWS2
+        </div>
+        <DataTable
+          headers={['Puntuación', 'Respuesta']}
+          rows={[
+            ['0-4', 'Vigilancia'],
+            ['5-6', 'Urgente'],
+            ['≥7', 'Emergencia'],
+          ]}
+        />
+      </div>
+      <div className="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-xs">
+        Valoración conjunta con lactato y evolución clínica.
+      </div>
+    </div>
+  </div>
+</div>
 
-## Puntos clave
+---
 
-- Sospechar ante infección + deterioro clínico.
-- Documentar lactato y disfunción orgánica.
+## Actuación inicial
 
-# Sepsis en Urgencias
+<BoxGrid>
+  <Box title="Enfermería">
+    <ul>
+      <li>Canalizar <code>2</code> vías periféricas (preferente <code>16-18G</code>).</li>
+      <li>
+        Extraer muestras antes del antibiótico si no retrasa su administración: hemograma,
+        bioquímica, coagulación, gasometría y lactato; hemocultivos (<code>2</code> juegos) y
+        cultivos según foco.
+      </li>
+      <li>Monitorización continua: FC, TA, SatO2, FR, Tª.</li>
+      <li>Diuresis horaria (valorar sonda vesical).</li>
+      <li>
+        Registrar <code>NEWS2</code>, <code>qSOFA</code> y tiempos críticos.
+      </li>
+    </ul>
+  </Box>
 
-<Alert>Iniciar antibiótico empírico precoz. Retrasos &gt; 1 h se asocian a mayor mortalidad.</Alert>
+  <Box title="Médico">
+    <ul>
+      <li>Reevaluación clínica rápida y foco infeccioso probable.</li>
+      <li>Antibiótico empírico precoz (ideal en la primera hora).</li>
+      <li>Fluidoterapia inicial con cristaloides balanceados.</li>
+      <li>Valorar vasopresores si hipotensión persiste tras fluidos.</li>
+      <li>Solicitar pruebas de imagen/microbiología dirigidas al foco.</li>
+      <li>Valorar ingreso en UCI o inicio de soporte avanzado.</li>
+    </ul>
+  </Box>
+</BoxGrid>
 
-<Pearl>El lactato puede estar elevado sin hipotensión franca.</Pearl>
+---
+
+## Bundle 1H y Bundle 3H
+
+<BoxGrid>
+  <Box title="Bundle 1H">
+    <Checklist
+      items={[
+        { text: 'Medir lactato inicial', checked: true },
+        {
+          text: 'Obtener cultivos antes de antibiótico (si no retrasa su inicio)',
+          checked: true,
+        },
+        { text: 'Administrar antibiótico de amplio espectro', checked: true },
+        {
+          text: 'Iniciar fluidoterapia si hipotensión o hipoperfusión',
+          checked: true,
+        },
+        {
+          text: 'Si hipotensión persistente: vasopresor para TAM ≥ 65 mmHg',
+          checked: true,
+        },
+      ]}
+    />
+  </Box>
+
+  <Box title="Bundle 3H">
+    <Checklist
+      items={[
+        { text: 'Reevaluación clínica y hemodinámica', checked: true },
+        { text: 'Repetir lactato si inicial elevado', checked: true },
+        { text: 'Control de foco (drenaje/cirugía/retirada dispositivo)', checked: true },
+        { text: 'Ajustar fluidos y vasopresores', checked: true },
+        {
+          text: 'Definir destino: observación, planta, M.I. o UCI',
+          checked: true,
+        },
+      ]}
+    />
+  </Box>
+</BoxGrid>
+
+<Pearl>
+  El lactato puede estar elevado sin hipotensión franca; debe integrarse con perfusión periférica y
+  evolución clínica.
+</Pearl>
+
+---
+
+## Objetivos terapéuticos iniciales
+
+<DataTable
+  headers={['Objetivo', 'Meta']}
+  rows={[
+    ['Presión arterial', 'TAM ≥ 65 mmHg'],
+    ['Diuresis', '> 0.5 mL/kg/h'],
+    ['Perfusión', 'Mejoría clínica y normalización progresiva del lactato'],
+    ['Respiración', 'Oxigenación/ventilación adecuadas al contexto'],
+  ]}
+/>
+
+---
+
+## Criterios para valorar ingreso en UCI
+
+<Warning>Escalar sin demora si no hay respuesta inicial a las medidas de reanimación.</Warning>
+
+- TAS `< 90 mmHg` o TAM `< 65 mmHg` persistente pese a fluidoterapia.
+- Necesidad de vasopresores para mantener perfusión.
+- Lactato `≥ 4 mmol/L` o incremento mantenido.
+- Fracaso respiratorio, renal, neurológico o hemodinámico progresivo.
+- Fallo multiorgánico o deterioro clínico rápido.
+
+---
+
+## SOFA Score (valoración de disfunción orgánica)
+
+<DataTable
+  headers={['Variable', '0', '1', '2', '3', '4']}
+  rows={[
+    ['PaFi', '≥400', '<400', '<300', '<200 (con VM)', '<100 (con VM)'],
+    ['Plaquetas (x10^3/uL)', '≥150', '<150', '<100', '<50', '<20'],
+    ['Glasgow', '15', '13-14', '10-12', '6-9', '<6'],
+    ['Creatinina (mg/dL)', '<1.2', '1.2-1.9', '2.0-3.4', '3.5-4.9', '>5.0'],
+    [
+      'TAM / vasopresor',
+      'TAM ≥70',
+      'TAM <70',
+      'DA ≤5 o dobutamina',
+      'DA >5 o NA ≤0.1',
+      'DA >15 o NA >0.1',
+    ],
+    ['Diuresis 24h', '≥500 mL', '', '<500 mL', '', '<200 mL'],
+  ]}
+/>
+
+---
+
+## Pruebas complementarias según foco sospechado
+
+<DataTable
+  headers={['Foco infeccioso', 'Pruebas iniciales sugeridas']}
+  rows={[
+    [
+      'Respiratorio',
+      'Hemocultivos, cultivo/PCR respiratoria, radiografía o TC de tórax según gravedad.',
+    ],
+    [
+      'Abdominal',
+      'Hemocultivos, perfil hepático, ecografía/TC abdominopélvica, cultivo de colecciones.',
+    ],
+    [
+      'Nefrourológico',
+      'Sedimento y urocultivo, hemocultivos, ecografía/TC si obstrucción o sepsis complicada.',
+    ],
+    [
+      'Cutáneo y partes blandas',
+      'Hemocultivos, cultivo de exudado/tejido profundo, ecografía/TC para absceso/fascitis.',
+    ],
+    ['SNC', 'Hemocultivos, TC craneal si procede y punción lumbar si no hay contraindicación.'],
+    [
+      'Dispositivos',
+      'Hemocultivos periféricos y de catéter; valorar retirada y cultivo de punta si indicada.',
+    ],
+  ]}
+/>
