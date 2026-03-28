@@ -660,7 +660,7 @@ Resultado total diario:
             </div>
           )}
 
-          {calculo && !calculo.error && (
+          {isCalculoExito(calculo) && (
             <div className={`resultado ${calculo.color} mt-4`}>
               <div className="puntos-total">{formatNumber(calculo.totalUbe, 2)} UBE</div>
               <div className="interpretacion">
