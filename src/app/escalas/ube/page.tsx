@@ -23,6 +23,32 @@ type BebidaInput = {
   grados: string;
 };
 
+type CalculoError = {
+  error: string;
+};
+
+type CalculoDesglose = {
+  nombre: string;
+  unidadesNum: number;
+  recipienteLabel: string;
+  mlNum: number;
+  gradosNum: number;
+  gramos: number;
+  ube: number;
+};
+
+type CalculoExito = {
+  color: string;
+  label: string;
+  pesoNum: number;
+  totalGramos: number;
+  totalUbe: number;
+  calorias: number;
+  alcoholemia: number;
+  totalMililitros: number;
+  desglose: CalculoDesglose[];
+};
+
 const GRADUACIONES: BebidaOption[] = [
   {
     id: 'otro',
@@ -292,6 +318,10 @@ function getRiesgo(ube: number, sexo: Sexo) {
   return { color: 'verde', label: 'Riesgo bajo según UBE/día' };
 }
 
+function isCalculoExito(calculo: CalculoError | CalculoExito | null): calculo is CalculoExito {
+  return calculo !== null && !('error' in calculo);
+}
+
 function normalizeBebidaInput(
   fila: Partial<BebidaInput> & Record<string, unknown>,
   fallbackId: number
@@ -394,7 +424,7 @@ export default function UbePage() {
   })();
 
   const textoInforme = (() => {
-    if (!calculo || calculo.error) return null;
+    if (!isCalculoExito(calculo)) return null;
 
     const bebidasTexto = calculo.desglose
       .map(
