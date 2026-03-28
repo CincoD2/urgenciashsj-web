@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
         destination: '/escalas/depuradorTtos',
         permanent: true,
       },
+      {
+        source: '/escalas/orion-unificado',
+        destination: '/escalas/OrionSF',
+        permanent: true,
+      },
     ];
   },
 };

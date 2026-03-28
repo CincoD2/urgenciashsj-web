@@ -112,6 +112,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
   '/escalas/timi-scasest': {
     title: 'TIMI SCASEST',
   },
+  '/escalas/ube': {
+    title: 'Unidades de Bebida Estándar (UBE)',
+    extraContent:
+      'ube unidades bebida estandar estándar alcohol acohol etanol etanolemia alcoholemia alcoholismo enolismo ebriedad borrachera intoxicacion etilica intoxicación etílica intoxicacion alcoholica intoxicación alcohólica gramos alcohol calorias calorías bebida bebida alcoholica bebida alcohólica copas consumo alcohol consumo de alcohol cerveza vino vino blanco vino tinto vermut whisky wisky vodka ron tequila ginebra brandy pacharan baileys absenta toxicologia toxicología',
+  },
   '/escalas/wells-tvp': {
     title: 'Wells – TVP',
     extraContent: 'wells tvp trombosis venosa profunda riesgo tromboembolismo venoso profundo etev tvs',
@@ -119,6 +124,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
   '/escalas/idsa': {
     title: 'IDSA/ATS',
     extraContent: 'idsa/ats idsa ats neumonia gravedad uci mortalidad',
+  },
+  '/escalas/OrionSF': {
+    title: 'Orion Smart Formatter',
+    extraContent:
+      'orion orionsf orion sf orion smart formatter smart formatter formatter orion unificado analitica analítica analiticas analíticas laboratorio labs lab gestlab resultados peticion petición bioquimica bioquímica hemograma coagulación coagulación gasometria gasometría tratamiento tratamientos medicacion medicación sia depurador depurador sia pegar texto copiar pegar formatear formateo parser pegado pruebas complementarias',
   },
 };
 

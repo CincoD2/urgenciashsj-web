@@ -717,8 +717,47 @@ body {
   line-height: 1.35;
 }
 
+.orion-mode-selector {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid #d8e3e6;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fbfc 0%, #eef5f7 100%);
+}
+
+.orion-mode-option {
+  min-width: 0;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #47636c;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.orion-mode-option:hover {
+  background: rgba(255, 255, 255, 0.72);
+  color: #2f4f58;
+}
+
+.orion-mode-option.activo {
+  background: #5a7f8a;
+  color: #ffffff;
+  border-color: #5a7f8a;
+  box-shadow: 0 2px 6px rgba(90, 127, 138, 0.18);
+}
+
 @media (max-width: 900px) {
   .orion-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .orion-mode-selector {
     grid-template-columns: 1fr;
   }
 }

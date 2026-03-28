@@ -118,6 +118,23 @@ export default function Escalas() {
       </section>
 
       <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Toxicología</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a className="escala-link-btn" href="/escalas/ube">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 3h8" />
+                <path d="M9 3v6a3 3 0 0 0 6 0V3" />
+                <path d="M7 13h10" />
+                <path d="M12 13v8" />
+              </svg>
+            </span>
+            Unidades de Bebida Estándar
+          </a>
+        </div>
+      </section>
+
+      <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Farmacia</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <a className="escala-link-btn" href="/escalas/standycalc">
@@ -292,6 +309,17 @@ export default function Escalas() {
               </svg>
             </span>
             Formateo Analítica Orion
+          </a>
+          <a className="escala-link-btn" href="/escalas/OrionSF">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="16" rx="3" />
+                <path d="M8 9h8" />
+                <path d="M8 15h4" />
+                <path d="M15.5 13.5l1.5 1.5 3-3" />
+              </svg>
+            </span>
+            Orion Smart Formatter (Beta)
           </a>
         </div>
       </section>

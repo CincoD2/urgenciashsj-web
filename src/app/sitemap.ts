@@ -33,6 +33,7 @@ const escalaRoutes = [
   '/escalas/idsa',
   '/escalas/nihss',
   '/escalas/mrs',
+  '/escalas/OrionSF',
   '/escalas/pafi',
   '/escalas/psi',
   '/escalas/qsofa',
@@ -41,6 +42,7 @@ const escalaRoutes = [
   '/escalas/tam',
   '/escalas/timi-scacest',
   '/escalas/timi-scasest',
+  '/escalas/ube',
   '/escalas/urea-bun',
   '/escalas/wells-tvp',
 ];
