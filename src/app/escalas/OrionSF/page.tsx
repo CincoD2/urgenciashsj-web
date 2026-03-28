@@ -234,7 +234,7 @@ function depurarTratamiento(textoOriginal: string, multilinea: boolean) {
       if (!medL) return null;
       return { med: medL, poso: posoL };
     })
-    .filter(Boolean);
+    .filter((item): item is { med: string; poso: string } => item !== null);
 
   const header = `Tratamiento (por SIA a fecha ${fechaActual}):`;
   if (!itemsLimpios.length) return header;
