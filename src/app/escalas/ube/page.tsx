@@ -495,7 +495,7 @@ Resultado total diario:
   };
 
   return (
-    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+    <main className="escala-wrapper space-y-6 px-4 py-6 sm:px-6">
       <h1 className="text-2xl font-semibold">Cálculo de las Unidades de Bebida Estándar (UBE)</h1>
 
       <section className="space-y-5">
@@ -544,7 +544,111 @@ Resultado total diario:
             </div>
           </div>
 
-          <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+          <div className="mt-5 space-y-3 md:hidden">
+            {bebidas.map((fila, index) => {
+              const bebidaSeleccionada = GRADUACIONES.find((item) => item.id === fila.bebidaId);
+              const recipientes = bebidaSeleccionada?.recipientes ?? [];
+
+              return (
+                <div key={fila.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="text-sm font-semibold text-slate-700">Bebida {index + 1}</div>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={addBebida}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-sm transition hover:border-[#5a7f8a] hover:bg-[#eaf3f5]"
+                        title="Añadir fila"
+                      >
+                        ➕
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeBebida(fila.id)}
+                        disabled={bebidas.length === 1}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-sm transition enabled:hover:border-rose-200 enabled:hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40"
+                        title="Eliminar fila"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="input-group">
+                      <label>Tipo</label>
+                      <select
+                        value={fila.bebidaId}
+                        onChange={(e) => updateBebida(fila.id, 'bebidaId', e.target.value)}
+                        className="w-full"
+                      >
+                        <option value="">Selecciona bebida</option>
+                        {GRADUACIONES.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.emoji} {item.bebida} ({item.graduacionLabel})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="input-group">
+                        <label>Unidades/día</label>
+                        <div className="input-con-unidad w-full">
+                          <input
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={fila.unidades}
+                            onChange={(e) => updateBebida(fila.id, 'unidades', e.target.value)}
+                            placeholder="1"
+                            className="text-center"
+                          />
+                          <span className="input-unidad">uds</span>
+                        </div>
+                      </div>
+
+                      <div className="input-group">
+                        <label>Graduación</label>
+                        <div className="input-con-unidad w-full">
+                          <input
+                            type="number"
+                            min="0.5"
+                            max="100"
+                            step="0.1"
+                            value={fila.grados}
+                            onChange={(e) => updateBebida(fila.id, 'grados', e.target.value)}
+                            placeholder="Ej. 5"
+                            className="text-center"
+                          />
+                          <span className="input-unidad">º</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="input-group">
+                      <label>Recipiente</label>
+                      <select
+                        value={fila.recipienteId}
+                        onChange={(e) => updateBebida(fila.id, 'recipienteId', e.target.value)}
+                        disabled={!fila.bebidaId}
+                        className="w-full"
+                      >
+                        <option value="">Selecciona recipiente</option>
+                        {recipientes.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.emoji} {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-5 hidden overflow-x-auto rounded-2xl border border-slate-200 md:block">
             <table className="min-w-full bg-white text-sm">
               <thead className="bg-slate-50 text-left text-slate-700">
                 <tr>
@@ -680,7 +784,7 @@ Resultado total diario:
           <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-slate-800">
             Graduación alcohólica según bebida
           </summary>
-          <div className="border-t border-slate-100 px-4 py-3">
+          <div className="overflow-x-auto border-t border-slate-100 px-4 py-3">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-slate-600">
@@ -705,7 +809,7 @@ Resultado total diario:
 
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="px-4 py-3 text-sm font-semibold text-slate-800">UBE por copas</div>
-          <div className="border-t border-slate-100 px-4 py-3">
+          <div className="overflow-x-auto border-t border-slate-100 px-4 py-3">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-slate-600">
