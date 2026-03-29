@@ -76,14 +76,8 @@ export async function getChangelogReactionSummary(
 
   if (entryIds.length === 0) return {};
 
-  let rows: Array<{
-    entryId: string;
-    reaction: 'LIKE' | 'DISLIKE' | 'IMPROVABLE';
-    _count: { _all: number };
-  }>;
-
   try {
-    rows = await prisma.changelogReaction.groupBy({
+    const rows = await prisma.changelogReaction.groupBy({
       by: ['entryId', 'reaction'],
       where: {
         entryId: {
@@ -94,6 +88,18 @@ export async function getChangelogReactionSummary(
         _all: true,
       },
     });
+
+    for (const row of rows) {
+      if (row.reaction === 'LIKE') {
+        emptySummary[row.entryId].like = row._count._all;
+      } else if (row.reaction === 'DISLIKE') {
+        emptySummary[row.entryId].dislike = row._count._all;
+      } else if (row.reaction === 'IMPROVABLE') {
+        emptySummary[row.entryId].improvable = row._count._all;
+      }
+    }
+
+    return emptySummary;
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -104,16 +110,4 @@ export async function getChangelogReactionSummary(
 
     throw error;
   }
-
-  for (const row of rows) {
-    if (row.reaction === 'LIKE') {
-      emptySummary[row.entryId].like = row._count._all;
-    } else if (row.reaction === 'DISLIKE') {
-      emptySummary[row.entryId].dislike = row._count._all;
-    } else if (row.reaction === 'IMPROVABLE') {
-      emptySummary[row.entryId].improvable = row._count._all;
-    }
-  }
-
-  return emptySummary;
 }
