@@ -6,6 +6,8 @@ export const metadata = {
   description: 'Cambios y novedades del sitio',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function NovedadesPage() {
   const entries = loadChangelog();
   const reactionSummary = await getChangelogReactionSummary(entries.map((entry) => entry.id));
