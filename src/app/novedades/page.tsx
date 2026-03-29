@@ -1,48 +1,14 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import matter from 'gray-matter';
-import Link from 'next/link';
+import ChangelogReactions from '@/components/ChangelogReactions';
+import { getChangelogReactionSummary, loadChangelog } from '@/lib/changelog';
 
 export const metadata = {
   title: 'Novedades',
   description: 'Cambios y novedades del sitio',
 };
 
-type ChangelogEntry = {
-  title: string;
-  date: string;
-  summary?: string;
-  link?: string;
-  tags?: string[];
-  body?: string;
-};
-
-function loadChangelog(): ChangelogEntry[] {
-  const dir = path.join(process.cwd(), 'content/changelog');
-  if (!fs.existsSync(dir)) return [];
-
-  return fs
-    .readdirSync(dir)
-    .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
-    .map((file) => {
-      const fullPath = path.join(dir, file);
-      const raw = fs.readFileSync(fullPath, 'utf-8');
-      const { data, content } = matter(raw);
-
-      return {
-        title: (data.title as string) ?? file.replace(/\.(md|mdx)$/i, ''),
-        date: (data.date as string) ?? '1970-01-01',
-        summary: data.summary as string | undefined,
-        link: data.link as string | undefined,
-        tags: (data.tags as string[]) ?? [],
-        body: content.trim(),
-      };
-    })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
-}
-
-export default function NovedadesPage() {
+export default async function NovedadesPage() {
   const entries = loadChangelog();
+  const reactionSummary = await getChangelogReactionSummary(entries.map((entry) => entry.id));
 
   function renderInlineMarkdown(line: string) {
     const nodes: React.ReactNode[] = [];
@@ -116,7 +82,7 @@ export default function NovedadesPage() {
         <div className="space-y-4">
           {entries.map((entry) => (
             <article
-              key={`${entry.date}-${entry.title}`}
+              key={entry.id}
               className="rounded-2xl border border-[#dfe9eb] bg-[#f7fbfc] p-5"
             >
               <div className="flex flex-wrap items-center gap-3">
@@ -147,6 +113,17 @@ export default function NovedadesPage() {
                   ))}
                 </div>
               )}
+
+              <ChangelogReactions
+                entryId={entry.id}
+                initialSummary={
+                  reactionSummary[entry.id] ?? {
+                    like: 0,
+                    dislike: 0,
+                    improvable: 0,
+                  }
+                }
+              />
             </article>
           ))}
         </div>

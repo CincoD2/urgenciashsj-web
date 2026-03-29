@@ -11,6 +11,12 @@ enum Role {
   USER
 }
 
+enum ChangelogReactionType {
+  LIKE
+  DISLIKE
+  IMPROVABLE
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -27,6 +33,18 @@ model User {
 
   accounts Account[]
   sessions Session[]
+}
+
+model ChangelogReaction {
+  id        String                @id @default(cuid())
+  entryId   String
+  visitorId String
+  reaction  ChangelogReactionType
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  @@unique([entryId, visitorId])
+  @@index([entryId])
 }
 
 model Account {
