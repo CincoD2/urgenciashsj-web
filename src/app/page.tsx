@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { Suspense } from 'react';
 import matter from 'gray-matter';
 import Link from 'next/link';
 import { getTopConsultedPages } from '@/lib/ga4';
@@ -311,7 +312,9 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-10" data-home-search-root>
-      <HomeSearchHighlighter />
+      <Suspense fallback={null}>
+        <HomeSearchHighlighter />
+      </Suspense>
       <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9 rounded-b-3xl">
         <div
           className="absolute inset-0 bg-cover"
