@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { trackEvent } from "@/lib/analytics";
 
-type Result = { type: string; title: string; url: string };
+type Result = { type: string; title: string; url: string; snippet?: string };
 
 export default function SearchModal({
   open,
@@ -106,8 +106,8 @@ export default function SearchModal({
               <li key={`${r.type}-${r.url}-${idx}`}>
                 <a
                   href={r.url}
-                  target="_blank"
-                  rel="noreferrer"
+                  target={r.url.startsWith('/') ? undefined : '_blank'}
+                  rel={r.url.startsWith('/') ? undefined : 'noreferrer'}
                   className="block rounded px-2 py-2 text-sm hover:bg-[#dfe9eb]/60 hover:text-[#3d7684]"
                   onClick={() => {
                     if (r.type === "protocolo") {
@@ -121,22 +121,29 @@ export default function SearchModal({
                     onClose();
                   }}
                 >
-                  <span className="mr-2 rounded bg-[#dfe9eb]/70 px-2 py-0.5 text-[10px] uppercase text-[#516f75]">
-                    {r.type === "herramienta"
-                      ? "Herramienta"
-                      : r.type === "dieta"
-                      ? "Macro"
-                      : r.type === "formacion"
-                      ? "Formación"
-                      : r.type === "sesion"
-                      ? "Sesión"
-                      : r.type === "page"
-                      ? "Web"
-                      : r.type === "horario"
-                      ? "Horarios"
-                      : r.type}
-                  </span>
-                  {r.title}
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-[#dfe9eb]/70 px-2 py-0.5 text-[10px] uppercase text-[#516f75]">
+                      {r.type === "herramienta"
+                        ? "Herramienta"
+                        : r.type === "dieta"
+                        ? "Macro"
+                        : r.type === "formacion"
+                        ? "Formación"
+                        : r.type === "sesion"
+                        ? "Sesión"
+                        : r.type === "page"
+                        ? "Inicio"
+                        : r.type === "horario"
+                        ? "Horarios"
+                        : r.type}
+                    </span>
+                    <span>{r.title}</span>
+                  </div>
+                  {r.snippet ? (
+                    <div className="mt-1 pl-0 text-xs text-[#6b7f83]">
+                      {r.snippet}
+                    </div>
+                  ) : null}
                 </a>
               </li>
             ))}

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
+import { getHomeSearchEntries } from '@/lib/homeContent';
 import { HORARIOS, MONTHS, MONTH_ALIASES, MONTH_LABELS } from '@/lib/horariosData';
 
 type SearchItem = {
@@ -9,6 +10,7 @@ type SearchItem = {
   title: string;
   url: string;
   content: string;
+  snippet?: string;
 };
 
 function normalize(text: string) {
@@ -203,6 +205,7 @@ function loadProtocolos(): SearchItem[] {
         title: (data as { title?: string }).title ?? slug,
         url: `/protocolos/${slug}`,
         content: `${(data as { description?: string }).description ?? ''}\n${tags}\n${content}`,
+        snippet: (data as { description?: string }).description ?? tags,
       };
     });
 }
@@ -241,13 +244,23 @@ function loadDietas(): SearchItem[] {
       title: it.titulo ?? 'Macros',
       url: dietasUrl,
       content: `${(it.tags ?? []).join(' ')} ${(it.sistemas ?? []).join(' ')} ${content}`,
+      snippet: (it.sistemas ?? []).join(' · ') || (it.tags ?? []).slice(0, 4).join(' · '),
     };
   });
 }
 
-function loadPages(): SearchItem[] {
+function loadPages(queryText?: string): SearchItem[] {
+  const homeItems = getHomeSearchEntries().map((entry) => ({
+    type: 'page' as const,
+    title: entry.section === 'Inicio' ? entry.title : `${entry.title} (${entry.section})`,
+    url: `/?homeSearch=${encodeURIComponent(queryText ?? entry.title)}&homeFocus=${encodeURIComponent(entry.id)}`,
+    content: `inicio home portada ${entry.section} ${entry.content}`,
+    snippet: entry.section,
+  }));
+
   return [
     { type: 'page', title: 'Inicio', url: '/', content: 'inicio recursos urgencias' },
+    ...homeItems,
     { type: 'page', title: 'Protocolos', url: '/protocolos', content: 'protocolos' },
     { type: 'page', title: 'Sesiones', url: '/sesiones', content: 'sesiones' },
     { type: 'page', title: 'Macros', url: '/macros', content: 'dietas recomendaciones macros' },
@@ -284,6 +297,7 @@ function loadHorarios(): SearchItem[] {
       title: `Horarios ${year}`,
       url: '/horarios',
       content: `horarios ${yearStr} ${yearShort}`,
+      snippet: `Calendario ${year}`,
     });
 
     MONTHS.forEach((month, idx) => {
@@ -317,6 +331,7 @@ function loadHorarios(): SearchItem[] {
         title: `Horarios ${label} ${year}`,
         url,
         content,
+        snippet: `Horarios · ${label} ${year}`,
       });
     });
   }
@@ -473,6 +488,7 @@ function loadTools(): SearchItem[] {
       title,
       url: route,
       content: `${metadata.extraContent ?? `herramientas escalas ${title} ${slug}`} ${protocolTags}`.trim(),
+      snippet: protocolTags || 'Herramienta clínica',
     };
   });
 
@@ -482,12 +498,14 @@ function loadTools(): SearchItem[] {
       title: `${drug} (STANDyCALC®)`,
       url: `/escalas/standycalc?drug=${encodeURIComponent(drug)}`,
       content: `standycalc ${drug.toLowerCase()} ${drug}`,
+      snippet: 'STANDyCALC® · Perfusiones y diluciones',
     })),
     {
       type: 'herramienta' as const,
       title: 'Dormicum (STANDyCALC®)',
       url: `/escalas/standycalc?drug=${encodeURIComponent('MIDAZOLAM')}`,
       content: 'standycalc dormicum midazolam',
+      snippet: 'STANDyCALC® · Perfusiones y diluciones',
     },
     ...brandNames.map((brand) => ({
       type: 'herramienta' as const,
@@ -496,6 +514,7 @@ function loadTools(): SearchItem[] {
         ? `/escalas/standycalc?drug=${encodeURIComponent(brandMap[brand])}`
         : '/escalas/standycalc',
       content: `standycalc ${brand.toLowerCase()} ${brand}`,
+      snippet: 'STANDyCALC® · Perfusiones y diluciones',
     })),
   ];
 
@@ -545,6 +564,7 @@ async function loadSheetRows(
       title,
       url: link || urlBase,
       content: `${cellToString(c[0])} ${title} ${tags}`,
+      snippet: tags || cellToString(c[0]),
     };
   });
 }
@@ -564,10 +584,10 @@ function getLatestMtime(dirPath: string): number {
   return latest;
 }
 
-async function loadAllItems(): Promise<SearchItem[]> {
+async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
   const protocolosMtime = getLatestMtime(path.join(process.cwd(), 'content', 'protocolos'));
   const dietasMtime = getLatestMtime(path.join(process.cwd(), 'public', 'dietas_recom'));
-  const key = `all:${protocolosMtime}:${dietasMtime}`;
+  const key = `all:${protocolosMtime}:${dietasMtime}:${queryText ?? ''}`;
   const now = Date.now();
   const cached = cache.get(key);
   if (cached && now - cached.ts < CACHE_TTL_MS) return cached.data;
@@ -578,7 +598,7 @@ async function loadAllItems(): Promise<SearchItem[]> {
   ]);
 
   const items = [
-    ...loadPages(),
+    ...loadPages(queryText),
     ...loadHorarios(),
     ...loadProtocolos(),
     ...loadDietas(),
@@ -589,6 +609,28 @@ async function loadAllItems(): Promise<SearchItem[]> {
   return items;
 }
 
+function cleanSnippet(text: string) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function buildSnippet(item: SearchItem, query: string) {
+  const explicitSnippet = cleanSnippet(item.snippet ?? '');
+  if (explicitSnippet) return explicitSnippet;
+
+  const source = cleanSnippet(`${item.title} ${item.content}`);
+  if (!source) return '';
+
+  const normalizedSource = normalize(source);
+  const matchIndex = normalizedSource.indexOf(query);
+  if (matchIndex < 0) return source.slice(0, 120);
+
+  const start = Math.max(0, matchIndex - 40);
+  const end = Math.min(source.length, matchIndex + query.length + 60);
+  const prefix = start > 0 ? '…' : '';
+  const suffix = end < source.length ? '…' : '';
+  return `${prefix}${source.slice(start, end).trim()}${suffix}`;
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const q = (searchParams.get('q') ?? '').trim();
@@ -597,7 +639,7 @@ export async function GET(req: Request) {
   }
 
   const query = normalize(q);
-  const items = [...(await loadAllItems()), ...loadTools()];
+  const items = [...(await loadAllItems(q)), ...loadTools()];
 
   const results = items
     .map((it) => {
@@ -611,6 +653,7 @@ export async function GET(req: Request) {
       type: it.type,
       title: it.title,
       url: it.url,
+      snippet: buildSnippet(it, query),
     }));
 
   return Response.json({ results });

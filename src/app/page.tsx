@@ -3,191 +3,17 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import Link from 'next/link';
 import { getTopConsultedPages } from '@/lib/ga4';
-
-type LinkItem = {
-  label: string;
-  href: string;
-  icon?: IconKey;
-  endIcon?: EndIconKey;
-  intranet?: boolean;
-};
-
-const observacion: LinkItem[] = [
-  {
-    label: 'Relevo Observación',
-    href: 'https://drive.google.com/file/d/1YccU61yNP8X5N10rd2xSBB26guQUMD8A/view?usp=sharing',
-    endIcon: 'phoneSheet',
-  },
-  {
-    label: 'Esquema Observación',
-    href: 'https://drive.google.com/file/d/1KQaem_gE9AXnI6FSg_TIbVFba4vmGwCW/view?usp=sharing',
-    endIcon: 'phoneSheet',
-  },
-  {
-    label: 'Hoja Informativa UHD',
-    href: 'https://drive.google.com/file/d/1XfV0FDX5U6wWhKX0DVWnEhiwGl3lXbKI/view?usp=drive_link',
-    endIcon: 'phoneSheet',
-  },
-  {
-    label: 'Plantilla asignación médico N2',
-    href: 'https://drive.google.com/file/d/1Gi_J6xWg8lGq5t4PKmA07kSdJKpGYP5Q/view?usp=sharing',
-    endIcon: 'phoneSheet',
-  },
-];
-
-type IconKey =
-  | 'person'
-  | 'money'
-  | 'internet'
-  | 'mail'
-  | 'book'
-  | 'grad'
-  | 'computer'
-  | 'wrench'
-  | 'flask'
-  | 'xray'
-  | 'drop'
-  | 'agenda';
-
-type EndIconKey = 'phoneSheet';
-
-const enlacesCorporativos: Record<string, LinkItem[]> = {
-  Personal: [
-    {
-      label: 'Portal del Empleado GVA',
-      href: 'https://vvd17portalempleado.cs.san.gva.es/',
-      icon: 'person',
-      intranet: true,
-    },
-    {
-      label: 'Nóminas San Juan',
-      href: 'https://nomina.san.gva.es/es/',
-      icon: 'money',
-    },
-    {
-      label: 'Gestor Identidades (GVA)',
-      href: 'https://idm.san.gva.es/sspr',
-      icon: 'person',
-    },
-    {
-      label: 'Intranet Privada San Juan',
-      href: 'https://intranet17.cs.san.gva.es/',
-      icon: 'internet',
-      intranet: true,
-    },
-  ],
-  Utilidades: [
-    {
-      label: 'Mail Corporativo',
-      href: 'https://outlook.office365.com/',
-      icon: 'mail',
-    },
-    {
-      label: 'Biblioteca',
-      href: 'https://a-hsanjuan.c17.net/sf17/es/journals/catalog/opac',
-      icon: 'book',
-    },
-    {
-      label: 'Portal Formación (EVES)',
-      href: 'https://eves.san.gva.es/es/',
-      icon: 'grad',
-    },
-    {
-      label: 'Informática',
-      href: 'https://intranet17.cs.san.gva.es/departamento/servicios-de-apoyo/informatica/informatica/',
-      icon: 'computer',
-      intranet: true,
-    },
-  ],
-  Departamento: [
-    {
-      label: 'GestLab (HSJ)',
-      href: 'https://vvd17silaplpro.cs.san.gva.es/iGestlab/Login.aspx?',
-      icon: 'flask',
-      intranet: true,
-    },
-
-    {
-      label: 'Visor RX (HSJ)',
-      href: 'https://vvd17zfpa.cs.san.gva.es/ZFP/',
-      icon: 'xray',
-      intranet: true,
-    },
-    {
-      label: 'Taonet-Sintrom',
-      href: 'http://10.192.176.103:8080/tao/servlet/KYNTAOController',
-      icon: 'drop',
-      intranet: true,
-    },
-    {
-      label: 'Citas AP',
-      href: 'https://www.tramita.gva.es/ctt-att-atr/asistente/iniciarTramite.html?tramite=CS-SOLOCITASIP&version=5&idioma=es&idProcGuc=2888&idSubfaseGuc=SOLICITUD&idCatGuc=PR',
-      icon: 'agenda',
-    },
-  ],
-};
-
-const documentosInteres: LinkItem[] = [
-  {
-    label: 'Solicitudes Personal',
-    href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY?path=%2F1.-%20SOLICITUDES%20Y%20PLANTILLAS%2FDOCUMENTACION%20ADMINISTRATIVA%2FPERSONAL%2FSOLICITUDES%20PERSONAL',
-    intranet: true,
-  },
-  {
-    label: 'Hoja de teléfonos más usados Urgencias',
-    href: 'https://gvaes-my.sharepoint.com/:b:/r/personal/dieguez_san_gva_es/Documents/Shared_GVA/listintel_urghsj.pdf?csf=1&web=1&e=e0QIiW',
-    endIcon: 'phoneSheet',
-  },
-  {
-    label: 'Teléfonos Urgencias (credenciales CS)',
-    href: 'https://sanjuan.san.gva.es/listin/',
-  },
-  {
-    label: 'Oxigenoterapia Linde | Indicaciones',
-    href: 'https://www.lindemedicaldirect.com/es/lite/app/Modules/Application/Main/Main.html#!/Startup',
-  },
-  {
-    label: 'Perfiles Glucémicos Completos',
-    href: 'https://drive.google.com/file/d/1w8JIsDIsdrLVSAdGt3i9jfFyFzx-XR67/view?usp=sharing',
-    endIcon: 'phoneSheet',
-  },
-
-  {
-    label: 'Plantilla Protocolos',
-    href: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F00.-PLANTILLA%20DE%20PROTOCOLO&files=modelo%20de%20protocolo.docx',
-    intranet: true,
-  },
-  {
-    label: 'Hoja firma guardias residentes',
-    href: 'https://drive.google.com/file/d/1yjGxQNaHLHtdOYXpRmCZ-Oq_H9HEfKtG/view?usp=sharing',
-    endIcon: 'phoneSheet',
-  },
-];
-
-const enlacesInteres: LinkItem[] = [
-  {
-    label: 'AEMPS',
-    href: 'http://www.aemps.gob.es/cima/fichasTecnicas.do?metodo=detalleForm',
-  },
-  { label: 'Fármacos Lactancia', href: 'http://e-lactancia.org/' },
-  {
-    label: 'Equivalencias Mórficos',
-    href: 'https://lamochiladelresi.wordpress.com/wp-content/uploads/2019/07/tabla_de_equivalencia_aproximada_entre_opioides_2014.pdf',
-  },
-  { label: 'UpToDate', href: 'http://www.uptodate.com/contents/search' },
-  {
-    label: 'Intoxicaciones (MurciaSalud)',
-    href: 'http://www.murciasalud.es/toxiconet.php?op=listado_protocolos&idsec=4014',
-  },
-  {
-    label: 'CIE oficial',
-    href: 'https://eciemaps.mscbs.gob.es/ecieMaps/browser/indexMapping.html',
-  },
-  {
-    label: 'Peremecum (H.G.U. Dr. Balmis)',
-    href: 'https://alicante.san.gva.es/documents/d/alicante/peremecum',
-  },
-];
+import HomeSearchHighlighter from '@/components/HomeSearchHighlighter';
+import {
+  documentosInteres,
+  enlacesCorporativos,
+  enlacesInteres,
+  getHomeSearchTargetId,
+  observacion,
+  type EndIconKey,
+  type IconKey,
+  type LinkItem,
+} from '@/lib/homeContent';
 
 const calendarEmbed =
   'https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA';
@@ -395,11 +221,11 @@ function EndIcon({ name }: { name: EndIconKey }) {
   return null;
 }
 
-function LinkList({ items }: { items: LinkItem[] }) {
+function LinkList({ items, section }: { items: LinkItem[]; section: string }) {
   return (
     <ul className="space-y-2">
       {items.map((it) => (
-        <li key={it.label}>
+        <li key={it.label} data-home-search-target={getHomeSearchTargetId(section, it.label)}>
           {it.href ? (
             <a
               href={it.href}
@@ -484,7 +310,8 @@ export default async function HomePage() {
   const showHighlights = latestChangelog.length > 0 || topPages.length > 0;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10" data-home-search-root>
+      <HomeSearchHighlighter />
       <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9 rounded-b-3xl">
         <div
           className="absolute inset-0 bg-cover"
@@ -508,6 +335,7 @@ export default async function HomePage() {
           {latestChangelog.length > 0 ? (
             <Link
               href="/novedades"
+              data-home-search-target="home-novedades"
               className="block rounded-2xl border border-[#cfe2e6] bg-[#eef6f8] p-4 transition hover:border-[#b8d3da] hover:bg-[#e6f2f5] lg:col-span-2"
             >
               <div className="space-y-2 text-sm text-[#3f5f66]">
@@ -539,28 +367,30 @@ export default async function HomePage() {
 
           {topPages.length > 0 ? (
             <section className="rounded-2xl border border-[#c8dde3] bg-[#e8f2f4] p-4">
-              <div className="space-y-2 text-sm text-[#3f5f66]">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
-                    Top consultadas
-                  </span>
-                  <span className="text-xs text-[#6b7f83]">30 días</span>
-                </div>
-                <div className="space-y-0.5">
-                  {topPages.map((page: TopPage) => (
-                    <Link
-                      key={page.path}
-                      href={page.path}
-                      className="flex items-start justify-between gap-3 rounded-md px-2 py-0.5 hover:bg-[#f3f8f9]"
-                    >
-                      <span className="min-w-0 truncate font-medium text-slate-900">
-                        {formatTopPageLabel(page.path)}
-                      </span>
-                      <span className="shrink-0 text-xs text-[#6b7f83]">
-                        {formatViews(page.views)}
-                      </span>
-                    </Link>
-                  ))}
+              <div data-home-search-target="home-top-consultadas">
+                <div className="space-y-2 text-sm text-[#3f5f66]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
+                      Top consultadas
+                    </span>
+                    <span className="text-xs text-[#6b7f83]">30 días</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    {topPages.map((page: TopPage) => (
+                      <Link
+                        key={page.path}
+                        href={page.path}
+                        className="flex items-start justify-between gap-3 rounded-md px-2 py-0.5 hover:bg-[#f3f8f9]"
+                      >
+                        <span className="min-w-0 truncate font-medium text-slate-900">
+                          {formatTopPageLabel(page.path)}
+                        </span>
+                        <span className="shrink-0 text-xs text-[#6b7f83]">
+                          {formatViews(page.views)}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </section>
@@ -576,30 +406,42 @@ export default async function HomePage() {
               <h3 className="text-sm font-semibold uppercase tracking-wide text-[#516f75]">
                 {grupo}
               </h3>
-              <LinkList items={items} />
+              <LinkList items={items} section={`Enlaces corporativos · ${grupo}`} />
             </div>
           ))}
         </div>
       </section>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
+        <section
+          className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3"
+          data-home-search-target={getHomeSearchTargetId('Nivel 2 · Observación', 'Nivel 2 · Observación')}
+        >
           <h2 className="text-xl font-semibold">Nivel 2 · Observación</h2>
-          <LinkList items={observacion} />
+          <LinkList items={observacion} section="Nivel 2 · Observación" />
         </section>
 
-        <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
+        <section
+          className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3"
+          data-home-search-target={getHomeSearchTargetId('Documentos de Interés', 'Documentos de Interés')}
+        >
           <h2 className="text-xl font-semibold">Documentos de Interés</h2>
-          <LinkList items={documentosInteres} />
+          <LinkList items={documentosInteres} section="Documentos de Interés" />
         </section>
 
-        <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
+        <section
+          className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3"
+          data-home-search-target={getHomeSearchTargetId('Enlaces de Interés', 'Enlaces de Interés')}
+        >
           <h2 className="text-xl font-semibold">Enlaces de Interés</h2>
-          <LinkList items={enlacesInteres} />
+          <LinkList items={enlacesInteres} section="Enlaces de Interés" />
         </section>
       </div>
 
-      <section className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3">
+      <section
+        className="rounded-xl border border-[#dfe9eb] bg-white p-5 shadow-sm space-y-3"
+        data-home-search-target="home-eventos"
+      >
         <h2 className="text-xl font-semibold">Próximos eventos relacionados</h2>
         <div className="overflow-hidden rounded-md border border-[#dfe9eb]">
           <iframe title="Calendario de eventos" src={calendarEmbed} className="h-[500px] w-full" />
