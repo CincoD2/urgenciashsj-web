@@ -32,16 +32,13 @@ export async function generateStaticParams() {
 
   return files
     .map((file) => file.replace(/\.mdx$/, ''))
-    .filter((slug) => !(isProd && (slug === 'sepsis' || slug === 'ejemplo-componentes')))
+    .filter((slug) => !(isProd && slug === 'ejemplo-componentes'))
     .map((slug) => ({ slug }));
 }
 
 export default async function ProtocoloPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  if (
-    process.env.NODE_ENV === 'production' &&
-    (slug === 'sepsis' || slug === 'ejemplo-componentes')
-  ) {
+  if (process.env.NODE_ENV === 'production' && slug === 'ejemplo-componentes') {
     notFound();
   }
   const filePath = path.join(process.cwd(), 'content/protocolos', `${slug}.mdx`);
