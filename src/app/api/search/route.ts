@@ -72,6 +72,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
     extraContent:
       'blatchford glasgow-blatchford gbs hda hemorragia digestiva hemorragia digestiva alta melenas melena sangrado ulcera úlcera hematemesis bun urea endoscopia gastroscopia EDA',
   },
+  '/escalas/antibioterapia-codigo-sepsis': {
+    title: 'Antibioterapia Empírica Código Sepsis',
+    extraContent:
+      'antibioterapia antibiotico antibioticos antibiototerapia sepsis codigo sepsis bmr shock septico vancomicina linezolid meropenem aztreonam amikacina piperacilina tazobactam ceftriaxona foco respiratorio abdominal urologico urológico ppb snc intravascular',
+  },
   '/escalas/cha2ds2va': {
     title: 'CHA2DS2-VA',
     extraContent:

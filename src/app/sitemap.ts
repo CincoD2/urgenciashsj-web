@@ -20,6 +20,7 @@ const staticRoutes = [
 ];
 
 const escalaRoutes = [
+  '/escalas/antibioterapia-codigo-sepsis',
   '/escalas/anion-gap',
   '/escalas/blatchford',
   '/escalas/cha2ds2va',

@@ -8,6 +8,7 @@ import CookieNotice from '@/components/CookieNotice';
 import Providers from '@/components/Providers';
 import PageTitleSync from '@/components/PageTitleSync';
 import OutboundLinkInterceptor from '@/components/OutboundLinkInterceptor';
+import EmbeddedChromeHider from '@/components/EmbeddedChromeHider';
 
 const encodeSans = Encode_Sans({
   variable: '--font-encode-sans',
@@ -73,6 +74,7 @@ export default function RootLayout({
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
         <Providers>
+          <EmbeddedChromeHider />
           <OutboundLinkInterceptor />
           <PageTitleSync />
           <Header />

@@ -12,6 +12,8 @@ import { Formula } from '@/components/mdx/Formula';
 import { DataTable } from '@/components/mdx/DataTable';
 import { Callout } from '@/components/mdx/Callout';
 import { MdxImage } from '@/components/mdx/MdxImage';
+import { LinkChip, LinkChips } from '@/components/mdx/LinkChips';
+import { ScaleModalChips } from '@/components/mdx/ScaleModalChips';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -27,6 +29,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Formula,
     DataTable,
     Callout,
+    LinkChip,
+    LinkChips,
+    ScaleModalChips,
     Image: MdxImage,
     ...components,
   };

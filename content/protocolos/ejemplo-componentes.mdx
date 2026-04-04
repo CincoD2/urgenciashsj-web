@@ -1,6 +1,6 @@
 ---
-title: "Ejemplo de componentes MDX"
-description: "Entrada de prueba con bloques MDX (solo local)."
+title: 'Ejemplo de componentes MDX'
+description: 'Entrada de prueba con bloques MDX (solo local).'
 ---
 
 # Ejemplo de componentes MDX
@@ -17,24 +17,31 @@ Esta entrada sirve para probar los distintos bloques disponibles en protocolos.
 
 <Warning>Evitar bolos rápidos en pacientes con insuficiencia cardiaca.</Warning>
 
-<Box title="Dosis habitual">
-  Cristaloide 30 ml/kg en la primera hora.
-</Box>
+<Box title="Dosis habitual">Cristaloide 30 ml/kg en la primera hora.</Box>
 
 <Formula>Na corregido = Na medido + 1.6 × (glucosa - 100) / 100</Formula>
 
 <Checklist
   items={[
-    { text: "ABC inicial", checked: true },
-    { text: "Analítica urgente", checked: false },
-    { text: "Antibiótico en la primera hora", checked: false }
+    { text: 'ABC inicial', checked: true },
+    { text: 'Analítica urgente', checked: false },
+    { text: 'Antibiótico en la primera hora', checked: false },
   ]}
 />
 
 <DataTable
-  headers={["Fármaco", "Dosis", "Vía"]}
+  headers={['Fármaco', 'Dosis', 'Vía']}
   rows={[
-    ["Piperacilina/Tazobactam", "4.5 g", "IV"],
-    ["Meropenem", "1 g", "IV"]
+    ['Piperacilina/Tazobactam', '4.5 g', 'IV'],
+    ['Meropenem', '1 g', 'IV'],
+  ]}
+/>
+
+<ScaleModalChips
+  title="Escalas relacionadas:"
+  items={[
+    { href: '/escalas/qsofa', label: 'qSOFA' },
+    { href: '/escalas/news-2', label: 'NEWS-2' },
+    { href: '/escalas/sofa', label: 'SOFA' },
   ]}
 />
