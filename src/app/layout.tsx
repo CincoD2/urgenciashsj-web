@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Encode_Sans, Geist_Mono } from 'next/font/google';
+import { Suspense } from 'react';
 
 import './globals.css';
 import Header from '@/components/Header';
@@ -74,7 +75,9 @@ export default function RootLayout({
         className={`${encodeSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-slate-900 flex flex-col`}
       >
         <Providers>
-          <EmbeddedChromeHider />
+          <Suspense fallback={null}>
+            <EmbeddedChromeHider />
+          </Suspense>
           <OutboundLinkInterceptor />
           <PageTitleSync />
           <Header />
