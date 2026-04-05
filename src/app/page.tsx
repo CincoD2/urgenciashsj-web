@@ -332,7 +332,9 @@ export default async function HomePage() {
             <h1 className="text-4xl font-semibold text-black">UrgenciasHSJ</h1>
             <p className="mt-2 text-black">Recursos de Urgencias</p>
             <div className="mt-3 h-1 w-20 rounded-full bg-[#3d7684]" />
-            <HomeHeroSearch />
+            <Suspense fallback={null}>
+              <HomeHeroSearch />
+            </Suspense>
           </div>
         </div>
       </section>
