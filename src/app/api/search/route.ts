@@ -20,6 +20,102 @@ function normalize(text: string) {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
+function tokenize(text: string) {
+  return normalize(text)
+    .split(/[^a-z0-9]+/)
+    .filter((token) => token.length >= 2);
+}
+
+function maxAllowedDistance(term: string) {
+  if (term.length <= 4) return 1;
+  if (term.length <= 8) return 2;
+  return 3;
+}
+
+function levenshteinWithin(a: string, b: string, maxDistance: number) {
+  if (a === b) return 0;
+  if (Math.abs(a.length - b.length) > maxDistance) return null;
+
+  const previous = new Array<number>(b.length + 1);
+  for (let j = 0; j <= b.length; j += 1) previous[j] = j;
+
+  for (let i = 1; i <= a.length; i += 1) {
+    let current = i;
+    let rowMin = current;
+    let diagonal = i - 1;
+
+    for (let j = 1; j <= b.length; j += 1) {
+      const above = previous[j];
+      const substitutionCost = a[i - 1] === b[j - 1] ? 0 : 1;
+      const next = Math.min(
+        previous[j] + 1,
+        current + 1,
+        diagonal + substitutionCost
+      );
+
+      diagonal = above;
+      previous[j] = current = next;
+      if (next < rowMin) rowMin = next;
+    }
+
+    if (rowMin > maxDistance) return null;
+  }
+
+  return previous[b.length] <= maxDistance ? previous[b.length] : null;
+}
+
+function tokenMatchScore(queryToken: string, candidateToken: string) {
+  if (queryToken === candidateToken) return 1;
+  if (candidateToken.includes(queryToken) || queryToken.includes(candidateToken)) return 0.92;
+
+  const distance = levenshteinWithin(queryToken, candidateToken, maxAllowedDistance(queryToken));
+  if (distance === null) return 0;
+
+  if (distance === 1) return 0.82;
+  if (distance === 2) return 0.7;
+  return 0.6;
+}
+
+function buildCandidateTokens(item: SearchItem) {
+  const source = `${item.title} ${item.snippet ?? ''} ${item.content.slice(0, 900)}`;
+  const seen = new Set<string>();
+  const tokens: string[] = [];
+
+  for (const token of tokenize(source)) {
+    if (seen.has(token)) continue;
+    seen.add(token);
+    tokens.push(token);
+    if (tokens.length >= 90) break;
+  }
+
+  return tokens;
+}
+
+function fuzzyMatchScore(item: SearchItem, rawQuery: string) {
+  const queryTokens = tokenize(rawQuery);
+  if (queryTokens.length === 0) return null;
+
+  const titleTokens = tokenize(item.title);
+  const candidateTokens = buildCandidateTokens(item);
+  let totalScore = 0;
+
+  for (const queryToken of queryTokens) {
+    let bestScore = 0;
+
+    for (const token of candidateTokens) {
+      const score = tokenMatchScore(queryToken, token);
+      if (score > bestScore) bestScore = score;
+      if (bestScore === 1) break;
+    }
+
+    if (bestScore < 0.7) return null;
+    totalScore += bestScore;
+  }
+
+  const titleBonus = queryTokens.some((token) => titleTokens.includes(token)) ? 0.08 : 0;
+  return totalScore / queryTokens.length + titleBonus;
+}
+
 const STANDY_STANDARD_DRUGS = [
   'AMIODARONA',
   'NALOXONA',
@@ -636,6 +732,21 @@ function buildSnippet(item: SearchItem, query: string) {
   return `${prefix}${source.slice(start, end).trim()}${suffix}`;
 }
 
+function exactMatchScore(item: SearchItem, query: string) {
+  const normalizedTitle = normalize(item.title);
+  const normalizedSnippet = normalize(item.snippet ?? '');
+  const normalizedContent = normalize(item.content);
+
+  if (normalizedTitle === query) return 2000;
+  if (normalizedTitle.startsWith(query)) return 1400;
+  if (normalizedTitle.includes(query)) return 1100;
+  if (normalizedSnippet.startsWith(query)) return 700;
+  if (normalizedSnippet.includes(query)) return 550;
+  if (normalizedContent.startsWith(query)) return 450;
+  if (normalizedContent.includes(query)) return 300;
+  return 0;
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const q = (searchParams.get('q') ?? '').trim();
@@ -650,9 +761,10 @@ export async function GET(req: Request) {
     .map((it) => {
       const hay = normalize(`${it.title} ${it.content}`);
       const idx = hay.indexOf(query);
-      return { it, idx };
+      return { it, idx, score: exactMatchScore(it, query) };
     })
     .filter((x) => x.idx >= 0)
+    .sort((a, b) => b.score - a.score || a.idx - b.idx || a.it.title.localeCompare(b.it.title, 'es'))
     .slice(0, 50)
     .map(({ it }) => ({
       type: it.type,
@@ -661,5 +773,24 @@ export async function GET(req: Request) {
       snippet: buildSnippet(it, query),
     }));
 
-  return Response.json({ results });
+  if (results.length > 0) {
+    return Response.json({ results });
+  }
+
+  const fuzzyResults = items
+    .map((it) => ({
+      it,
+      score: fuzzyMatchScore(it, q),
+    }))
+    .filter((entry): entry is { it: SearchItem; score: number } => entry.score !== null)
+    .sort((a, b) => b.score - a.score || a.it.title.localeCompare(b.it.title, 'es'))
+    .slice(0, 50)
+    .map(({ it }) => ({
+      type: it.type,
+      title: it.title,
+      url: it.url,
+      snippet: buildSnippet(it, query),
+    }));
+
+  return Response.json({ results: fuzzyResults });
 }

@@ -15,13 +15,13 @@ export default async function NovedadesPage() {
   function renderInlineMarkdown(line: string) {
     const nodes: React.ReactNode[] = [];
     const tokenRegex =
-      /(\*\*[^*]+\*\*|\[[^\]]+\]\((?:https?:\/\/[^\s)]+|\/[^\s)]+)\)|https?:\/\/[^\s]+)/g;
+      /(\*\*[^*]+\*\*|\[[^\]]+\]\((?:https?:\/\/[^\s)]+|\/(?:[^\s)]*)?)\)|https?:\/\/[^\s]+)/g;
     const parts = line.split(tokenRegex);
 
     parts.forEach((part, idx) => {
       if (!part) return;
 
-      const mdLinkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)$/);
+      const mdLinkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/(?:[^\s)]*)?)\)$/);
       if (mdLinkMatch) {
         const [, label, url] = mdLinkMatch;
         nodes.push(

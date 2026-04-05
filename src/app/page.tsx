@@ -5,6 +5,7 @@ import matter from 'gray-matter';
 import Link from 'next/link';
 import { getTopConsultedPages } from '@/lib/ga4';
 import HomeSearchHighlighter from '@/components/HomeSearchHighlighter';
+import HomeHeroSearch from '@/components/HomeHeroSearch';
 import {
   documentosInteres,
   enlacesCorporativos,
@@ -315,20 +316,23 @@ export default async function HomePage() {
       <Suspense fallback={null}>
         <HomeSearchHighlighter />
       </Suspense>
-      <section className="relative -mx-4 h-[310px] overflow-hidden -mt-16 pt-9 rounded-b-3xl">
-        <div
-          className="absolute inset-0 bg-cover"
-          style={{
-            backgroundImage: 'url(/urg-background.png)',
-            backgroundPosition: 'center 18%',
-          }}
-        />
-        <div className="absolute inset-0 bg-white/60" />
+      <section className="relative -mx-4 -mt-16 h-[340px] pt-9">
+        <div className="absolute inset-0 overflow-hidden rounded-b-3xl">
+          <div
+            className="absolute inset-0 bg-cover"
+            style={{
+              backgroundImage: 'url(/urg-background.png)',
+              backgroundPosition: 'center 18%',
+            }}
+          />
+          <div className="absolute inset-0 bg-white/60" />
+        </div>
         <div className="relative z-10 flex h-full items-center">
-          <div className="mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-center px-4 text-center">
             <h1 className="text-4xl font-semibold text-black">UrgenciasHSJ</h1>
             <p className="mt-2 text-black">Recursos de Urgencias</p>
             <div className="mt-3 h-1 w-20 rounded-full bg-[#3d7684]" />
+            <HomeHeroSearch />
           </div>
         </div>
       </section>
