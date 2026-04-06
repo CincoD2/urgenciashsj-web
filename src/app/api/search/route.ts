@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
+import { getScaleMetaBySlug } from '@/lib/escalasMeta';
 import { getHomeSearchEntries } from '@/lib/homeContent';
 import { HORARIOS, MONTHS, MONTH_ALIASES, MONTH_LABELS } from '@/lib/horariosData';
 
@@ -581,15 +582,25 @@ function loadTools(): SearchItem[] {
 
   const routeItems = routes.map((route) => {
     const slug = route.replace('/escalas/', '');
+    const scaleMeta = getScaleMetaBySlug(slug);
     const metadata = TOOL_METADATA_BY_ROUTE[route] ?? {};
-    const title = metadata.title ?? slugToTitle(slug);
+    const title = scaleMeta?.title ?? metadata.title ?? slugToTitle(slug);
     const protocolTags = protocolTagsBySlug[slug] ?? '';
+    const searchContent = [
+      scaleMeta?.summary,
+      ...(scaleMeta?.tags ?? []),
+      ...(scaleMeta?.keywords ?? []),
+      metadata.extraContent ?? `herramientas escalas ${title} ${slug}`,
+      protocolTags,
+    ]
+      .filter(Boolean)
+      .join(' ');
     return {
       type: 'herramienta' as const,
       title,
       url: route,
-      content: `${metadata.extraContent ?? `herramientas escalas ${title} ${slug}`} ${protocolTags}`.trim(),
-      snippet: protocolTags || 'Herramienta clínica',
+      content: searchContent,
+      snippet: scaleMeta?.summary ?? protocolTags ?? 'Herramienta clínica',
     };
   });
 

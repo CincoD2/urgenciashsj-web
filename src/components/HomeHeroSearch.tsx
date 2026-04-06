@@ -31,7 +31,8 @@ export default function HomeHeroSearch() {
   const [isFocused, setIsFocused] = useState(false);
   const trackedNoResultQueries = useRef<Set<string>>(new Set());
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const collapsedInputRef = useRef<HTMLInputElement | null>(null);
+  const expandedInputRef = useRef<HTMLInputElement | null>(null);
   const activeItemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const suppressParamSyncRef = useRef(false);
   const visibleResults = results.slice(0, 7);
@@ -40,6 +41,14 @@ export default function HomeHeroSearch() {
     'overflow-hidden rounded-full border border-white/45 bg-white/34 shadow-[0_12px_36px_rgba(20,37,45,0.16)] ring-1 ring-black/5 backdrop-blur-xl';
   const expandedCapsuleClass =
     'overflow-hidden rounded-t-[26px] rounded-b-[1.85rem] border border-white/45 bg-white/34 shadow-[0_12px_36px_rgba(20,37,45,0.16)] ring-1 ring-black/5 backdrop-blur-xl';
+
+  function focusActiveInput() {
+    const target = showResults ? expandedInputRef.current : collapsedInputRef.current;
+    if (!target) return;
+    target.focus();
+    const end = target.value.length;
+    target.setSelectionRange(end, end);
+  }
 
   useEffect(() => {
     if (suppressParamSyncRef.current && !homeSearchParam && !homeFocusParam) {
@@ -65,14 +74,18 @@ export default function HomeHeroSearch() {
 
   useEffect(() => {
     function handleFocusRequest() {
-      inputRef.current?.focus();
+      const target = showResults ? expandedInputRef.current : collapsedInputRef.current;
+      if (!target) return;
+      target.focus();
+      const end = target.value.length;
+      target.setSelectionRange(end, end);
     }
 
     window.addEventListener('home-hero-search-focus', handleFocusRequest);
     return () => {
       window.removeEventListener('home-hero-search-focus', handleFocusRequest);
     };
-  }, []);
+  }, [showResults]);
 
   useEffect(() => {
     if (!open) {
@@ -141,6 +154,22 @@ export default function HomeHeroSearch() {
     activeItem.scrollIntoView({ block: 'nearest' });
   }, [activeIndex, showResults]);
 
+  useEffect(() => {
+    if (!isFocused) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = showResults ? expandedInputRef.current : collapsedInputRef.current;
+      if (!target) return;
+      target.focus();
+      const end = target.value.length;
+      target.setSelectionRange(end, end);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [isFocused, showResults]);
+
   function navigateTo(result: Result) {
     if (result.type === 'protocolo') {
       trackEvent('protocol_open', {
@@ -198,7 +227,7 @@ export default function HomeHeroSearch() {
     }
   }
 
-  const searchRow = () => (
+  const searchRow = (variant: 'collapsed' | 'expanded') => (
     <div className="relative flex items-center gap-3 px-4 py-2.5 md:px-5 md:py-2.5">
       <span aria-hidden className="shrink-0 text-[#2f6673]">
         <svg
@@ -213,7 +242,7 @@ export default function HomeHeroSearch() {
         </svg>
       </span>
       <input
-        ref={inputRef}
+        ref={variant === 'expanded' ? expandedInputRef : collapsedInputRef}
         value={query}
         onChange={(event) => {
           setQuery(event.target.value);
@@ -245,6 +274,10 @@ export default function HomeHeroSearch() {
           setResults([]);
           setOpen(false);
           setActiveIndex(-1);
+          setIsFocused(true);
+          window.requestAnimationFrame(() => {
+            focusActiveInput();
+          });
         }}
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-slate-500 transition ${
           query
@@ -270,12 +303,12 @@ export default function HomeHeroSearch() {
   return (
     <div ref={rootRef} className="relative mt-18 w-full max-w-[52rem]">
       <div className={`relative z-20 ${capsuleClass} ${showResults ? 'border-b-transparent' : ''}`}>
-        {searchRow()}
+        {searchRow('collapsed')}
       </div>
 
       {showResults ? (
         <div className={`absolute inset-x-0 top-0 z-30 ${expandedCapsuleClass}`}>
-          {searchRow()}
+          {searchRow('expanded')}
           <div className="max-h-[min(55vh,28rem)] overflow-auto px-2 pb-2 pt-1.5">
             {loading ? (
               <div className="px-3 py-4 text-sm text-[#516f75]">Buscando…</div>
