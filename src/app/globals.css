@@ -25,6 +25,10 @@ body {
   font-family: var(--font-encode-sans), Arial, Helvetica, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 a {
   color: var(--primary-dark);
   text-decoration-color: rgba(61, 118, 132, 0.35);
@@ -151,6 +155,12 @@ a:hover {
   .prevent-ios-zoom textarea,
   .prevent-ios-zoom [contenteditable='true'] {
     font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 

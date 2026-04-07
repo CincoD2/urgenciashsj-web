@@ -367,11 +367,25 @@ function loadPages(queryText?: string): SearchItem[] {
     { type: 'page', title: 'Sesiones', url: '/sesiones', content: 'sesiones' },
     { type: 'page', title: 'Macros', url: '/macros', content: 'dietas recomendaciones macros' },
     {
+      type: 'page',
+      title: 'Novedades',
+      url: '/novedades',
+      content: 'novedades changelog cambios actualizaciones poe muye boe programa oficial',
+    },
+    {
       type: 'formacion',
       title: 'Formación',
       url: '/formacion',
       content:
-        'formación cursos masters rcp politrauma ecografía ventilación atls apls politrauma pediátrico transporte medicalizado uam semes winfocus ecocardioscopia ecografía pulmonar vmni',
+        'formación cursos masters rcp politrauma ecografía ventilación atls apls politrauma pediátrico transporte medicalizado uam semes winfocus ecocardioscopia ecografía pulmonar vmni poe muye programa oficial boe',
+    },
+    {
+      type: 'formacion',
+      title: 'Programa Oficial de la Especialidad de Urgencias y Emergencias',
+      url: '/formacion/programa-oficial',
+      content:
+        'programa oficial especialidad urgencias emergencias muye poe boe 4 abril 2026 competencias competencias transversales competencias comunes mfyc competencias específicas rotaciones rotatorios estancias guardias formación complementaria cursos talleres simulación cronograma itinerario formativo formación sanitaria especializada medicina urgencias y emergencias instrumentos de evaluación ex ob au 360 po soporte vital vía aérea trauma shock ecografía sem hrd hd ume ccue',
+      snippet: 'BOE · competencias · cronograma · rotaciones',
     },
     { type: 'page', title: 'Inhaladores', url: '/inhaladores', content: 'inhaladores' },
     { type: 'page', title: 'Herramientas', url: '/escalas', content: 'escalas herramientas' },
