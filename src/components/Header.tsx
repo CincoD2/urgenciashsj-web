@@ -67,6 +67,7 @@ export default function Header() {
     { label: 'NIHSS', href: '/escalas/nihss' },
     { label: 'PaFi', href: '/escalas/pafi' },
     { label: 'Padua (TEV)', href: '/escalas/padua' },
+    { label: 'PES Score', href: '/escalas/pes' },
     { label: 'PSI', href: '/escalas/psi' },
     { label: 'qSOFA', href: '/escalas/qsofa' },
     { label: 'Rankin modificada (mRS)', href: '/escalas/mrs' },

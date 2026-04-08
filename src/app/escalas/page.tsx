@@ -374,6 +374,17 @@ export default function Escalas() {
             </span>
             PSI
           </a>
+          <a className="escala-link-btn" href="/escalas/pes">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14" />
+                <path d="M8 8h8" />
+                <path d="M8 16h8" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+            </span>
+            PES Score
+          </a>
           <a className="escala-link-btn" href="/escalas/gradiente-aa-o2">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -1,0 +1,367 @@
+---
+title: 'Neumonía Adquirida en la Comunidad'
+description: 'Resumen operativo del protocolo CIPAM de diagnóstico y tratamiento empírico de la neumonía adquirida en la comunidad (NAC) en adultos y adolescentes. Prioriza la decisión práctica en Urgencias: diagnóstico, criterios de ingreso, estudio etiológico, antibioterapia empírica y puntos clave de duración y seguimiento.'
+date: '2026-04-08'
+pdf: 'https://vvd17cloud.cs.san.gva.es/index.php/s/HssCWC6MNQHB3IY/download?path=%2F3.-%20PROTOCOLOS%20Y%20APLICACIONES%2FPROTOCOLOS%20E%20INSTRUCCIONES%20DE%20TRABAJO%2F003.-PROTOCOLOS%2FDEPARTAMENTALES%2FPT%20DE%20CIPAM&files=FDO_PT.CIPAM.02.v1%20-%20NAC%20(004)%20firmado%20gerente.pdf'
+tags:
+  [
+    'NAC',
+    'Neumonía adquirida en la comunidad',
+    'Neumonía',
+    'Urgencias',
+    'Antibioterapia empírica',
+    'Ceftriaxona',
+    'Azitromicina',
+    'Levofloxacino',
+    'CURB-65',
+    'PSI',
+    'FINE',
+    'Pneumonia Severity Index',
+    'PES',
+    'PES Score',
+    'Pseudomonas',
+    'SARM',
+    'MRSA',
+    'BLEE',
+    'Pseudomonas aeruginosa',
+    'Inmunocomprometidos',
+    'Legionella',
+    'Neumococo',
+    'Infección respiratoria',
+    'CIPAM',
+  ]
+---
+
+<Pearl>
+  Resumen de consulta rápida reelaborado a partir del protocolo de la CIPAM `PT. CIPAM.02 v1
+  10/04/2024`. Si hay dudas terapéuticas, alergias relevantes o sospecha de patógenos no habituales,
+  conviene revisar el PDF completo.
+</Pearl>
+
+<ScaleModalChips
+  title="Escalas relacionadas:"
+  items={[
+    { href: '/escalas/curb65', label: 'CURB-65' },
+    { href: '/escalas/psi', label: 'PSI' },
+    { href: '/escalas/pes', label: 'PES Score' },
+  ]}
+/>
+
+## Lo esencial en 30 segundos
+
+<Checklist
+  items={[
+    {
+      text: 'Confirmar infiltrado en imagen de tórax + clínica compatible: fiebre, tos, disnea o expectoración.',
+    },
+    {
+      text: 'Valorar gravedad con juicio clínico + FINE/CURB-65; usar PES si vas a decidir cobertura ampliada.',
+    },
+    { text: 'Si es ambulatoria, no hace falta estudio etiológico rutinario.' },
+    {
+      text: 'Si ingresa, pedir analítica básica, radiografía y valorar gasometría, PCT y TC según contexto.',
+    },
+    {
+      text: 'Iniciar antibiótico empírico según escenario: ambulatorio, planta, UCI o riesgo de multirresistentes.',
+    },
+    { text: 'Duración mínima habitual: 5 días si hay buena evolución y estabilidad clínica.' },
+  ]}
+/>
+
+<BoxGrid>
+  <Box title="Diagnóstico">
+    NAC = infección aguda del parénquima pulmonar adquirida en la comunidad en paciente con clínica
+    compatible y <strong>nuevo infiltrado en tórax</strong>.
+  </Box>
+  <Box title="Qué pesa más para ingresar">
+    <strong>Juicio clínico</strong> por encima de cualquier escala. FINE y CURB-65 ayudan, pero no
+    sustituyen la valoración individual.
+  </Box>
+  <Box title="Cuándo ampliar estudio">
+    En <strong>NAC grave</strong>, falta de respuesta al tratamiento o sospecha de patógeno no
+    habitual.
+  </Box>
+  <Box title="Cuándo pensar en cobertura amplia">
+    Colonización previa o <strong>PES ≥ 5</strong>, UCI, ingresos recientes, o sospecha de
+    <strong> Pseudomonas</strong> o <strong>SARM</strong>.
+  </Box>
+</BoxGrid>
+
+## Estudio inicial
+
+### Si el paciente ingresa
+
+<DataTable
+  headers={['Prueba', 'Cuándo pedirla', 'Para qué te ayuda']}
+  rows={[
+    [
+      { content: 'Analítica', className: 'bg-[#e9f1f3] font-semibold' },
+      'Siempre',
+      'Hemograma, bioquímica elemental, coagulación y PCR.',
+    ],
+    [
+      { content: 'Procalcitonina', className: 'bg-[#f8fafc] font-semibold' },
+      'Si dudas entre origen bacteriano y viral',
+      'No se recomienda para decidir si iniciar antibiótico cuando la NAC está clara. Sí puede ayudar a suspender tratamiento.',
+    ],
+    [
+      { content: 'Pulsioximetría / gasometría', className: 'bg-[#e9f1f3] font-semibold' },
+      'Gasometría si enfermedad grave o comorbilidad cardio-respiratoria',
+      'Valora gravedad e insuficiencia respiratoria.',
+    ],
+    [
+      { content: 'Rx tórax PA y lateral', className: 'bg-[#f8fafc] font-semibold' },
+      'Siempre',
+      'Confirma infiltrado, extensión y complicaciones. Bilateralidad, multilobaridad y derrame pleural sugieren gravedad.',
+    ],
+    [
+      { content: 'TC torácica', className: 'bg-[#e9f1f3] font-semibold' },
+      'Si dudas diagnósticas, cavitación o derrame',
+      'Mayor sensibilidad y mejor caracterización.',
+    ],
+    [
+      { content: 'Ecografía torácica', className: 'bg-[#f8fafc] font-semibold' },
+      'Si sospecha de derrame pleural',
+      'Ayuda a detectar y valorar complicaciones pleurales.',
+    ],
+  ]}
+/>
+
+### Estudio etiológico
+
+<Tip>
+  En la <strong>NAC ambulatoria</strong> no hace falta estudio etiológico rutinario. Resérvalo para
+  NAC grave, mala evolución o paciente inmunocomprometido.
+</Tip>
+
+<DataTable
+  headers={['Técnica', 'Indicación práctica']}
+  rows={[
+    [
+      { content: 'Gram y cultivo de esputo', className: 'bg-[#e9f1f3] font-semibold' },
+      'NAC grave o mala respuesta al tratamiento.',
+    ],
+    [
+      { content: 'Hemocultivos', className: 'bg-[#f8fafc] font-semibold' },
+      'Antes del antibiótico si neumonía severa, UCI/intubación, sospecha de Pseudomonas o SARM, aislamiento previo o ingreso en los 90 días previos.',
+    ],
+    [
+      { content: 'Antígeno urinario de neumococo', className: 'bg-[#e9f1f3] font-semibold' },
+      'En NAC grave o si quieres documentar etiología.',
+    ],
+    [
+      { content: 'Antígeno urinario de Legionella', className: 'bg-[#f8fafc] font-semibold' },
+      'Por motivos epidemiológicos, especialmente si el contexto clínico lo sugiere.',
+    ],
+    [
+      { content: 'PCR virus respiratorios', className: 'bg-[#e9f1f3] font-semibold' },
+      'Incluir SARS-CoV-2; en temporada o grupos de riesgo, incluir gripe y VRS.',
+    ],
+    [
+      { content: 'Serología respiratoria', className: 'bg-[#f8fafc] font-semibold' },
+      'Si sospecha de neumonía atípica.',
+    ],
+    [
+      { content: 'Muestra invasiva / líquido pleural', className: 'bg-[#e9f1f3] font-semibold' },
+      'Si no responde, si sospechas patógenos infrecuentes o si el paciente está inmunocomprometido.',
+    ],
+  ]}
+/>
+
+## Tratamiento empírico en inmunocompetente
+
+### 1. Manejo ambulatorio
+
+<DataTable
+  headers={['Escenario', 'Tratamiento']}
+  rows={[
+    [
+      { content: 'Primera opción', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
+      <span>
+        <strong>Amoxicilina 1 g/8 h</strong> o{' '}
+        <strong>amoxicilina-clavulánico 875/125 mg/8 h</strong> si asma/EPOC <strong>+</strong>{' '}
+        macrólido.
+      </span>,
+    ],
+    [
+      { content: 'Alternativa', className: 'bg-[#f8fafc] font-semibold' },
+      <span>
+        <strong>Cefditoreno 400 mg/12 h</strong> <strong>+</strong> macrólido.
+      </span>,
+    ],
+    [
+      { content: 'Alergia a betalactámicos', className: 'bg-[#e9f1f3] font-semibold' },
+      <span>
+        <strong>Levofloxacino 500 mg/12 h</strong> 1-2 días y después 500 mg/24 h, o{' '}
+        <strong>moxifloxacino 400 mg/24 h</strong>.
+      </span>,
+    ],
+    [
+      { content: 'Macrólido', className: 'bg-[#f8fafc] font-semibold' },
+      'Azitromicina 500 mg/24 h o claritromicina 500 mg/12 h.',
+    ],
+  ]}
+/>
+
+<Pearl>
+  Si la evolución es buena y desaparece la fiebre desde el día 3, el tratamiento ambulatorio puede
+  terminarse a los <strong>5 días</strong>.
+</Pearl>
+
+### 2. Ingreso hospitalario sin sospecha de multirresistentes
+
+<DataTable
+  headers={['Situación', 'Tratamiento empírico']}
+  rows={[
+    [
+      { content: 'Planta. PES < 5', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
+      <span>
+        <strong>Ceftriaxona 1-2 g/24 h</strong> <strong>+</strong>{' '}
+        <strong>azitromicina 500 mg/24 h</strong> VO/IV.
+      </span>,
+    ],
+    [
+      { content: 'Planta con alergia a betalactámicos', className: 'bg-[#f8fafc] font-semibold' },
+      <span>
+        <strong>Levofloxacino 500 mg/12 h</strong> 1-2 días y luego 500 mg/24 h.
+      </span>,
+    ],
+    [
+      {
+        content: 'Planta con contraindicación a macrólido y quinolona',
+        className: 'bg-[#e9f1f3] font-semibold',
+      },
+      <span>
+        <strong>Ceftriaxona 1-2 g/24 h</strong> <strong>+</strong>{' '}
+        <strong>doxiciclina 100 mg/12 h</strong> VO/IV.
+      </span>,
+    ],
+    [
+      { content: 'UCI. PES < 5', className: 'bg-[#f8fafc] font-semibold' },
+      <span>
+        <strong>Ceftriaxona 2 g/24 h</strong> <strong>+</strong>{' '}
+        <strong>azitromicina 500 mg/24 h</strong> o <strong>levofloxacino</strong>.
+      </span>,
+    ],
+    [
+      { content: 'UCI con alergia a betalactámicos', className: 'bg-[#e9f1f3] font-semibold' },
+      <span>
+        <strong>Aztreonam 2 g/8 h</strong> <strong>+</strong> <strong>levofloxacino</strong>.
+      </span>,
+    ],
+  ]}
+/>
+
+### 3. Si sospechas patógenos multirresistentes
+
+<Alert>
+  Si hay <strong>colonización previa</strong> o <strong>PES ≥ 5</strong>, obtén muestras para
+  cultivo y diagnóstico molecular antes de desescalar. Aquí sí tiene sentido empezar más ancho.
+</Alert>
+
+<DataTable
+  headers={['Escenario', 'Tratamiento empírico']}
+  rows={[
+    [
+      { content: 'Sin alergia a betalactámicos', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
+      <span>
+        <strong>Meropenem 1 g/8 h</strong> <strong>+</strong>{' '}
+        <strong>levofloxacino 500 mg/12 h</strong> <strong>+</strong>{' '}
+        <strong>linezolid 600 mg/12 h</strong>.
+      </span>,
+    ],
+    [
+      { content: 'Alergia a betalactámicos', className: 'bg-[#f8fafc] font-semibold' },
+      <span>
+        <strong>Aztreonam 2 g/8 h</strong> <strong>+</strong>{' '}
+        <strong>levofloxacino 500 mg/12 h</strong> <strong>+</strong>{' '}
+        <strong>linezolid 600 mg/12 h</strong>.
+      </span>,
+    ],
+  ]}
+/>
+
+<Note>
+  El protocolo indica que, si hay desabastecimiento de aztreonam, se puede sustituir por{' '}
+  <strong>amikacina 20 mg/kg/24 h</strong>.
+</Note>
+
+## Puntos finos que cambian conducta
+
+<BoxGrid>
+  <Box title="Anaerobios">
+    Solo cubrir si hay <strong>absceso pulmonar</strong> o <strong>empiema</strong>.
+  </Box>
+  <Box title="Broncoaspiración">
+    La aspiración de contenido gástrico suele ser <strong>neumonitis aspirativa</strong> y puede
+    resolverse en 24-48 h con soporte, sin antibiótico, si el paciente queda supervisado.
+  </Box>
+  <Box title="Corticoides">
+    <strong>No</strong> se recomiendan de forma rutinaria en la NAC, independientemente de la
+    gravedad.
+  </Box>
+  <Box title="VIH">
+    Se recomienda <strong>serología VIH</strong> en pacientes de 15-65 años que ingresan por NAC.
+  </Box>
+</BoxGrid>
+
+<DataTable
+  headers={['Situación', 'Qué hacer']}
+  rows={[
+    [
+      { content: 'Influenza positiva', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
+      'Añadir oseltamivir 75 mg/12 h, independientemente de la duración de síntomas.',
+    ],
+    [
+      { content: 'Neumonía por gripe', className: 'bg-[#f8fafc] font-semibold' },
+      'Mantener inicialmente antibiótico por riesgo de coinfección bacteriana. Si PCT baja, estabilidad clínica precoz y sin otros hallazgos microbiológicos, valorar suspender a las 48-72 h.',
+    ],
+    [
+      { content: 'Duración habitual', className: 'bg-[#e9f1f3] font-semibold' },
+      'Mínimo 5 días. Individualizar según estabilidad clínica y descenso de PCR/PCT.',
+    ],
+    [
+      { content: 'Cuándo prolongar', className: 'bg-[#f8fafc] font-semibold' },
+      'Neumonía necrosante, absceso, derrame complicado, infección extrapulmonar o sospecha de gérmenes poco comunes.',
+    ],
+    [
+      { content: 'Radiografía de control', className: 'bg-[#e9f1f3] font-semibold' },
+      'No de rutina si buena evolución. Reservarla sobre todo para pacientes con riesgo de neoplasia pulmonar, como fumadores.',
+    ],
+  ]}
+/>
+
+## Si el paciente es inmunocomprometido
+
+<Warning>
+  En inmunocomprometidos el protocolo recomienda manejar la neumonía empíricamente con criterio de
+  <strong> neumonía nosocomial</strong> y valorar cobertura adicional según el defecto inmune y el
+  patrón radiológico.
+</Warning>
+
+<DataTable
+  headers={['Sospecha añadida', 'Tratamiento orientativo del protocolo']}
+  rows={[
+    [
+      { content: 'Aspergillosis', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
+      'Voriconazol VO 400 mg/12 h el día 1 y luego 200-300 mg/12 h. IV: 6 mg/kg/12 h el día 1 y luego 4 mg/kg/12 h.',
+    ],
+    [
+      { content: 'Otros hongos', className: 'bg-[#f8fafc] font-semibold' },
+      'Anfotericina B liposomal 3-5 mg/kg/día; hasta 7,5 mg/kg/día en mucorales.',
+    ],
+    [
+      { content: 'P. jirovecii', className: 'bg-[#e9f1f3] font-semibold' },
+      'TMP/SMX a dosis altas: 5 mg de trimetoprim/kg cada 6-8 h durante 2 semanas; 3 semanas si VIH. Si es grave, considerar prednisona.',
+    ],
+    [
+      { content: 'CMV', className: 'bg-[#f8fafc] font-semibold' },
+      'Ganciclovir 5 mg/kg/12 h IV, especialmente en trasplante hematopoyético.',
+    ],
+  ]}
+/>
+
+<Pearl>
+  El TC torácico gana valor en inmunodeprimidos: si la radiografía no aclara el patrón, suele
+  orientar mejor la etiología y las complicaciones.
+</Pearl>

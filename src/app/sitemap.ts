@@ -36,6 +36,7 @@ const escalaRoutes = [
   '/escalas/mrs',
   '/escalas/OrionSF',
   '/escalas/pafi',
+  '/escalas/pes',
   '/escalas/psi',
   '/escalas/qsofa',
   '/escalas/sirs',

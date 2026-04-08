@@ -160,6 +160,24 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
     tags: ['neumonía', 'gravedad', 'mortalidad'],
     keywords: ['psi', 'fine score', 'nac', 'pneumonia severity index'],
   },
+  pes: {
+    title: 'PES Score',
+    summary:
+      'Estima el riesgo de patógenos PES en neumonía adquirida en la comunidad para orientar cobertura antibiótica ampliada.',
+    tags: ['neumonía', 'antibioterapia', 'multirresistentes'],
+    keywords: [
+      'pes',
+      'pes score',
+      'escala pes',
+      'pseudomonas',
+      'sarm',
+      'mrsa',
+      'blee',
+      'nac',
+      'neumonia adquirida en la comunidad',
+      'pseudomonas aeruginosa',
+    ],
+  },
   qsofa: {
     title: 'qSOFA',
     summary:

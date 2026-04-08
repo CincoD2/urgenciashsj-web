@@ -229,6 +229,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
     title: 'IDSA/ATS',
     extraContent: 'idsa/ats idsa ats neumonia gravedad uci mortalidad',
   },
+  '/escalas/pes': {
+    title: 'PES Score',
+    extraContent:
+      'pes pes score escala pes neumonia neumonía nac neumonia adquirida en la comunidad pseudomonas blee sarm mrsa multirresistentes antibioticos cobertura ampliada pseudomonas aeruginosa enterobacterias pseudomonas enterobacterias resistente resistencia',
+  },
   '/escalas/OrionSF': {
     title: 'Orion Smart Formatter',
     extraContent:
