@@ -91,7 +91,8 @@ const bloques: Bloque[] = [
   },
   {
     titulo: 'Ventilación',
-    descripcion: 'Actualización en soporte ventilatorio no invasivo y manejo respiratorio avanzado.',
+    descripcion:
+      'Actualización en soporte ventilatorio no invasivo y manejo respiratorio avanzado.',
     icono: 'vent',
     acento: 'text-[#6b5a82]',
     acentoSuave: 'bg-[#f4f0f8]',
@@ -113,28 +114,52 @@ function BlockIcon({ icono, className }: { icono: Bloque['icono']; className?: s
   switch (icono) {
     case 'trauma':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={base}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          className={base}
+        >
           <path d="M12 4v16M4 12h16" />
           <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" opacity="0.45" />
         </svg>
       );
     case 'master':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={base}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          className={base}
+        >
           <path d="M3 8l9-4 9 4-9 4-9-4Z" />
           <path d="M7 11v4.5c0 1.7 3.1 2.5 5 2.5s5-.8 5-2.5V11" />
         </svg>
       );
     case 'eco':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={base}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          className={base}
+        >
           <rect x="4" y="5" width="11" height="14" rx="2" />
           <path d="M8 9h3M8 12h4M17 9l3-1v8l-3-1" />
         </svg>
       );
     case 'vent':
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={base}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          className={base}
+        >
           <path d="M5 12h6" />
           <path d="M11 8v8" />
           <path d="M14 7h2a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-2" />
@@ -183,32 +208,8 @@ export default function FormacionPage() {
               Formación
             </h1>
             <p className="max-w-2xl text-sm leading-6 text-[#48636a] sm:text-base">
-              Recursos formativos para reforzar la capacitación en urgencias y emergencias, con un
-              diseño más alineado con la portada y una lectura más clara por áreas.
+              Recursos formativos para reforzar la capacitación en urgencias y emergencias.
             </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-[#cfe2e6] bg-white/80 p-4 backdrop-blur-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#516f75]">
-                Áreas formativas
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-slate-950">{bloques.length}</p>
-            </div>
-            <div className="rounded-2xl border border-[#d7e4ee] bg-white/80 p-4 backdrop-blur-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#516f75]">
-                Recursos enlazados
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-slate-950">{totalRecursos}</p>
-            </div>
-            <div className="rounded-2xl border border-[#d1e6df] bg-white/80 p-4 backdrop-blur-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#516f75]">
-                Enfoque
-              </p>
-              <p className="mt-1 text-sm font-medium text-slate-950">
-                MIR, posgrado y capacitación práctica
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -216,7 +217,7 @@ export default function FormacionPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Link
           href="/formacion/programa-oficial"
-          className="relative overflow-hidden rounded-[1.75rem] border border-[#cfe2e6] bg-[linear-gradient(135deg,#eef6f8,#ffffff)] p-6 shadow-[0_14px_38px_rgba(20,37,45,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(20,37,45,0.10)] md:col-span-2"
+          className="group relative overflow-hidden rounded-[1.75rem] border border-[#cfe2e6] bg-[linear-gradient(135deg,#eef6f8,#ffffff)] p-6 shadow-[0_14px_38px_rgba(20,37,45,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(20,37,45,0.10)] md:col-span-2"
         >
           <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#dcebee] blur-3xl" />
           <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -225,14 +226,15 @@ export default function FormacionPage() {
                 Referencia principal
               </span>
               <div className="space-y-2">
-                <h2 className="text-xl font-semibold text-slate-950 sm:text-2xl">
+                <h2 className="text-xl font-semibold text-slate-950 transition group-hover:text-[#2b5d68] sm:text-2xl">
                   Programa Oficial de la Especialidad de Urgencias y Emergencias
                 </h2>
                 <p className="text-sm leading-6 text-[#4e686f] sm:text-base">
-                  Punto de partida para ordenar la formación complementaria de la página y ubicar
-                  los cursos y másteres dentro del itinerario de la especialidad.
+                  El POE define las competencias, rotaciones y objetivos que deben guiar la
+                  formación del especialista en Urgencias y Emergencias, con una capacitación
+                  progresiva, homogénea y orientada a la práctica asistencial.
                 </p>
-                <p className="text-sm font-medium text-[#2b5d68]">Abrir subpágina del programa →</p>
+                <p className="text-sm font-medium text-[#2b5d68]">Ver POE →</p>
               </div>
             </div>
             <div className="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 text-sm text-[#48636a] shadow-sm backdrop-blur-sm">

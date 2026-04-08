@@ -257,7 +257,7 @@ export default function HomeHeroSearch() {
         onKeyDown={handleKeyDown}
         placeholder="Introduce un término de búsqueda"
         aria-label="Buscar en UrgenciasHSJ"
-        className="min-w-0 flex-1 bg-transparent text-[14px] font-normal text-slate-900 outline-none placeholder:text-slate-500 md:text-[15px] md:placeholder:text-transparent"
+        className="min-w-0 flex-1 bg-transparent text-[16px] font-normal text-slate-900 outline-none placeholder:text-slate-500 md:text-[15px] md:placeholder:text-transparent"
       />
       <span
         className={`pointer-events-none absolute top-1/2 left-11 right-12 hidden -translate-y-1/2 truncate text-left text-[15px] text-slate-500 md:block ${

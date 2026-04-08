@@ -216,6 +216,7 @@ const rotationTimeline: RotationTimelineBlock[] = [
       {
         label: 'Urgencias hospitalarias generales y específicas',
         shortLabel: 'Urgencias hospitalarias',
+        detail: 'CGD · GIN · OFT · ORL · PED · PSQ · COT · URO',
         monthsLabel: '12-14 m',
         maxMonths: 14,
         colorClass: 'from-[#2b5d68] to-[#3d7684]',
@@ -224,7 +225,7 @@ const rotationTimeline: RotationTimelineBlock[] = [
       {
         label: 'Radiodiagnóstico y especialidades clínicas',
         shortLabel: 'Radiodiag. y clínicas',
-        detail: 'MI · DIG · CARD · NFR · NML · NRL',
+        detail: 'MIN · DIG · CAR · NFR · NML · NRL',
         monthsLabel: '5-6 m',
         maxMonths: 6,
         colorClass: 'from-[#3c6f65] to-[#5f9488]',
@@ -299,6 +300,8 @@ const totalTrainingItems = trainingCompendium.reduce(
   (total, group) => total + group.items.length,
   0
 );
+const heroActionButtonClass =
+  'inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:border-[#2b5d68] hover:bg-[#2b5d68] hover:!text-white';
 
 export default function ProgramaOficialPage() {
   return (
@@ -355,40 +358,28 @@ export default function ProgramaOficialPage() {
               href={muyeProgramData.meta.pdfUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full border border-[#2b5d68] bg-[#2b5d68] px-4 py-2 text-sm font-medium !text-white no-underline shadow-sm transition hover:bg-[#234d56] hover:!text-white"
+              className={heroActionButtonClass}
             >
-              Ver PDF del POE
+              PDF del POE
             </a>
             <a
               href={muyeProgramData.meta.eliUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:bg-white hover:!text-[#2b5d68]"
+              className={heroActionButtonClass}
             >
-              Página del BOE
+              Web del BOE
             </a>
-            <a
-              href="#explorador"
-              className="inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:bg-white hover:!text-[#2b5d68]"
-            >
+            <a href="#explorador" className={heroActionButtonClass}>
               Explorar programa
             </a>
-            <a
-              href="#formacion-complementaria"
-              className="inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:bg-white hover:!text-[#2b5d68]"
-            >
+            <a href="#formacion-complementaria" className={heroActionButtonClass}>
               Formación complementaria
             </a>
-            <a
-              href="#rotaciones"
-              className="inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:bg-white hover:!text-[#2b5d68]"
-            >
+            <a href="#rotaciones" className={heroActionButtonClass}>
               Itinerario formativo
             </a>
-            <a
-              href="#guardias"
-              className="inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:bg-white hover:!text-[#2b5d68]"
-            >
+            <a href="#guardias" className={heroActionButtonClass}>
               Guardias
             </a>
           </div>
@@ -568,9 +559,9 @@ export default function ProgramaOficialPage() {
                 Distribución visual de los rotatorios por bloque
               </h3>
               <p className="mt-2 text-sm leading-6 text-[#5d767d]">
-                Lectura rápida de R1-R2 y R3-R4 basada en la tabla del POE. La banda usa la
-                duración alta de cada rango para ofrecer una referencia visual clara sin sustituir
-                la flexibilidad real del itinerario.
+                Lectura rápida de R1-R2 y R3-R4 basada en la tabla del POE. La banda usa la duración
+                alta de cada rango para ofrecer una referencia visual clara sin sustituir la
+                flexibilidad real del itinerario.
               </p>
             </div>
             <div className="rounded-2xl border border-[#ecf3f5] bg-white px-4 py-3 text-sm text-[#5d767d] shadow-sm">
@@ -624,7 +615,9 @@ export default function ProgramaOficialPage() {
                           <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
                             {segment.monthsLabel}
                           </p>
-                          <p className="mt-1 text-sm font-semibold leading-5">{segment.shortLabel}</p>
+                          <p className="mt-1 text-sm font-semibold leading-5">
+                            {segment.shortLabel}
+                          </p>
                           {segment.detail ? (
                             <p className="mt-1 text-[10px] font-medium uppercase tracking-wide text-white/80">
                               {segment.detail}
@@ -649,7 +642,9 @@ export default function ProgramaOficialPage() {
                         >
                           {segment.monthsLabel}
                         </span>
-                        <p className="mt-2 text-sm font-medium text-slate-900">{segment.shortLabel}</p>
+                        <p className="mt-2 text-sm font-medium text-slate-900">
+                          {segment.shortLabel}
+                        </p>
                         {segment.detail ? (
                           <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[#5d767d]">
                             {segment.detail}
