@@ -1,7 +1,7 @@
 'use client';
 // @ts-nocheck
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Papa from 'papaparse';
 import InformeCopiable from '@/components/InformeCopiable';
@@ -711,7 +711,7 @@ function getInitialInputKind(value: string | null): InputKind {
   return 'auto';
 }
 
-export default function OrionUnificadoPage() {
+function OrionUnificadoClient() {
   const searchParams = useSearchParams();
   const requestedKind = searchParams.get('kind');
   const [texto, setTexto] = useState('');
@@ -950,5 +950,21 @@ export default function OrionUnificadoPage() {
       {resultado ? <InformeCopiable texto={resultado} /> : null}
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </main>
+  );
+}
+
+export default function OrionUnificadoPage() {
+  return (
+    <Suspense
+      fallback={
+        <main
+          className="escala-wrapper space-y-4 orion-analitica-page"
+          style={{ padding: 18 }}
+          aria-busy="true"
+        />
+      }
+    >
+      <OrionUnificadoClient />
+    </Suspense>
   );
 }
