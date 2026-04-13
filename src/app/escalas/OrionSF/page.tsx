@@ -2,6 +2,7 @@
 // @ts-nocheck
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Papa from 'papaparse';
 import InformeCopiable from '@/components/InformeCopiable';
 import AboutModal from '@/components/AboutModal';
@@ -703,9 +704,18 @@ function getDetectionLabel(detected: DetectedKind) {
   return 'Sin tipo claro';
 }
 
+function getInitialInputKind(value: string | null): InputKind {
+  if (value === 'tratamiento' || value === 'analitica' || value === 'auto') {
+    return value;
+  }
+  return 'auto';
+}
+
 export default function OrionUnificadoPage() {
+  const searchParams = useSearchParams();
+  const requestedKind = searchParams.get('kind');
   const [texto, setTexto] = useState('');
-  const [inputKind, setInputKind] = useState<InputKind>('auto');
+  const [inputKind, setInputKind] = useState<InputKind>(() => getInitialInputKind(requestedKind));
   const [aboutOpen, setAboutOpen] = useState(false);
   const [variasLineas, setVariasLineas] = useState(false);
   const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
@@ -794,9 +804,9 @@ export default function OrionUnificadoPage() {
   return (
     <main className="escala-wrapper space-y-4 orion-analitica-page" style={{ padding: 18 }}>
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">Orion Smart Formatter (Beta)</h1>
+        <h1 className="text-2xl font-semibold">Orion Smart Formatter</h1>
         <p className="max-w-3xl text-sm text-slate-600">
-          Detecta si el texto pegado parece una analítica de GestLab o un tratamiento de SIA y activa los controles correspondientes. Si la detección no es concluyente, puedes forzar el modo. Si ves algún fallo raro, alguna salida regulera o un “esto me lo ha dejado fino filipino”, puedes reportarlo desde{' '}
+          Detecta si el texto pegado parece una analítica de GestLab o un tratamiento de SIA y activa los controles correspondientes. Integra el antiguo depurador de tratamientos SIA para que el acceso histórico siga llevando al mismo flujo. Si la detección no es concluyente, puedes forzar el modo. Si ves algún fallo raro, alguna salida regulera o un “esto me lo ha dejado fino filipino”, puedes reportarlo desde{' '}
           <button
             type="button"
             onClick={() => setAboutOpen(true)}

@@ -43,7 +43,6 @@ export default function Header() {
     : 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm';
 
   const fixedTools = [
-    { label: 'Depurador SIA', href: '/escalas/depuradorTtos' },
     { label: 'Orion Smart Formatter', href: '/escalas/OrionSF' },
     { label: 'Inhaladores', href: '/inhaladores' },
     { label: 'StandyCalc® (beta)', href: '/escalas/standycalc' },

@@ -26,7 +26,6 @@ const escalaRoutes = [
   '/escalas/blatchford',
   '/escalas/cha2ds2va',
   '/escalas/curb65',
-  '/escalas/depuradorTtos',
   '/escalas/glasgow',
   '/escalas/gradiente-aa-o2',
   '/escalas/hasbled',

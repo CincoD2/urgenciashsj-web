@@ -131,6 +131,8 @@ export default function SearchModal({
                         ? "Formación"
                         : r.type === "sesion"
                         ? "Sesión"
+                        : r.type === "novedad"
+                        ? "Novedades"
                         : r.type === "page"
                         ? "Inicio"
                         : r.type === "horario"

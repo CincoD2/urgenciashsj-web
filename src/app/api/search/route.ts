@@ -7,7 +7,15 @@ import { getHomeSearchEntries } from '@/lib/homeContent';
 import { HORARIOS, MONTHS, MONTH_ALIASES, MONTH_LABELS } from '@/lib/horariosData';
 
 type SearchItem = {
-  type: 'page' | 'protocolo' | 'dieta' | 'sesion' | 'herramienta' | 'formacion' | 'horario';
+  type:
+    | 'page'
+    | 'protocolo'
+    | 'dieta'
+    | 'sesion'
+    | 'herramienta'
+    | 'formacion'
+    | 'horario'
+    | 'novedad';
   title: string;
   url: string;
   content: string;
@@ -242,9 +250,14 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
   '/escalas/OrionSF': {
     title: 'Orion Smart Formatter',
     extraContent:
-      'orion orionsf orion sf orion smart formatter smart formatter formatter orion unificado analitica analítica analiticas analíticas laboratorio labs lab gestlab resultados peticion petición bioquimica bioquímica hemograma coagulación coagulación gasometria gasometría tratamiento tratamientos medicacion medicación sia depurador depurador sia pegar texto copiar pegar formatear formateo parser pegado pruebas complementarias',
+      'orion orionsf orion sf orion smart formatter smart formatter formatter orion unificado analitica analítica analiticas analíticas laboratorio labs lab gestlab resultados peticion petición bioquimica bioquímica hemograma coagulación coagulación gasometria gasometría tratamiento tratamientos medicacion medicación sia depurador depurador sia depurador tratamientos sia antiguo depurador formateo analitica orion formateo analítica orion antiguo formateador analitica formatter analiticas pegar texto copiar pegar formatear formateo parser pegado pruebas complementarias',
   },
 };
+
+const REDIRECTED_TOOL_ROUTES = new Set([
+  '/escalas/depuradorTtos',
+  '/escalas/formateo-analitica-orion',
+]);
 
 function slugToTitle(slug: string) {
   const normalized = slug
@@ -378,7 +391,7 @@ function loadChangelogEntries(): SearchItem[] {
       const title = (data as { title?: string }).title ?? id;
 
       return {
-        type: 'page' as const,
+        type: 'novedad' as const,
         title,
         url: `/novedades#${id}`,
         content: `novedades changelog ${summary} ${tags} ${content}`,
@@ -628,7 +641,9 @@ function loadTools(): SearchItem[] {
   const protocolTagsBySlug = loadProtocolTagsBySlug();
   const brandNames = loadStandycalcBrandNames();
   const brandMap = loadStandycalcBrandMap();
-  const routes = walkEscalasRoutes(path.join(process.cwd(), 'src', 'app', 'escalas'), '/escalas');
+  const routes = walkEscalasRoutes(path.join(process.cwd(), 'src', 'app', 'escalas'), '/escalas').filter(
+    (route) => !REDIRECTED_TOOL_ROUTES.has(route)
+  );
 
   const routeItems = routes.map((route) => {
     const slug = route.replace('/escalas/', '');

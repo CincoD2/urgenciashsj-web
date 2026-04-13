@@ -1,5 +1,6 @@
 import "../../styles/escalas.css";
 import ScaleMetaPortal from '@/components/ScaleMetaPortal';
+import ScaleDirectoryLink from '@/components/ScaleDirectoryLink';
 
 export default function EscalasLayout({
   children,
@@ -9,6 +10,7 @@ export default function EscalasLayout({
   return (
     <>
       <ScaleMetaPortal />
+      <ScaleDirectoryLink />
       {children}
     </>
   );

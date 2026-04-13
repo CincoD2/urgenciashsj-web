@@ -9,9 +9,19 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
   OrionSF: {
     title: 'Orion Smart Formatter',
     summary:
-      'Detecta y formatea texto pegado de GestLab y tratamientos de SIA para obtener un informe clínico limpio y reutilizable.',
-    tags: ['orion', 'analítica', 'tratamientos', 'automatización'],
-    keywords: ['smart formatter', 'gestlab', 'sia', 'parser', 'laboratorio'],
+      'Detecta y formatea texto pegado de GestLab y tratamientos de SIA, integrando el antiguo depurador de tratamientos y el formateador de analíticas en una única herramienta reutilizable.',
+    tags: ['orion', 'analítica', 'tratamientos', 'depurador SIA'],
+    keywords: [
+      'smart formatter',
+      'gestlab',
+      'sia',
+      'parser',
+      'laboratorio',
+      'depurador',
+      'tratamientos sia',
+      'formateo analitica orion',
+      'formateador analitica',
+    ],
   },
   'anion-gap': {
     title: 'Anion GAP',
@@ -26,6 +36,24 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
       'Orienta la antibioterapia empírica inicial del código sepsis según foco, prótesis y factores de riesgo microbiológico.',
     tags: ['sepsis', 'antibioterapia', 'infección grave'],
     keywords: ['código sepsis', 'shock séptico', 'antibióticos', 'empírico', 'foco infeccioso'],
+  },
+  'antibioterapia-nac': {
+    title: 'Antibioterapia Empírica NAC',
+    summary:
+      'Guía antibiótica para neumonía adquirida en la comunidad con rutas según manejo ambulatorio u hospitalario, PES, UCI, alergia a betalactámicos e inmunosupresión.',
+    tags: ['neumonía', 'antibioterapia', 'respiratorio'],
+    keywords: [
+      'nac',
+      'neumonía adquirida en la comunidad',
+      'tratamiento antibiótico',
+      'empírico',
+      'ambulatorio',
+      'hospitalizado',
+      'uci',
+      'pes',
+      'inmunocomprometido',
+      'betalactámicos',
+    ],
   },
   bisap: {
     title: 'BISAP Score',
