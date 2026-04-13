@@ -156,6 +156,11 @@ const STANDY_RESTRICTED_DRUGS = [
 const STANDY_ALL_DRUGS = [...STANDY_STANDARD_DRUGS, ...STANDY_RESTRICTED_DRUGS];
 
 const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: string }> = {
+  '/escalas/antibioterapia-nac': {
+    title: 'Antibioterapia Empírica NAC',
+    extraContent:
+      'nac neumonia neumonía comunidad antibiotico antibioticos antibioterapia cipam amoxicilina amoxicilina clavulanico clavulánico cefditoreno levofloxacino moxifloxacino ceftriaxona azitromicina doxiciclina aztreonam meropenem linezolid aspergillus jirovecii cmv oseltamivir betalactamicos betalactámicos pes uci hospitalizado ambulatorio',
+  },
   '/escalas/standycalc': {
     title: 'STANDyCALC®',
     extraContent:
@@ -354,6 +359,32 @@ function loadDietas(): SearchItem[] {
       snippet: (it.sistemas ?? []).join(' · ') || (it.tags ?? []).slice(0, 4).join(' · '),
     };
   });
+}
+
+function loadChangelogEntries(): SearchItem[] {
+  const dir = path.join(process.cwd(), 'content', 'changelog');
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir)
+    .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
+    .map((file) => {
+      const full = path.join(dir, file);
+      const raw = fs.readFileSync(full, 'utf8');
+      const { data, content } = matter(raw);
+      const id = file.replace(/\.(md|mdx)$/i, '');
+      const tags = ((data as { tags?: string[] }).tags ?? []).join(' ');
+      const summary = (data as { summary?: string }).summary ?? '';
+      const title = (data as { title?: string }).title ?? id;
+
+      return {
+        type: 'page' as const,
+        title,
+        url: `/novedades#${id}`,
+        content: `novedades changelog ${summary} ${tags} ${content}`,
+        snippet: summary || tags || 'Novedades',
+      };
+    });
 }
 
 function loadPages(queryText?: string): SearchItem[] {
@@ -717,8 +748,9 @@ function getLatestMtime(dirPath: string): number {
 
 async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
   const protocolosMtime = getLatestMtime(path.join(process.cwd(), 'content', 'protocolos'));
+  const changelogMtime = getLatestMtime(path.join(process.cwd(), 'content', 'changelog'));
   const dietasMtime = getLatestMtime(path.join(process.cwd(), 'public', 'dietas_recom'));
-  const key = `all:${protocolosMtime}:${dietasMtime}:${queryText ?? ''}`;
+  const key = `all:${protocolosMtime}:${changelogMtime}:${dietasMtime}:${queryText ?? ''}`;
   const now = Date.now();
   const cached = cache.get(key);
   if (cached && now - cached.ts < CACHE_TTL_MS) return cached.data;
@@ -732,6 +764,7 @@ async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
     ...loadPages(queryText),
     ...loadHorarios(),
     ...loadProtocolos(),
+    ...loadChangelogEntries(),
     ...loadDietas(),
     ...protocolosSheet,
     ...sesionesSheet,

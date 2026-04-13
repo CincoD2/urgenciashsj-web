@@ -29,18 +29,21 @@ tags:
     'Neumococo',
     'Infección respiratoria',
     'CIPAM',
+    'Bronconeumonía',
+    'Gripe',
   ]
 ---
 
 <Pearl>
-  Resumen de consulta rápida reelaborado a partir del protocolo de la CIPAM `PT. CIPAM.02 v1
-  10/04/2024`. Si hay dudas terapéuticas, alergias relevantes o sospecha de patógenos no habituales,
+  Resumen de consulta rápida reelaborado a partir del protocolo de la CIPAM 'PT. CIPAM.02 v1
+  10/04/2024'. Si hay dudas terapéuticas, alergias relevantes o sospecha de patógenos no habituales,
   conviene revisar el PDF completo.
 </Pearl>
 
 <ScaleModalChips
   title="Escalas relacionadas:"
   items={[
+    { href: '/escalas/antibioterapia-nac', label: 'ATB NAC' },
     { href: '/escalas/curb65', label: 'CURB-65' },
     { href: '/escalas/psi', label: 'PSI' },
     { href: '/escalas/pes', label: 'PES Score' },
@@ -168,125 +171,39 @@ tags:
   ]}
 />
 
-## Tratamiento empírico en inmunocompetente
+## Resumen de Tratamiento Antimicrobiano empírico
 
-### 1. Manejo ambulatorio
-
-<DataTable
-  headers={['Escenario', 'Tratamiento']}
-  rows={[
-    [
-      { content: 'Primera opción', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
-      <span>
-        <strong>Amoxicilina 1 g/8 h</strong> o{' '}
-        <strong>amoxicilina-clavulánico 875/125 mg/8 h</strong> si asma/EPOC <strong>+</strong>{' '}
-        macrólido.
-      </span>,
-    ],
-    [
-      { content: 'Alternativa', className: 'bg-[#f8fafc] font-semibold' },
-      <span>
-        <strong>Cefditoreno 400 mg/12 h</strong> <strong>+</strong> macrólido.
-      </span>,
-    ],
-    [
-      { content: 'Alergia a betalactámicos', className: 'bg-[#e9f1f3] font-semibold' },
-      <span>
-        <strong>Levofloxacino 500 mg/12 h</strong> 1-2 días y después 500 mg/24 h, o{' '}
-        <strong>moxifloxacino 400 mg/24 h</strong>.
-      </span>,
-    ],
-    [
-      { content: 'Macrólido', className: 'bg-[#f8fafc] font-semibold' },
-      'Azitromicina 500 mg/24 h o claritromicina 500 mg/12 h.',
-    ],
-  ]}
-/>
+<div className="flex justify-center">
+  <Image
+    src="/img/nac/atb_nac.svg"
+    alt="Resumen Código Sepsis Hospital de San Juan"
+    width={1200}
+    height={900}
+    caption=""
+  />
+</div>
 
 <Pearl>
   Si la evolución es buena y desaparece la fiebre desde el día 3, el tratamiento ambulatorio puede
   terminarse a los <strong>5 días</strong>.
 </Pearl>
 
-### 2. Ingreso hospitalario sin sospecha de multirresistentes
-
-<DataTable
-  headers={['Situación', 'Tratamiento empírico']}
-  rows={[
-    [
-      { content: 'Planta. PES < 5', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
-      <span>
-        <strong>Ceftriaxona 1-2 g/24 h</strong> <strong>+</strong>{' '}
-        <strong>azitromicina 500 mg/24 h</strong> VO/IV.
-      </span>,
-    ],
-    [
-      { content: 'Planta con alergia a betalactámicos', className: 'bg-[#f8fafc] font-semibold' },
-      <span>
-        <strong>Levofloxacino 500 mg/12 h</strong> 1-2 días y luego 500 mg/24 h.
-      </span>,
-    ],
-    [
-      {
-        content: 'Planta con contraindicación a macrólido y quinolona',
-        className: 'bg-[#e9f1f3] font-semibold',
-      },
-      <span>
-        <strong>Ceftriaxona 1-2 g/24 h</strong> <strong>+</strong>{' '}
-        <strong>doxiciclina 100 mg/12 h</strong> VO/IV.
-      </span>,
-    ],
-    [
-      { content: 'UCI. PES < 5', className: 'bg-[#f8fafc] font-semibold' },
-      <span>
-        <strong>Ceftriaxona 2 g/24 h</strong> <strong>+</strong>{' '}
-        <strong>azitromicina 500 mg/24 h</strong> o <strong>levofloxacino</strong>.
-      </span>,
-    ],
-    [
-      { content: 'UCI con alergia a betalactámicos', className: 'bg-[#e9f1f3] font-semibold' },
-      <span>
-        <strong>Aztreonam 2 g/8 h</strong> <strong>+</strong> <strong>levofloxacino</strong>.
-      </span>,
-    ],
-  ]}
-/>
-
-### 3. Si sospechas patógenos multirresistentes
-
-<Alert>
-  Si hay <strong>colonización previa</strong> o <strong>PES ≥ 5</strong>, obtén muestras para
-  cultivo y diagnóstico molecular antes de desescalar. Aquí sí tiene sentido empezar más ancho.
-</Alert>
-
-<DataTable
-  headers={['Escenario', 'Tratamiento empírico']}
-  rows={[
-    [
-      { content: 'Sin alergia a betalactámicos', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
-      <span>
-        <strong>Meropenem 1 g/8 h</strong> <strong>+</strong>{' '}
-        <strong>levofloxacino 500 mg/12 h</strong> <strong>+</strong>{' '}
-        <strong>linezolid 600 mg/12 h</strong>.
-      </span>,
-    ],
-    [
-      { content: 'Alergia a betalactámicos', className: 'bg-[#f8fafc] font-semibold' },
-      <span>
-        <strong>Aztreonam 2 g/8 h</strong> <strong>+</strong>{' '}
-        <strong>levofloxacino 500 mg/12 h</strong> <strong>+</strong>{' '}
-        <strong>linezolid 600 mg/12 h</strong>.
-      </span>,
-    ],
-  ]}
-/>
-
 <Note>
-  El protocolo indica que, si hay desabastecimiento de aztreonam, se puede sustituir por{' '}
-  <strong>amikacina 20 mg/kg/24 h</strong>.
+  Los números sobre fondo azul indican el número de protocolo correspondiente en Orion Clínic, en
+  concreto en Esquemas terapéuticos dentro de la carpeta 'NAC'
+
+  <div className="-mt-15 flex justify-center">
+    <Image
+      src="/img/nac/OCNac.png"
+      alt="Ubicación de los esquemas terapéuticos de Neumonía Adquirida en la Comunidad en Orion Clínic"
+      width={318}
+      height={369}
+      caption=""
+    />
+  </div>
 </Note>
 
-## Puntos finos que cambian conducta
+## Puntos que cambian conducta
 
 <BoxGrid>
   <Box title="Anaerobios">
@@ -309,8 +226,8 @@ tags:
   headers={['Situación', 'Qué hacer']}
   rows={[
     [
-      { content: 'Influenza positiva', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
-      'Añadir oseltamivir 75 mg/12 h, independientemente de la duración de síntomas.',
+      { content: 'Pacientes inmunocomprometidos', className: 'bg-[#e9f1f3] font-semibold' },
+      'Se recomienda manejar la neumonía empíricamente con criterio de neumonía nosocomial y valorar cobertura adicional según el defecto inmune y el patrón radiológico',
     ],
     [
       { content: 'Neumonía por gripe', className: 'bg-[#f8fafc] font-semibold' },
@@ -330,38 +247,3 @@ tags:
     ],
   ]}
 />
-
-## Si el paciente es inmunocomprometido
-
-<Warning>
-  En inmunocomprometidos el protocolo recomienda manejar la neumonía empíricamente con criterio de
-  <strong> neumonía nosocomial</strong> y valorar cobertura adicional según el defecto inmune y el
-  patrón radiológico.
-</Warning>
-
-<DataTable
-  headers={['Sospecha añadida', 'Tratamiento orientativo del protocolo']}
-  rows={[
-    [
-      { content: 'Aspergillosis', className: 'bg-[#e9f1f3] font-semibold w-1/3' },
-      'Voriconazol VO 400 mg/12 h el día 1 y luego 200-300 mg/12 h. IV: 6 mg/kg/12 h el día 1 y luego 4 mg/kg/12 h.',
-    ],
-    [
-      { content: 'Otros hongos', className: 'bg-[#f8fafc] font-semibold' },
-      'Anfotericina B liposomal 3-5 mg/kg/día; hasta 7,5 mg/kg/día en mucorales.',
-    ],
-    [
-      { content: 'P. jirovecii', className: 'bg-[#e9f1f3] font-semibold' },
-      'TMP/SMX a dosis altas: 5 mg de trimetoprim/kg cada 6-8 h durante 2 semanas; 3 semanas si VIH. Si es grave, considerar prednisona.',
-    ],
-    [
-      { content: 'CMV', className: 'bg-[#f8fafc] font-semibold' },
-      'Ganciclovir 5 mg/kg/12 h IV, especialmente en trasplante hematopoyético.',
-    ],
-  ]}
-/>
-
-<Pearl>
-  El TC torácico gana valor en inmunodeprimidos: si la radiografía no aclara el patrón, suele
-  orientar mejor la etiología y las complicaciones.
-</Pearl>

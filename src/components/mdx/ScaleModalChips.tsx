@@ -8,11 +8,12 @@ type ScaleItem = {
 };
 
 type ScaleModalChipsProps = {
+  className?: string;
   title?: string;
   items: ScaleItem[];
 };
 
-export function ScaleModalChips({ title, items }: ScaleModalChipsProps) {
+export function ScaleModalChips({ className, title, items }: ScaleModalChipsProps) {
   const [activeItem, setActiveItem] = useState<ScaleItem | null>(null);
 
   const getEmbedHref = (href: string) => {
@@ -42,7 +43,7 @@ export function ScaleModalChips({ title, items }: ScaleModalChipsProps) {
 
   return (
     <>
-      <div className="mt-5 flex flex-wrap items-center gap-2">
+      <div className={`mt-5 flex flex-wrap items-center gap-2 ${className ?? ''}`.trim()}>
         {title ? <span className="mr-1 text-sm font-medium text-slate-600">{title}</span> : null}
         {items.map((item) => (
           <button

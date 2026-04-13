@@ -153,6 +153,17 @@ export default function Escalas() {
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Infecciosas</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a className="escala-link-btn" href="/escalas/antibioterapia-nac">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 12h16" />
+                <path d="M7 7h10" />
+                <path d="M7 17h10" />
+                <path d="M12 4v16" />
+              </svg>
+            </span>
+            ATB NAC
+          </a>
           <a className="escala-link-btn" href="/escalas/antibioterapia-codigo-sepsis">
             <span className="escala-link-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -352,6 +363,17 @@ export default function Escalas() {
               </svg>
             </span>
             Inhaladores
+          </a>
+          <a className="escala-link-btn" href="/escalas/antibioterapia-nac">
+            <span className="escala-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 12h16" />
+                <path d="M7 7h10" />
+                <path d="M7 17h10" />
+                <path d="M12 4v16" />
+              </svg>
+            </span>
+            ATB NAC
           </a>
           <a className="escala-link-btn" href="/escalas/curb65">
             <span className="escala-link-icon" aria-hidden>

@@ -51,6 +51,7 @@ export default function Header() {
 
   const alphabeticalTools = [
     { label: 'Anion GAP', href: '/escalas/anion-gap' },
+    { label: 'ATB NAC', href: '/escalas/antibioterapia-nac' },
     { label: 'ATB Código Sepsis', href: '/escalas/antibioterapia-codigo-sepsis' },
     { label: 'BISAP', href: '/escalas/bisap' },
     { label: 'Blatchford', href: '/escalas/blatchford' },

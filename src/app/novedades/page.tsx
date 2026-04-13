@@ -85,7 +85,8 @@ export default async function NovedadesPage() {
           {entries.map((entry) => (
             <article
               key={entry.id}
-              className="rounded-2xl border border-[#dfe9eb] bg-[#f7fbfc] p-5"
+              id={entry.id}
+              className="scroll-mt-24 rounded-2xl border border-[#dfe9eb] bg-[#f7fbfc] p-5"
             >
               <div className="flex flex-wrap items-center gap-3">
                 <h2 className="text-lg font-semibold text-slate-900">{entry.title}</h2>
