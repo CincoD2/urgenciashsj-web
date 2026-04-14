@@ -372,12 +372,6 @@ export default async function HomePage() {
           <div className="mx-auto flex w-full max-w-5xl flex-col items-center px-4 text-center">
             <h1 className="text-4xl font-semibold text-black">UrgenciasHSJ</h1>
             <p className="mt-2 text-black">Recursos de Urgencias</p>
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-800 sm:text-base">
-              UrgenciasHSJ.es surge con el objetivo de concentrar en un único espacio las
-              herramientas y contenidos necesarios para el trabajo diario en un turno de urgencias,
-              facilitando el acceso rápido a información protocolizada y contribuyendo a mejorar el
-              flujo de trabajo asistencial.
-            </p>
             <div className="mt-3 h-1 w-20 rounded-full bg-[#3d7684]" />
             <Suspense fallback={null}>
               <HomeHeroSearch />

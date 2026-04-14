@@ -1,7 +1,5 @@
+import { redirect } from 'next/navigation';
+
 export default function CalculadorasPage() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Calculadoras</h1>
-    </div>
-  );
+  redirect('/escalas');
 }
