@@ -1,9 +1,47 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import FormacionProgramaExplorer from '@/components/FormacionProgramaExplorer';
 import { muyeProgramData } from '@/lib/muyeProgramData';
 
-export const metadata = {
-  title: 'Programa Oficial de la Especialidad de Urgencias y Emergencias',
+const pagePath = '/formacion/programa-oficial';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es';
+const pageUrl = new URL(pagePath, siteUrl).toString();
+const pageTitle = 'POE Urgencias | Programa Oficial de la Especialidad de Urgencias y Emergencias';
+const pageDescription =
+  'POE urgencias: consulta interactiva del Programa Oficial de la Especialidad de Urgencias y Emergencias (MUYE) con competencias, rotaciones, guardias y formación complementaria.';
+
+export const metadata: Metadata = {
+  title: pageTitle,
+  description: pageDescription,
+  alternates: {
+    canonical: pagePath,
+  },
+  keywords: [
+    'POE urgencias',
+    'POE Urgencias',
+    'programa oficial urgencias',
+    'programa oficial especialidad urgencias y emergencias',
+    'MUYE',
+    'BOE urgencias emergencias',
+    'rotaciones urgencias',
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: pageTitle,
+    description: pageDescription,
+    url: pagePath,
+    type: 'article',
+    images: ['/logourg.png'],
+  },
+  twitter: {
+    card: 'summary',
+    title: pageTitle,
+    description: pageDescription,
+    images: ['/logourg.png'],
+  },
 };
 
 function BackToTopLink() {
@@ -304,8 +342,43 @@ const heroActionButtonClass =
   'inline-flex items-center justify-center rounded-full border border-white/75 bg-white/80 px-4 py-2 text-sm font-medium !text-[#2b5d68] no-underline shadow-sm transition hover:border-[#2b5d68] hover:bg-[#2b5d68] hover:!text-white';
 
 export default function ProgramaOficialPage() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: pageTitle,
+    description: pageDescription,
+    url: pageUrl,
+    inLanguage: 'es',
+    about: [
+      { '@type': 'Thing', name: 'POE urgencias' },
+      { '@type': 'Thing', name: 'Programa Oficial de la Especialidad de Urgencias y Emergencias' },
+      { '@type': 'Thing', name: 'Medicina de Urgencias y Emergencias' },
+    ],
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Formación',
+          item: new URL('/formacion', siteUrl).toString(),
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'POE Urgencias',
+          item: pageUrl,
+        },
+      ],
+    },
+  };
+
   return (
     <div className="space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <section
         id="top"
         className="scroll-mt-28 relative overflow-hidden rounded-[2rem] border border-white/60 bg-[linear-gradient(135deg,rgba(238,246,248,0.96),rgba(255,255,255,0.92))] px-6 py-8 shadow-[0_18px_48px_rgba(20,37,45,0.10)] sm:px-8"
@@ -329,16 +402,17 @@ export default function ProgramaOficialPage() {
 
           <div className="max-w-4xl space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#2b5d68]">
-              BOE · {muyeProgramData.meta.order}
+              POE Urgencias · BOE · {muyeProgramData.meta.order}
             </p>
             <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
               Programa Oficial de la Especialidad de Urgencias y Emergencias
             </h1>
             <div className="max-w-3xl space-y-3 text-sm leading-6 text-[#48636a] sm:text-base">
               <p>
-                Consulta interactiva del programa formativo oficial de MUYE. Permite recorrer
-                competencias, actividades formativas, rotaciones y guardias sin leer el BOE
-                completo.
+                Si buscas el POE de urgencias, esta página reúne en formato navegable el Programa
+                Oficial de la Especialidad de Urgencias y Emergencias publicado en el BOE. Permite
+                recorrer competencias, actividades formativas, rotaciones y guardias sin leer el
+                documento completo.
               </p>
               <p>
                 El POE se organiza en tres bloques: competencias transversales, comunes con MFYC y

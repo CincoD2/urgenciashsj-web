@@ -106,8 +106,6 @@ const bloques: Bloque[] = [
   },
 ];
 
-const totalRecursos = bloques.reduce((count, bloque) => count + bloque.items.length, 0);
-
 function BlockIcon({ icono, className }: { icono: Bloque['icono']; className?: string }) {
   const base = className ?? 'h-5 w-5';
 
@@ -223,15 +221,15 @@ export default function FormacionPage() {
           <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="max-w-2xl space-y-3">
               <span className="inline-flex w-fit items-center rounded-full border border-[#cfe2e6] bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
-                Referencia principal
+                Referencia principal · POE Urgencias
               </span>
               <div className="space-y-2">
                 <h2 className="text-xl font-semibold text-slate-950 transition group-hover:text-[#2b5d68] sm:text-2xl">
                   Programa Oficial de la Especialidad de Urgencias y Emergencias
                 </h2>
                 <p className="text-sm leading-6 text-[#4e686f] sm:text-base">
-                  El POE define las competencias, rotaciones y objetivos que deben guiar la
-                  formación del especialista en Urgencias y Emergencias, con una capacitación
+                  El POE urgencias define las competencias, rotaciones y objetivos que deben guiar
+                  la formación del especialista en Urgencias y Emergencias, con una capacitación
                   progresiva, homogénea y orientada a la práctica asistencial.
                 </p>
                 <p className="text-sm font-medium text-[#2b5d68]">Ver POE →</p>
