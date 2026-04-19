@@ -43,6 +43,10 @@ export const observacion: LinkItem[] = [
     href: 'https://drive.google.com/file/d/1Gi_J6xWg8lGq5t4PKmA07kSdJKpGYP5Q/view?usp=sharing',
     endIcon: 'phoneSheet',
   },
+  {
+    label: 'Consentimientos Informados Conselleria',
+    href: 'https://www.san.gva.es/es/web/portal-del-paciente/consentiment-informat/guia-ci-castella',
+  },
 ];
 
 export const enlacesCorporativos: Record<string, LinkItem[]> = {
@@ -208,7 +212,9 @@ function buildSectionEntries(section: string, items: LinkItem[]) {
     title: item.label,
     section,
     href: item.href,
-    content: [section, item.label, item.intranet ? 'intranet' : '', item.href].filter(Boolean).join(' '),
+    content: [section, item.label, item.intranet ? 'intranet' : '', item.href]
+      .filter(Boolean)
+      .join(' '),
   }));
 }
 

@@ -75,7 +75,7 @@ function levenshteinWithin(a: string, b: string, maxDistance: number) {
 
 function tokenMatchScore(queryToken: string, candidateToken: string) {
   if (queryToken === candidateToken) return 1;
-  if (candidateToken.includes(queryToken) || queryToken.includes(candidateToken)) return 0.92;
+  if (candidateToken.includes(queryToken)) return 0.92;
 
   const distance = levenshteinWithin(queryToken, candidateToken, maxAllowedDistance(queryToken));
   if (distance === null) return 0;
