@@ -374,40 +374,16 @@ function loadDietas(): SearchItem[] {
   });
 }
 
-function loadChangelogEntries(): SearchItem[] {
-  const dir = path.join(process.cwd(), 'content', 'changelog');
-  if (!fs.existsSync(dir)) return [];
-
-  return fs
-    .readdirSync(dir)
-    .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
-    .map((file) => {
-      const full = path.join(dir, file);
-      const raw = fs.readFileSync(full, 'utf8');
-      const { data, content } = matter(raw);
-      const id = file.replace(/\.(md|mdx)$/i, '');
-      const tags = ((data as { tags?: string[] }).tags ?? []).join(' ');
-      const summary = (data as { summary?: string }).summary ?? '';
-      const title = (data as { title?: string }).title ?? id;
-
-      return {
-        type: 'novedad' as const,
-        title,
-        url: `/novedades#${id}`,
-        content: `novedades changelog ${summary} ${tags} ${content}`,
-        snippet: summary || tags || 'Novedades',
-      };
-    });
-}
-
 function loadPages(queryText?: string): SearchItem[] {
-  const homeItems = getHomeSearchEntries().map((entry) => ({
-    type: 'page' as const,
-    title: entry.section === 'Inicio' ? entry.title : `${entry.title} (${entry.section})`,
-    url: `/?homeSearch=${encodeURIComponent(queryText ?? entry.title)}&homeFocus=${encodeURIComponent(entry.id)}`,
-    content: `inicio home portada ${entry.section} ${entry.content}`,
-    snippet: entry.section,
-  }));
+  const homeItems = getHomeSearchEntries()
+    .filter((entry) => entry.href !== '/novedades')
+    .map((entry) => ({
+      type: 'page' as const,
+      title: entry.section === 'Inicio' ? entry.title : `${entry.title} (${entry.section})`,
+      url: `/?homeSearch=${encodeURIComponent(queryText ?? entry.title)}&homeFocus=${encodeURIComponent(entry.id)}`,
+      content: `inicio home portada ${entry.section} ${entry.content}`,
+      snippet: entry.section,
+    }));
 
   return [
     { type: 'page', title: 'Inicio', url: '/', content: 'inicio recursos urgencias' },
@@ -415,12 +391,6 @@ function loadPages(queryText?: string): SearchItem[] {
     { type: 'page', title: 'Protocolos', url: '/protocolos', content: 'protocolos' },
     { type: 'page', title: 'Sesiones', url: '/sesiones', content: 'sesiones' },
     { type: 'page', title: 'Macros', url: '/macros', content: 'dietas recomendaciones macros' },
-    {
-      type: 'page',
-      title: 'Novedades',
-      url: '/novedades',
-      content: 'novedades changelog cambios actualizaciones poe muye boe programa oficial',
-    },
     {
       type: 'formacion',
       title: 'Formación',
@@ -763,9 +733,8 @@ function getLatestMtime(dirPath: string): number {
 
 async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
   const protocolosMtime = getLatestMtime(path.join(process.cwd(), 'content', 'protocolos'));
-  const changelogMtime = getLatestMtime(path.join(process.cwd(), 'content', 'changelog'));
   const dietasMtime = getLatestMtime(path.join(process.cwd(), 'public', 'dietas_recom'));
-  const key = `all:${protocolosMtime}:${changelogMtime}:${dietasMtime}:${queryText ?? ''}`;
+  const key = `all:${protocolosMtime}:${dietasMtime}:${queryText ?? ''}`;
   const now = Date.now();
   const cached = cache.get(key);
   if (cached && now - cached.ts < CACHE_TTL_MS) return cached.data;
@@ -779,7 +748,6 @@ async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
     ...loadPages(queryText),
     ...loadHorarios(),
     ...loadProtocolos(),
-    ...loadChangelogEntries(),
     ...loadDietas(),
     ...protocolosSheet,
     ...sesionesSheet,

@@ -68,6 +68,33 @@ export default function ChangelogReactions({ entryId, initialSummary }: Props) {
     setSelectedReaction(stored[entryId] ?? null);
   }, [entryId]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSummary() {
+      try {
+        const response = await fetch(
+          `/api/changelog-reactions?entryId=${encodeURIComponent(entryId)}`
+        );
+        const data = (await response.json()) as {
+          ok?: boolean;
+          summary?: ChangelogReactionSummary;
+        };
+
+        if (!response.ok || !data.ok || !data.summary || cancelled) return;
+        setSummary(data.summary);
+      } catch {
+        // Ignoramos fallos de lectura para no penalizar la interacción.
+      }
+    }
+
+    void loadSummary();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [entryId]);
+
   async function handleReaction(nextReaction: ReactionKey) {
     if (isSaving) return;
 

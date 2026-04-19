@@ -10,6 +10,48 @@ function isReactionKey(value: unknown): value is ReactionKey {
   return value === 'LIKE' || value === 'DISLIKE' || value === 'IMPROVABLE';
 }
 
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const entryId = searchParams.get('entryId')?.trim();
+
+  if (!entryId) {
+    return NextResponse.json({ ok: false, error: 'Falta entryId.' }, { status: 400 });
+  }
+
+  const validEntries = new Set(getChangelogEntryIds());
+  if (!validEntries.has(entryId)) {
+    return NextResponse.json({ ok: false, error: 'Novedad no encontrada.' }, { status: 404 });
+  }
+
+  try {
+    const summaryMap = await getChangelogReactionSummary([entryId]);
+    return NextResponse.json({
+      ok: true,
+      summary: summaryMap[entryId] ?? {
+        like: 0,
+        dislike: 0,
+        improvable: 0,
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2021'
+    ) {
+      return NextResponse.json({
+        ok: true,
+        summary: {
+          like: 0,
+          dislike: 0,
+          improvable: 0,
+        },
+      });
+    }
+
+    return NextResponse.json({ ok: false, error: 'Error interno.' }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
