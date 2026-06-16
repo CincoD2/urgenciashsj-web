@@ -1,4 +1,18 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+const pagePath = '/formacion';
+const pageTitle = 'Formación en Urgencias y Emergencias';
+const pageDescription =
+  'Recursos de formación continuada en urgencias y emergencias: cursos, másteres, ecografía, ventilación y acceso al programa oficial de la especialidad.';
+
+export const metadata: Metadata = {
+  title: pageTitle,
+  description: pageDescription,
+  alternates: {
+    canonical: pagePath,
+  },
+};
 
 type Bloque = {
   titulo: string;
@@ -220,19 +234,21 @@ export default function FormacionPage() {
           <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#dcebee] blur-3xl" />
           <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="max-w-2xl space-y-3">
-              <span className="inline-flex w-fit items-center rounded-full border border-[#cfe2e6] bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#2b5d68]">
-                Referencia principal · POE Urgencias
+              <span
+                data-nosnippet
+                className="inline-flex w-fit items-center rounded-full border border-[#cfe2e6] bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#2b5d68]"
+              >
+                Referencia principal
               </span>
-              <div className="space-y-2">
+              <div className="space-y-2" data-nosnippet>
                 <h2 className="text-xl font-semibold text-slate-950 transition group-hover:text-[#2b5d68] sm:text-2xl">
                   Programa Oficial de la Especialidad de Urgencias y Emergencias
                 </h2>
                 <p className="text-sm leading-6 text-[#4e686f] sm:text-base">
-                  El POE urgencias define las competencias, rotaciones y objetivos que deben guiar
-                  la formación del especialista en Urgencias y Emergencias, con una capacitación
-                  progresiva, homogénea y orientada a la práctica asistencial.
+                  Consulta el programa oficial de la especialidad con sus competencias, rotaciones
+                  y objetivos formativos en una versión navegable.
                 </p>
-                <p className="text-sm font-medium text-[#2b5d68]">Ver POE →</p>
+                <p className="text-sm font-medium text-[#2b5d68]">Abrir programa oficial →</p>
               </div>
             </div>
             <div className="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 text-sm text-[#48636a] shadow-sm backdrop-blur-sm">
