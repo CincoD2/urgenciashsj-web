@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.urgenciashsj.es'),
   title: {
     default: 'urgenciashsj.es',
     template: 'urgenciashsj.es · %s',

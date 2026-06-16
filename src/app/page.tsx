@@ -22,7 +22,7 @@ const calendarEmbed =
   'https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA';
 
 const homePath = '/';
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.urgenciashsj.es';
 const homeTitle = 'UrgenciasHSJ | Herramientas y contenidos para Urgencias';
 const homeDescription =
   'UrgenciasHSJ.es surge con el objetivo de concentrar en un único espacio las herramientas y contenidos necesarios para el trabajo diario en un turno de urgencias, facilitando el acceso rápido a información protocolizada y contribuyendo a mejorar el flujo de trabajo asistencial.';

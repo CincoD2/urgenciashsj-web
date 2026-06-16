@@ -4,7 +4,7 @@ import FormacionProgramaExplorer from '@/components/FormacionProgramaExplorer';
 import { muyeProgramData } from '@/lib/muyeProgramData';
 
 const pagePath = '/formacion/programa-oficial';
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.urgenciashsj.es';
 const pageUrl = new URL(pagePath, siteUrl).toString();
 const pageTitle = 'POE Urgencias | Programa Oficial de la Especialidad de Urgencias y Emergencias';
 const pageDescription =

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://urgenciashsj.es';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.urgenciashsj.es';
 const appDir = path.join(process.cwd(), 'src/app');
 const protocolosDir = path.join(process.cwd(), 'content/protocolos');
 
