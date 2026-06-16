@@ -128,7 +128,9 @@ const ALLERGY_NOTE =
   'En alérgicos a penicilinas debe solicitarse interconsulta a Alergología para valoración y estudio.';
 const LEVO_NOTE = 'Levofloxacino 500 mg/12 h durante 1-2 días y después continuar con 500 mg/24 h.';
 const AZTREONAM_NOTE =
-  'Ante desabastecimiento de Aztreonam se recomienda sustituir por Amikacina 20 mg/Kg/24 h.';
+  'Ante desabastecimiento de Aztreonam se recomienda sustituir por Amikacina 20 mg/Kg/24 h. Los protocolos de Orion Clinic que incluyen Amikacina cargan, por defecto y seguridad, 1.250 mg cada 24 h.';
+const AZTREONAM_PPB_NOTE =
+  'Otra alternativa en infección de PPB: Tigeciclina 100 mg primera dosis y después continuar con 50 mg/12 h.';
 const MEROPENEM_ALLERGY_NOTE =
   'Meropenem se considera de elección en alérgicos a penicilinas por su baja reactividad cruzada.';
 
@@ -190,7 +192,7 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     ],
   },
   'resp|si|no': {
-    baseLine: 'Ceftazidima 2 g/8 h + Levofloxacino 500 mg/12 h + Linezolid 600 mg/12 h',
+    baseLine: 'Meropenem 1 g/8 h + Levofloxacino 500 mg/12 h + Linezolid 600 mg/12 h',
     baseProtocol: 19,
     adjunctLines: [
       'Valorar ± Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
@@ -254,6 +256,7 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     baseLine: 'Aztreonam 2 g/8 h',
     baseProtocol: 18,
     requiresVancomycin: true,
+    optionalLines: [{ text: 'Añadir Ampicilina 2 g/4 h si SV, ATB o IQ <3 meses', protocol: 29 }],
     notes: [AZTREONAM_NOTE],
   },
 
@@ -687,6 +690,9 @@ export default function AntibioterapiaCodigoSepsisPage() {
 
     const notes = [...(recommendation.notes ?? [])];
     if (alergiaPenicilina) notes.unshift(ALLERGY_NOTE);
+    if (focus === 'ppb' && notes.includes(AZTREONAM_NOTE)) {
+      notes.push(AZTREONAM_PPB_NOTE);
+    }
     if (alergiaPenicilina && recommendation.meropenemOkInPenicillinAllergy) {
       notes.push(MEROPENEM_ALLERGY_NOTE);
     }

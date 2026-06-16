@@ -117,11 +117,13 @@ function Selector({
   valor,
   opciones,
   onChange,
+  opcionesClassName = '',
 }: {
   titulo: string;
   valor: Opcion | null;
   opciones: Opcion[];
   onChange: (opt: Opcion) => void;
+  opcionesClassName?: string;
 }) {
   return (
     <div className="input-group">
@@ -130,7 +132,7 @@ function Selector({
           {titulo} ({valor?.puntos ?? '—'})
         </label>
       )}
-      <div className="selector-botones selector-botones-grid selector-botones-1col">
+      <div className={`selector-botones selector-botones-grid selector-botones-1col ${opcionesClassName}`}>
         {opciones.map((opt) => (
           <button
             key={opt.id}
@@ -153,12 +155,10 @@ export default function NIHSS() {
   const [gaze, setGaze] = useState<Opcion | null>(null);
   const [visual, setVisual] = useState<Opcion | null>(null);
   const [facial, setFacial] = useState<Opcion | null>(null);
-  const [armMotor, setArmMotor] = useState<Opcion | null>(null);
-  const [armDerAfecto, setArmDerAfecto] = useState(false);
-  const [armIzqAfecto, setArmIzqAfecto] = useState(false);
-  const [legMotor, setLegMotor] = useState<Opcion | null>(null);
-  const [legDerAfecto, setLegDerAfecto] = useState(false);
-  const [legIzqAfecto, setLegIzqAfecto] = useState(false);
+  const [armDer, setArmDer] = useState<Opcion | null>(null);
+  const [armIzq, setArmIzq] = useState<Opcion | null>(null);
+  const [legDer, setLegDer] = useState<Opcion | null>(null);
+  const [legIzq, setLegIzq] = useState<Opcion | null>(null);
   const [ataxia, setAtaxia] = useState<Opcion | null>(null);
   const [sensory, setSensory] = useState<Opcion | null>(null);
   const [language, setLanguage] = useState<Opcion | null>(null);
@@ -173,10 +173,10 @@ export default function NIHSS() {
       (gaze?.puntos ?? 0) +
       (visual?.puntos ?? 0) +
       (facial?.puntos ?? 0) +
-      (armDerAfecto ? armMotor?.puntos ?? 0 : 0) +
-      (armIzqAfecto ? armMotor?.puntos ?? 0 : 0) +
-      (legDerAfecto ? legMotor?.puntos ?? 0 : 0) +
-      (legIzqAfecto ? legMotor?.puntos ?? 0 : 0) +
+      (armDer?.puntos ?? 0) +
+      (armIzq?.puntos ?? 0) +
+      (legDer?.puntos ?? 0) +
+      (legIzq?.puntos ?? 0) +
       (ataxia?.puntos ?? 0) +
       (sensory?.puntos ?? 0) +
       (language?.puntos ?? 0) +
@@ -190,12 +190,10 @@ export default function NIHSS() {
     gaze,
     visual,
     facial,
-    armMotor,
-    armDerAfecto,
-    armIzqAfecto,
-    legMotor,
-    legDerAfecto,
-    legIzqAfecto,
+    armDer,
+    armIzq,
+    legDer,
+    legIzq,
     ataxia,
     sensory,
     language,
@@ -204,16 +202,10 @@ export default function NIHSS() {
   ]);
 
   const interpretacion = useMemo(() => getInterpretacion(total), [total]);
-  const armSubtotal = useMemo(() => {
-    const puntos = armMotor?.puntos ?? 0;
-    return (armDerAfecto ? puntos : 0) + (armIzqAfecto ? puntos : 0);
-  }, [armMotor, armDerAfecto, armIzqAfecto]);
-  const legSubtotal = useMemo(() => {
-    const puntos = legMotor?.puntos ?? 0;
-    return (legDerAfecto ? puntos : 0) + (legIzqAfecto ? puntos : 0);
-  }, [legMotor, legDerAfecto, legIzqAfecto]);
-  const armSubtotalLabel = armMotor && (armDerAfecto || armIzqAfecto) ? String(armSubtotal) : '—';
-  const legSubtotalLabel = legMotor && (legDerAfecto || legIzqAfecto) ? String(legSubtotal) : '—';
+  const armSubtotal = useMemo(() => (armDer?.puntos ?? 0) + (armIzq?.puntos ?? 0), [armDer, armIzq]);
+  const legSubtotal = useMemo(() => (legDer?.puntos ?? 0) + (legIzq?.puntos ?? 0), [legDer, legIzq]);
+  const armSubtotalLabel = armDer || armIzq ? String(armSubtotal) : '—';
+  const legSubtotalLabel = legDer || legIzq ? String(legSubtotal) : '—';
   const hasSelections = useMemo(() => {
     return Boolean(
       locNivel ||
@@ -222,12 +214,10 @@ export default function NIHSS() {
         gaze ||
         visual ||
         facial ||
-        armMotor ||
-        armDerAfecto ||
-        armIzqAfecto ||
-        legMotor ||
-        legDerAfecto ||
-        legIzqAfecto ||
+        armDer ||
+        armIzq ||
+        legDer ||
+        legIzq ||
         ataxia ||
         sensory ||
         language ||
@@ -241,12 +231,10 @@ export default function NIHSS() {
     gaze,
     visual,
     facial,
-    armMotor,
-    armDerAfecto,
-    armIzqAfecto,
-    legMotor,
-    legDerAfecto,
-    legIzqAfecto,
+    armDer,
+    armIzq,
+    legDer,
+    legIzq,
     ataxia,
     sensory,
     language,
@@ -273,35 +261,10 @@ export default function NIHSS() {
     pushLinea('2 Mirada conjugada', gaze);
     pushLinea('3 Campos visuales', visual);
     pushLinea('4 Movimientos faciales', facial);
-
-    if (armMotor && armDerAfecto) {
-      if (armMotor.puntos === 0) {
-        tieneCeros = true;
-      } else {
-        lineas.push(`- 5a MSD: ${armMotor.label} (${armMotor.puntos})`);
-      }
-    }
-    if (armMotor && armIzqAfecto) {
-      if (armMotor.puntos === 0) {
-        tieneCeros = true;
-      } else {
-        lineas.push(`- 5b MSI: ${armMotor.label} (${armMotor.puntos})`);
-      }
-    }
-    if (legMotor && legDerAfecto) {
-      if (legMotor.puntos === 0) {
-        tieneCeros = true;
-      } else {
-        lineas.push(`- 6a MID: ${legMotor.label} (${legMotor.puntos})`);
-      }
-    }
-    if (legMotor && legIzqAfecto) {
-      if (legMotor.puntos === 0) {
-        tieneCeros = true;
-      } else {
-        lineas.push(`- 6b MII: ${legMotor.label} (${legMotor.puntos})`);
-      }
-    }
+    pushLinea('5a MSD', armDer);
+    pushLinea('5b MSI', armIzq);
+    pushLinea('6a MID', legDer);
+    pushLinea('6b MII', legIzq);
 
     pushLinea('7 Dismetría', ataxia);
     pushLinea('8 Sensibilidad', sensory);
@@ -325,12 +288,10 @@ export default function NIHSS() {
     gaze,
     visual,
     facial,
-    armMotor,
-    armDerAfecto,
-    armIzqAfecto,
-    legMotor,
-    legDerAfecto,
-    legIzqAfecto,
+    armDer,
+    armIzq,
+    legDer,
+    legIzq,
     ataxia,
     sensory,
     language,
@@ -347,12 +308,10 @@ export default function NIHSS() {
     setGaze(null);
     setVisual(null);
     setFacial(null);
-    setArmMotor(null);
-    setArmDerAfecto(false);
-    setArmIzqAfecto(false);
-    setLegMotor(null);
-    setLegDerAfecto(false);
-    setLegIzqAfecto(false);
+    setArmDer(null);
+    setArmIzq(null);
+    setLegDer(null);
+    setLegIzq(null);
     setAtaxia(null);
     setSensory(null);
     setLanguage(null);
@@ -377,61 +336,39 @@ export default function NIHSS() {
         <Selector titulo="3. Campos visuales" valor={visual} opciones={VISUAL} onChange={setVisual} />
         <Selector titulo="4. Movimientos faciales" valor={facial} opciones={FACIAL} onChange={setFacial} />
 
-        <div className="input-group">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="input-group nihss-pares-card">
+          <div className="nihss-pares-head">
             <label className="text-sm font-semibold text-slate-700">
               5. Función motora miembro superior ({armSubtotalLabel})
             </label>
-            <div className="flex flex-wrap gap-3">
-              <label className="flex items-center gap-2 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={armDerAfecto}
-                  onChange={(event) => setArmDerAfecto(event.target.checked)}
-                />
-                MSD
-              </label>
-              <label className="flex items-center gap-2 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={armIzqAfecto}
-                  onChange={(event) => setArmIzqAfecto(event.target.checked)}
-                />
-                MSI
-              </label>
-            </div>
           </div>
-          <div className="mt-2">
-            <Selector titulo="" valor={armMotor} opciones={MOTOR_ARM} onChange={setArmMotor} />
+          <div className="nihss-pares-grid">
+            <div className="nihss-pares-side">
+              <div className="nihss-pares-side-title">MSD</div>
+              <Selector titulo="" valor={armDer} opciones={MOTOR_ARM} onChange={setArmDer} opcionesClassName="nihss-pares-options" />
+            </div>
+            <div className="nihss-pares-side">
+              <div className="nihss-pares-side-title">MSI</div>
+              <Selector titulo="" valor={armIzq} opciones={MOTOR_ARM} onChange={setArmIzq} opcionesClassName="nihss-pares-options" />
+            </div>
           </div>
         </div>
 
-        <div className="input-group">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="input-group nihss-pares-card">
+          <div className="nihss-pares-head">
             <label className="text-sm font-semibold text-slate-700">
               6. Función motora miembro inferior ({legSubtotalLabel})
             </label>
-            <div className="flex flex-wrap gap-3">
-              <label className="flex items-center gap-2 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={legDerAfecto}
-                  onChange={(event) => setLegDerAfecto(event.target.checked)}
-                />
-                MID
-              </label>
-              <label className="flex items-center gap-2 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={legIzqAfecto}
-                  onChange={(event) => setLegIzqAfecto(event.target.checked)}
-                />
-                MII
-              </label>
-            </div>
           </div>
-          <div className="mt-2">
-            <Selector titulo="" valor={legMotor} opciones={MOTOR_LEG} onChange={setLegMotor} />
+          <div className="nihss-pares-grid">
+            <div className="nihss-pares-side">
+              <div className="nihss-pares-side-title">MID</div>
+              <Selector titulo="" valor={legDer} opciones={MOTOR_LEG} onChange={setLegDer} opcionesClassName="nihss-pares-options" />
+            </div>
+            <div className="nihss-pares-side">
+              <div className="nihss-pares-side-title">MII</div>
+              <Selector titulo="" valor={legIzq} opciones={MOTOR_LEG} onChange={setLegIzq} opcionesClassName="nihss-pares-options" />
+            </div>
           </div>
         </div>
 

@@ -896,6 +896,47 @@ body {
   grid-template-columns: 1fr;
 }
 
+.nihss-pares-card {
+  border: 1px solid #dbe4e8;
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(180deg, #f9fbfb 0%, #ffffff 100%);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.nihss-pares-head {
+  margin-bottom: 12px;
+}
+
+.nihss-pares-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.nihss-pares-side {
+  min-width: 0;
+}
+
+.nihss-pares-side-title {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5a7f8a;
+}
+
+.nihss-pares-options {
+  margin-top: 0;
+}
+
+@media (max-width: 640px) {
+  .nihss-pares-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .selector-botones-compact {
   gap: 6px;
 }
