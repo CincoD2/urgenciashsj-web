@@ -242,6 +242,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
     title: 'IDSA/ATS',
     extraContent: 'idsa/ats idsa ats neumonia gravedad uci mortalidad',
   },
+  '/escalas/hipopotasemia': {
+    title: 'Hipopotasemia',
+    extraContent:
+      'hipopotasemia hipokaliemia hipokalemia potasio bajo cloruro potasico cloruro potásico kcl potasion bio k aspartico k urinario perdidas renales perdidas extrarrenales diarrea vomitos diureticos hiperaldosteronismo digoxina ecg onda u',
+  },
   '/escalas/pes': {
     title: 'PES Score',
     extraContent:

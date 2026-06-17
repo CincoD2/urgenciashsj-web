@@ -125,6 +125,13 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
     tags: ['hipernatremia', 'sodio', 'fluidoterapia'],
     keywords: ['déficit de agua', 'corrección de sodio', 'natremia'],
   },
+  hipopotasemia: {
+    title: 'Hipopotasemia',
+    summary:
+      'Clasifica la hipopotasemia, orienta el ingreso, propone la reposición inicial y ayuda a enfocar la etiología.',
+    tags: ['hipopotasemia', 'hipokaliemia', 'potasio', 'trastornos hidroelectrolíticos'],
+    keywords: ['potasio bajo', 'kcl', 'cloruro potásico', 'reposición de potasio', 'k urinario', 'hipokaliemia'],
+  },
   hiponatremia: {
     title: 'Hiponatremia',
     summary:

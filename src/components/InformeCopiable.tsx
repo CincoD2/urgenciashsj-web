@@ -2,16 +2,26 @@
 
 import { useState } from "react";
 
+function sanitizeInformeText(texto?: string | null) {
+  if (!texto) return texto;
+
+  return texto
+    .replaceAll("·", "-")
+    .replaceAll("≥", ">=")
+    .replaceAll("≤", "<=");
+}
+
 export default function InformeCopiable({ texto }: { texto?: string | null }) {
   const [copiado, setCopiado] = useState(false);
+  const textoSeguro = sanitizeInformeText(texto);
 
   async function copiar() {
-    if (!texto) return;
+    if (!textoSeguro) return;
 
     // 1) Intento moderno
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(texto);
+        await navigator.clipboard.writeText(textoSeguro);
         setCopiado(true);
         setTimeout(() => setCopiado(false), 1500);
         return;
@@ -23,7 +33,7 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
     // 2) Fallback compatible con iframes (Google Sites)
     try {
       const textarea = document.createElement("textarea");
-      textarea.value = texto;
+      textarea.value = textoSeguro;
       textarea.setAttribute("readonly", "");
       textarea.style.position = "absolute";
       textarea.style.left = "-9999px";
@@ -46,7 +56,7 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
       <button
         className={`copy-btn-dark ${copiado ? "copiado" : ""}`}
         onClick={copiar}
-        disabled={!texto}
+        disabled={!textoSeguro}
         title="Copiar al portapapeles"
       >
         {copiado ? (
@@ -69,7 +79,7 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
         )}
       </button>
 
-      <pre className="informe-texto">{texto || "—"}</pre>
+      <pre className="informe-texto">{textoSeguro || "—"}</pre>
     </div>
   );
 }

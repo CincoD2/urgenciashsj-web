@@ -129,6 +129,20 @@
     "sistemas": ["cardiovascular", "endocrino"]
   },
   {
+    "id": "HIPOPOTASEMIA",
+    "titulo": "Dieta para hipopotasemia",
+    "ruta": "/dietas_recom/HIPOPOTASEMIA.txt",
+    "tags": [
+      "dieta",
+      "recomendacion",
+      "potasio",
+      "hipopotasemia",
+      "hipokaliemia",
+      "electrolitos"
+    ],
+    "sistemas": ["endocrino", "nefrológico"]
+  },
+  {
     "id": "Hemorroides",
     "titulo": "Hemorroides",
     "ruta": "/dietas_recom/Hemorroides.txt",

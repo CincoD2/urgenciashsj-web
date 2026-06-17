@@ -161,6 +161,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
 
   { slug: 'anion-gap', category: 'metabolismo' },
   { slug: 'hiperNa', category: 'metabolismo' },
+  { slug: 'hipopotasemia', category: 'metabolismo' },
   { slug: 'hiponatremia', category: 'metabolismo' },
   { slug: 'urea-bun', category: 'metabolismo' },
 
