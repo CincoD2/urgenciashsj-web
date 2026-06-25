@@ -112,7 +112,7 @@ export default function Safi() {
 - FiO2: ${fio2} %
 
 SpFi: ${calculo.spfi} mmHg
-Equivalencia PaFi: ${calculo.paFi} mmHg
+Equivalencia PaFi (Ellis-Severinghaus): ${calculo.paFi} mmHg
 SOFA: ${calculo.sofa}
 ${calculo.gravedad.texto}`;
   }, [calculo, spo2, fio2]);
@@ -128,6 +128,9 @@ ${calculo.gravedad.texto}`;
       <h1 className="text-2xl font-semibold">
         SpO<sub>2</sub>Fi (SaFi) y equivalencia en PaFi
       </h1>
+      <p className="text-sm text-slate-600">
+        La equivalencia SaFi -&gt; PaFi se estima mediante la ecuación de Ellis-Severinghaus.
+      </p>
       <div className="inputs-grid">
         <div className="input-group">
           <label>

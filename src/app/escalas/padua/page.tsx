@@ -68,7 +68,7 @@ const CRITERIOS: Criterio[] = [
   },
   {
     id: 'obesidad',
-    label: 'Obesidad (IMC ≥30 kg/m²)',
+    label: 'Obesidad (IMC ≥30 kg/m2)',
     puntos: 1,
     texto: 'Obesidad (IMC ≥30)',
   },
@@ -169,7 +169,8 @@ ${interpretacion.detalle}`;
       <section className="mt-8 space-y-4 text-sm text-slate-700 leading-relaxed">
         <p>
           La Escala de Padua (Padua Prediction Score) es un modelo de evaluación de riesgo diseñado
-          para identificar pacientes médicos hospitalizados con alto riesgo de tromboembolismo venoso.
+          para identificar pacientes médicos hospitalizados con alto riesgo de tromboembolismo
+          venoso.
         </p>
         <p>
           Asigna puntos a 11 factores de riesgo comunes: cáncer activo, TEV previo, movilidad
@@ -185,8 +186,8 @@ ${interpretacion.detalle}`;
           <p className="font-semibold">Bibliografía:</p>
           <p>
             Barbar S, Noventa F, Rossetto V, et al. A risk assessment model for the identification
-            of hospitalized medical patients at risk for venous thromboembolism: the Padua Prediction
-            Score. Journal of Thrombosis and Haemostasis. 2010;8(11):2450-2457.
+            of hospitalized medical patients at risk for venous thromboembolism: the Padua
+            Prediction Score. Journal of Thrombosis and Haemostasis. 2010;8(11):2450-2457.
           </p>
         </div>
       </section>

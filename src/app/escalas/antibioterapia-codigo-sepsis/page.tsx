@@ -176,7 +176,7 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     baseLine: 'Ceftriaxona 2 g/24 h + Azitromicina 500 mg/24 h',
     baseProtocol: 1,
     adjunctLines: [
-      'Valorar ± Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
+      'Valorar +/- Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
     ],
     notes: ['Si hay sospecha de infección por SARS-CoV-2, consultar el protocolo específico.'],
   },
@@ -184,7 +184,7 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     baseLine: 'Levofloxacino 500 mg/12 h',
     baseProtocol: 11,
     adjunctLines: [
-      'Valorar ± Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
+      'Valorar +/- Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
     ],
     notes: [
       LEVO_NOTE,
@@ -195,7 +195,7 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     baseLine: 'Meropenem 1 g/8 h + Levofloxacino 500 mg/12 h + Linezolid 600 mg/12 h',
     baseProtocol: 19,
     adjunctLines: [
-      'Valorar ± Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
+      'Valorar +/- Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
     ],
     notes: [
       LEVO_NOTE,
@@ -206,7 +206,7 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     baseLine: 'Levofloxacino 500 mg/12 h + Aztreonam 2 g/8 h + Linezolid 600 mg/12 h',
     baseProtocol: 28,
     adjunctLines: [
-      'Valorar ± Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
+      'Valorar +/- Oseltamivir 75 mg/12 h vo si el contexto epidemiológico es favorable.',
     ],
     notes: [
       LEVO_NOTE,

@@ -576,7 +576,8 @@ export default function Sofa() {
               <div>
                 <h3 className="text-lg font-semibold">SaFi (SpO2/FiO2)</h3>
                 <p className="text-sm text-slate-600">
-                  Calcula la equivalencia PaFi y asigna la puntuacion SOFA respiratoria.
+                  Calcula la equivalencia PaFi mediante la ecuación de Ellis-Severinghaus y
+                  asigna la puntuacion SOFA respiratoria.
                 </p>
               </div>
               <button type="button" className="reset-btn" onClick={() => setSafiOpen(false)}>

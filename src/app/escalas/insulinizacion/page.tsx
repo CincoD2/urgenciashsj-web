@@ -226,7 +226,7 @@ export default function InsulinizacionEscala() {
     }
     if (calculo.usaPrandial) {
       lineasPauta.push(
-        `- INSULINA PRANDIAL (Aspart/Lispro): ${calculo.dosisPrandial} UI de De,Co,Ce ± 24h`
+        `- INSULINA PRANDIAL (Aspart/Lispro): ${calculo.dosisPrandial} UI de De,Co,Ce +/- 24h`
       );
     }
     lineasPauta.push(

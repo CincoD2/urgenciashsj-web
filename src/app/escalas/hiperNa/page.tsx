@@ -1,12 +1,10 @@
-"use client"
+'use client';
 // @ts-nocheck
 
 import { useState, useMemo } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 
 export default function Hipernatremia() {
-  
-  
   const [peso, setPeso] = useState('');
   const [na, setNa] = useState('');
   const [glucosa, setGlucosa] = useState('');
@@ -17,29 +15,21 @@ export default function Hipernatremia() {
       peso: parseFloat(peso),
       na: parseFloat(na),
       glucosa: parseFloat(glucosa),
-      urea: parseFloat(urea)
+      urea: parseFloat(urea),
     };
   }, [peso, na, glucosa, urea]);
 
   const calculo = useMemo(() => {
     const { peso, na, glucosa, urea } = parsed;
 
-    if (
-      !peso ||
-      !na ||
-      isNaN(peso) ||
-      isNaN(na) ||
-      isNaN(glucosa) ||
-      isNaN(urea)
-    ) {
+    if (!peso || !na || isNaN(peso) || isNaN(na) || isNaN(glucosa) || isNaN(urea)) {
       return null;
     }
 
-    const deficit = (0.6 * peso) * ((na / 145) - 1);
-    const osmolaridad =
-      2 * na + glucosa / 18 + urea / 2.4 / 2.8;
+    const deficit = 0.6 * peso * (na / 145 - 1);
+    const osmolaridad = 2 * na + glucosa / 18 + urea / 2.4 / 2.8;
 
-    const ml = ((deficit * 1000) + 1000) / 2;
+    const ml = (deficit * 1000 + 1000) / 2;
 
     return {
       deficit: deficit.toFixed(1),
@@ -48,7 +38,7 @@ export default function Hipernatremia() {
       mlHora: Math.round(ml / 24),
       ml45: Math.round(ml * 2),
       ml45Hora: Math.round((ml * 2) / 24),
-      hayHipernatremia: na > 145
+      hayHipernatremia: na > 145,
     };
   }, [parsed]);
 
@@ -56,17 +46,14 @@ export default function Hipernatremia() {
     if (!calculo) return '';
 
     if (!calculo.hayHipernatremia) {
-      return (
-`HIPERNATREMIA
+      return `HIPERNATREMIA
 
 No existe hipernatremia.
 
-Osmolaridad plasmática: ${calculo.osmolaridad} mOsm/kg (VN 275–298)`
-      );
+Osmolaridad plasmática: ${calculo.osmolaridad} mOsm/kg (VN 275-298)`;
     }
 
-    return (
-`HIPERNATREMIA
+    return `HIPERNATREMIA
 
 Déficit de agua corporal:
 - Déficit estimado: ${calculo.deficit} litros
@@ -75,8 +62,7 @@ Opciones de reposición:
 - SG 5%: ${calculo.ml} ml en 24 h (${calculo.mlHora} ml/h)
 - SF 0,45%: ${calculo.ml45} ml en 24 h (${calculo.ml45Hora} ml/h)
 
-Osmolaridad plasmática: ${calculo.osmolaridad} mOsm/kg (VN 275–298)`
-    );
+Osmolaridad plasmática: ${calculo.osmolaridad} mOsm/kg (VN 275-298)`;
   }, [calculo]);
 
   const reset = () => {
@@ -86,150 +72,126 @@ Osmolaridad plasmática: ${calculo.osmolaridad} mOsm/kg (VN 275–298)`
     setUrea('');
   };
 
+  const interpretacionSodio = useMemo(() => {
+    const sodio = parsed.na;
+    if (!sodio || isNaN(sodio)) return null;
 
-const interpretacionSodio = useMemo(() => {
-  const sodio = parsed.na;
-  if (!sodio || isNaN(sodio)) return null;
+    if (sodio >= 135 && sodio <= 145) {
+      return {
+        texto: 'Normonatremia',
+        color: 'verde',
+        esHipernatremia: false,
+      };
+    }
 
-  if (sodio >= 135 && sodio <= 145) {
-    return {
-      texto: 'Normonatremia',
-      color: 'verde',
-      esHipernatremia: false
-    };
-  }
+    if (sodio >= 146 && sodio <= 150) {
+      return {
+        texto: 'Hipernatremia leve',
+        color: 'amarillo',
+        esHipernatremia: true,
+      };
+    }
 
-  if (sodio >= 146 && sodio <= 150) {
-    return {
-      texto: 'Hipernatremia leve',
-      color: 'amarillo',
-      esHipernatremia: true
-    };
-  }
+    if (sodio >= 151 && sodio <= 159) {
+      return {
+        texto: 'Hipernatremia moderada',
+        color: 'naranja',
+        esHipernatremia: true,
+      };
+    }
 
-  if (sodio >= 151 && sodio <= 159) {
-    return {
-      texto: 'Hipernatremia moderada',
-      color: 'naranja',
-      esHipernatremia: true
-    };
-  }
+    if (sodio > 159) {
+      return {
+        texto: 'Hipernatremia severa',
+        color: 'rojo',
+        esHipernatremia: true,
+      };
+    }
 
-  if (sodio > 159) {
-    return {
-      texto: 'Hipernatremia severa',
-      color: 'rojo',
-      esHipernatremia: true
-    };
-  }
+    if (sodio >= 131 && sodio <= 134) {
+      return {
+        texto: 'Hiponatremia leve (ver protocolo correspondiente)',
+        color: 'amarillo',
+        esHipernatremia: false,
+      };
+    }
 
-  if (sodio >= 131 && sodio <= 134) {
-    return {
-      texto: 'Hiponatremia leve (ver protocolo correspondiente)',
-      color: 'amarillo',
-      esHipernatremia: false
-    };
-  }
+    if (sodio >= 126 && sodio <= 130) {
+      return {
+        texto: 'Hiponatremia moderada (ver protocolo correspondiente)',
+        color: 'naranja',
+        esHipernatremia: false,
+      };
+    }
 
-  if (sodio >= 126 && sodio <= 130) {
-    return {
-      texto: 'Hiponatremia moderada (ver protocolo correspondiente)',
-      color: 'naranja',
-      esHipernatremia: false
-    };
-  }
+    if (sodio < 126) {
+      return {
+        texto: 'Hiponatremia severa (ver protocolo correspondiente)',
+        color: 'rojo',
+        esHipernatremia: false,
+      };
+    }
 
-  if (sodio < 126) {
-    return {
-      texto: 'Hiponatremia severa (ver protocolo correspondiente)',
-      color: 'rojo',
-      esHipernatremia: false
-    };
-  }
-
-  return null;
-}, [parsed.na]);
+    return null;
+  }, [parsed.na]);
 
   return (
     <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
       <h1 className="text-2xl font-semibold">Hipernatremia</h1>
-    
 
       {/* FORMULARIO */}
-     <div className="inputs-grid">
-  <div className="input-group">
-    <label>Sodio plasmático</label>
-    <div className="input-con-unidad">
-      <input
-        type="number"
-        min="0"
-        value={na}
-        onChange={e => setNa(e.target.value)}
-      />
-      <span className="input-unidad">mEq/L</span>
-    </div>
-  </div>
+      <div className="inputs-grid">
+        <div className="input-group">
+          <label>Sodio plasmático</label>
+          <div className="input-con-unidad">
+            <input type="number" min="0" value={na} onChange={(e) => setNa(e.target.value)} />
+            <span className="input-unidad">mEq/L</span>
+          </div>
+        </div>
 
-  <div className="input-group">
-    <label>Peso</label>
-    <div className="input-con-unidad">
-      <input
-        type="number"
-        min="0"
-        value={peso}
-        onChange={e => setPeso(e.target.value)}
-      />
-      <span className="input-unidad">kg</span>
-    </div>
-  </div>
+        <div className="input-group">
+          <label>Peso</label>
+          <div className="input-con-unidad">
+            <input type="number" min="0" value={peso} onChange={(e) => setPeso(e.target.value)} />
+            <span className="input-unidad">kg</span>
+          </div>
+        </div>
 
-  <div className="input-group">
-    <label>Glucosa</label>
-    <div className="input-con-unidad">
-      <input
-        type="number"
-        min="0"
-        value={glucosa}
-        onChange={e => setGlucosa(e.target.value)}
-      />
-      <span className="input-unidad">mg/dL</span>
-    </div>
-  </div>
+        <div className="input-group">
+          <label>Glucosa</label>
+          <div className="input-con-unidad">
+            <input
+              type="number"
+              min="0"
+              value={glucosa}
+              onChange={(e) => setGlucosa(e.target.value)}
+            />
+            <span className="input-unidad">mg/dL</span>
+          </div>
+        </div>
 
-  <div className="input-group">
-    <label>Urea</label>
-    <div className="input-con-unidad">
-      <input
-        type="number"
-        min="0"
-        value={urea}
-        onChange={e => setUrea(e.target.value)}
-      />
-      <span className="input-unidad">mg/dL</span>
-    </div>
-  </div>
-</div>
+        <div className="input-group">
+          <label>Urea</label>
+          <div className="input-con-unidad">
+            <input type="number" min="0" value={urea} onChange={(e) => setUrea(e.target.value)} />
+            <span className="input-unidad">mg/dL</span>
+          </div>
+        </div>
+      </div>
       <button className="reset-btn" onClick={reset}>
         Reiniciar cálculo
       </button>
 
       {/* RESULTADO CLÍNICO */}
       {calculo && interpretacionSodio && (
-  <div className={`resultado ${interpretacionSodio.color}`}>
-    <div className="puntos-total">
-      {interpretacionSodio.texto}
-    </div>
-    <div className="interpretacion">
-      Osmolaridad {calculo.osmolaridad} mOsm/kg
-    </div>
-  </div>
-)}
+        <div className={`resultado ${interpretacionSodio.color}`}>
+          <div className="puntos-total">{interpretacionSodio.texto}</div>
+          <div className="interpretacion">Osmolaridad {calculo.osmolaridad} mOsm/kg</div>
+        </div>
+      )}
 
       {/* INFORME COPIABLE */}
-      {interpretacionSodio?.esHipernatremia && (
-  <InformeCopiable texto={textoInforme} />
-)}
-
+      {interpretacionSodio?.esHipernatremia && <InformeCopiable texto={textoInforme} />}
     </main>
   );
 }
