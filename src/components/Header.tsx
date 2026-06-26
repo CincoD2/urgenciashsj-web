@@ -77,6 +77,7 @@ export default function Header() {
     { label: 'TAm (PAM)', href: '/escalas/tam' },
     { label: 'TIMI SCACEST', href: '/escalas/timi-scacest' },
     { label: 'TIMI SCASEST', href: '/escalas/timi-scasest' },
+    { label: 'Triaje Manchester', href: '/escalas/triaje-manchester' },
     { label: 'UBEs', href: '/escalas/ube' },
     { label: 'Urea-BUN', href: '/escalas/urea-bun' },
     { label: 'Waterfall', href: '/escalas/waterfall' },

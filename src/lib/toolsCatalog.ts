@@ -2,6 +2,7 @@ import { getScaleMetaBySlug } from '@/lib/escalasMeta';
 
 export type ToolCategoryId =
   | 'orion'
+  | 'triaje'
   | 'respiratorio'
   | 'infecciosas'
   | 'metabolismo'
@@ -53,6 +54,13 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
     description: 'Automatización y limpieza de texto clínico para ahorrar pasos repetitivos.',
     accent: 'text-[#275966]',
     softAccent: 'bg-[#e8f4f6]',
+  },
+  {
+    id: 'triaje',
+    label: 'Triaje',
+    description: 'Herramientas de clasificación inicial y priorización asistencial en urgencias.',
+    accent: 'text-[#24526a]',
+    softAccent: 'bg-[#eaf4fb]',
   },
   {
     id: 'respiratorio',
@@ -128,6 +136,12 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
 
 const TOOL_DEFINITIONS: ToolDefinition[] = [
   { slug: 'OrionSF', category: 'orion', featured: true },
+  {
+    slug: 'triaje-manchester',
+    category: 'triaje',
+    featured: true,
+    badge: 'Nuevo',
+  },
 
   {
     href: '/inhaladores',

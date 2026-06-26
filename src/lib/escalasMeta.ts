@@ -255,6 +255,21 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
     tags: ['hemodinámica', 'presión arterial', 'perfusión'],
     keywords: ['pam', 'tam', 'map', 'mean arterial pressure'],
   },
+  'triaje-manchester': {
+    title: 'Triaje Manchester',
+    summary:
+      'Asistente interactivo para recorrer discriminadores y resolver la prioridad de atención según los algoritmos del triaje Manchester.',
+    tags: ['triaje', 'urgencias', 'manchester', 'priorización'],
+    keywords: [
+      'triaje manchester',
+      'prioridad urgencias',
+      'clasificación urgencias',
+      'discriminadores',
+      'triaje estructurado',
+      'pediátrico',
+      'adulto',
+    ],
+  },
   'timi-scacest': {
     title: 'TIMI para SCACEST',
     summary:

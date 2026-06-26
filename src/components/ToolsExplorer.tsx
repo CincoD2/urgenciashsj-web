@@ -70,6 +70,7 @@ type HealthIconName =
 
 const CATEGORY_ICON_BY_ID: Record<ToolCategoryId, HealthIconName> = {
   orion: 'desktopApp',
+  triaje: 'stethoscope',
   respiratorio: 'lungs',
   infecciosas: 'bacteria',
   metabolismo: 'kidneys',
@@ -84,6 +85,7 @@ const CATEGORY_ICON_BY_ID: Record<ToolCategoryId, HealthIconName> = {
 
 const TOOL_ICON_BY_ID: Record<string, HealthIconName> = {
   OrionSF: 'desktopApp',
+  'triaje-manchester': 'stethoscope',
   '/inhaladores': 'asthmaInhaler',
   'antibioterapia-nac': 'medicines',
   curb65: 'riskAnalysis',
