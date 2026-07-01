@@ -64,6 +64,7 @@ export default function Header() {
     { label: 'Hiponatremia', href: '/escalas/hiponatremia' },
     { label: 'IDSA/ATS', href: '/escalas/idsa' },
     { label: 'Insulinización', href: '/escalas/insulinizacion' },
+    { label: 'Líquidos biológicos', href: '/escalas/liquidos-biologicos' },
     { label: 'NEWS-2', href: '/escalas/news-2' },
     { label: 'NIHSS', href: '/escalas/nihss' },
     { label: 'PaFi', href: '/escalas/pafi' },

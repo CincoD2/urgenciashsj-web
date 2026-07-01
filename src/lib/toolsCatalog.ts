@@ -168,6 +168,13 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
 
   { slug: 'antibioterapia-codigo-sepsis', category: 'infecciosas', featured: true },
   { slug: 'idsa', category: 'infecciosas' },
+  {
+    slug: 'liquidos-biologicos',
+    category: 'infecciosas',
+    secondaryCategories: ['digestivo', 'respiratorio', 'neurologia'],
+    featured: true,
+    badge: 'Nuevo',
+  },
   { slug: 'sofa', category: 'infecciosas' },
   { slug: 'qsofa', category: 'infecciosas' },
   { slug: 'sirs', category: 'infecciosas' },

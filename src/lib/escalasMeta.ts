@@ -170,6 +170,23 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
     tags: ['hiperglucemia', 'diabetes', 'insulina'],
     keywords: ['glucemia', 'corrección', 'basal-bolo'],
   },
+  'liquidos-biologicos': {
+    title: 'Líquidos Biológicos',
+    summary:
+      'Aproximación diagnóstica de ascitis, líquido sinovial, LCR y líquido pleural con tablas de referencia e interpretación inicial.',
+    tags: ['paracentesis', 'artrocentesis', 'punción lumbar', 'toracocentesis'],
+    keywords: [
+      'liquidos biologicos',
+      'ascitis',
+      'liquido sinovial',
+      'lcr',
+      'liquido pleural',
+      'criterios de light',
+      'peritonitis bacteriana espontanea',
+      'artritis septica',
+      'meningitis',
+    ],
+  },
   mrs: {
     title: 'Escala de Rankin modificada (mRS)',
     summary:

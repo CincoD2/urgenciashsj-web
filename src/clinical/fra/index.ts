@@ -22,7 +22,7 @@ export function evaluateFraCase(input: FraInput): FraAssessment {
   const caveats = [
     ...kdigo.limitations,
     ...etiology.warnings,
-    'El resultado es orientativo y debe integrarse con la exploracion, la tendencia analitica y el contexto clinico.',
+    'El resultado es orientativo y debe integrarse con la exploración, la tendencia analítica y el contexto clínico.',
   ];
 
   const assessment: FraAssessment = {

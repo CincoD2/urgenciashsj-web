@@ -96,6 +96,7 @@ const TOOL_ICON_BY_ID: Record<string, HealthIconName> = {
   safi: 'lungs',
   'antibioterapia-codigo-sepsis': 'medicines',
   idsa: 'bacteria',
+  'liquidos-biologicos': 'testTubes',
   sofa: 'riskAnalysis',
   qsofa: 'riskAnalysis',
   sirs: 'riskAnalysis',

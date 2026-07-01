@@ -20,7 +20,7 @@ export function buildManagementPlan(
 ): ManagementPlan {
   const general = [
     'Monitorizar constantes, volemia, diuresis horaria y balance.',
-    'Retirar nefrotoxicos si es posible y ajustar fármacos a función renal.',
+    'Retirar nefrotóxicos si es posible y ajustar fármacos a función renal.',
     'Solicitar o repetir analítica con urea, creatinina, iones, calcio, fósforo, gasometría y sedimento urinario.',
     'Solicitar ECG si hay hiperpotasemia o alteraciones iónicas.',
     'Valorar ecografía renal si la etiología no es clara, hay sospecha obstructiva, anuria, mala evolución o FRA grave.',
@@ -74,7 +74,9 @@ export function buildManagementPlan(
     addUnique(targeted, ['Control estricto de congestión y necesidad de balance negativo.']);
   }
   if (input.hyperkalemiaEcgChanges || input.hyperkalemiaSymptoms || input.potassiumMmolL !== null) {
-    addUnique(monitoring, ['Repetir potasio y ECG tras tratamiento si existe hiperpotasemia o riesgo de progresión.']);
+    addUnique(monitoring, [
+      'Repetir potasio y ECG tras tratamiento si existe hiperpotasemia o riesgo de progresión.',
+    ]);
   }
   if (kdigo.stage >= 2) {
     addUnique(monitoring, ['Mantener seguimiento analítico estrecho por FRA moderado-grave.']);

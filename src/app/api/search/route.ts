@@ -192,6 +192,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
     extraContent:
       'fracaso renal agudo lesion renal aguda aki kdigo creatinina diuresis oliguria anuria hiperpotasemia acidosis uremia prerrenal renal parenquimatosa postrenal obstruccion hidronefrosis',
   },
+  '/escalas/liquidos-biologicos': {
+    title: 'Líquidos Biológicos',
+    extraContent:
+      'liquidos biologicos paracentesis artrocentesis puncion lumbar toracocentesis drenaje endotoracico ascitis pbe peritonitis bacteriana secundaria artritis septica liquido sinovial lcr meningitis criterios de light derrame pleural',
+  },
   '/escalas/cha2ds2va': {
     title: 'CHA2DS2-VA',
     extraContent:

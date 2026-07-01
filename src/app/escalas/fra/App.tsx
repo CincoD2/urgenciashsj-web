@@ -61,9 +61,11 @@ export default function FraApp() {
     assessment.severity.alerts.length > 0
       ? joinSummaryItems(assessment.severity.alerts.map((alert) => alert.message))
       : 'Sin alertas de gravedad mayores con los datos actuales';
-  const managementText =
-    [...assessment.management.general, ...assessment.management.targeted, ...assessment.management.monitoring]
-      .slice(0, 5);
+  const managementText = [
+    ...assessment.management.general,
+    ...assessment.management.targeted,
+    ...assessment.management.monitoring,
+  ].slice(0, 5);
   const managementSummary = joinSummaryItems(managementText);
   const caveatsSummary = joinSummaryItems(assessment.caveats.slice(0, 2));
 
@@ -77,12 +79,12 @@ export default function FraApp() {
           Fracaso Renal Agudo
         </h1>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-700 sm:text-base">
-          Entrada rápida para Urgencias: clasifica KDIGO, calcula FeNa y FeUrea cuando sea
-          posible y orienta si el patrón es prerrenal, renal/parénquimatoso o postrenal.
+          Entrada rápida para Urgencias: clasifica KDIGO, calcula FeNa y FeUrea cuando sea posible y
+          orienta si el patrón es prerrenal, renal/parénquimatoso o postrenal.
         </p>
         <div className="mt-5 rounded-2xl border border-slate-200 bg-white/85 px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm">
-          No sustituye el juicio clínico. Si faltan datos, el cálculo se muestra como no
-          disponible. El FRA puede ser multifactorial.
+          No sustituye el juicio clínico. Si faltan datos, el cálculo se muestra como no disponible.
+          El FRA puede ser multifactorial.
         </div>
       </section>
 
@@ -101,7 +103,7 @@ export default function FraApp() {
             </div>
           </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <div className="text-xs font-semibold tracking-wide text-slate-500">Diuresis</div>
               <div className="mt-2 text-lg font-semibold text-slate-900">
@@ -155,8 +157,8 @@ export default function FraApp() {
                       ? 'Compatible con daño tubular.'
                       : 'Interpretación intermedia.'}
               </p>
-              </div>
             </div>
+          </div>
 
           <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -171,15 +173,21 @@ export default function FraApp() {
 
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-200 bg-[#f8fbfc] p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Prerrenal</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Prerrenal
+              </div>
               <div className="mt-2 text-2xl font-semibold text-slate-900">{prerenalScore}</div>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-[#fbfaf7] p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Renal/parénquimatosa</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Renal/parénquimatosa
+              </div>
               <div className="mt-2 text-2xl font-semibold text-slate-900">{intrinsicScore}</div>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-[#faf8fb] p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Postrenal</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Postrenal
+              </div>
               <div className="mt-2 text-2xl font-semibold text-slate-900">{postrenalScore}</div>
             </div>
           </div>
@@ -189,22 +197,23 @@ export default function FraApp() {
               Conclusión
             </div>
             <p className="mt-2 text-sm font-medium text-slate-900">
-              Orientación etiológica: {resultTitle(assessment.etiology.mostLikely)}.
+              <b>Orientación etiológica:</b> {resultTitle(assessment.etiology.mostLikely)}.
             </p>
             <p className="mt-1 text-sm leading-6 text-slate-700">
               {assessment.etiology.explanation}
             </p>
             <p className="mt-3 text-sm leading-6 text-slate-700">
-              Diferenciales relevantes: {differentialsText}.
+              <b>Diferenciales relevantes:</b> {differentialsText}.
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-700">
-              Alertas: {alertsText}.
+              <b>Alertas:</b> {alertsText}.
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-700">
-              Manejo inicial sugerido: {managementSummary}.
+              <b>Manejo inicial sugerido:</b> {managementSummary}.
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-700">
-              Observaciones: {caveatsSummary}. El FRA puede ser multifactorial y no sustituye el juicio clínico.
+              <b>Observaciones:</b> {caveatsSummary}. El FRA puede ser multifactorial y no sustituye
+              el juicio clínico.
             </p>
           </div>
         </section>
@@ -214,6 +223,19 @@ export default function FraApp() {
         <CopyableReport reportText={assessment.reportText} />
         <UrinaryPatternsTable />
       </div>
+
+      <section className="mt-8 space-y-3 text-sm leading-relaxed text-slate-700">
+        <p className="font-semibold">Bibliografía:</p>
+        <p>
+          <em>Manual de Diagnóstico y Terapéutica Médica</em> (12 de Octubre). 9.ª edición. Aparicio
+          Minguijón EM, Caso Laviana JM, Díaz Santiañez M, Fernández Argüeso A, Heredia Mena C,
+          Muñoz Hernández M, Salmerón Godoy L, Sánchez Fernández M, Verdejo Gómez MÁ, eds.
+        </p>
+        <p>
+          <em>Medicina de Urgencias y Emergencias. Guía diagnóstica y protocolos de actuación</em>.
+          7.ª edición. Jiménez Murillo L, Montero Pérez FJ, dirs.
+        </p>
+      </section>
     </main>
   );
 }
