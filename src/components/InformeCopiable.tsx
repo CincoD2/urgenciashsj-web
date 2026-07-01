@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 function sanitizeInformeText(texto?: string | null) {
   if (!texto) return texto;
 
   return texto
-    .replaceAll("·", "-")
-    .replaceAll("≥", ">=")
-    .replaceAll("≤", "<=");
+    .replaceAll('·', '-')
+    .replaceAll('±', '+/-')
+    .replaceAll('≥', '>=')
+    .replaceAll('≤', '<=');
 }
 
 export default function InformeCopiable({ texto }: { texto?: string | null }) {
@@ -32,20 +33,20 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
 
     // 2) Fallback compatible con iframes (Google Sites)
     try {
-      const textarea = document.createElement("textarea");
+      const textarea = document.createElement('textarea');
       textarea.value = textoSeguro;
-      textarea.setAttribute("readonly", "");
-      textarea.style.position = "absolute";
-      textarea.style.left = "-9999px";
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
       document.body.appendChild(textarea);
       textarea.select();
-      document.execCommand("copy");
+      document.execCommand('copy');
       document.body.removeChild(textarea);
 
       setCopiado(true);
       setTimeout(() => setCopiado(false), 1500);
     } catch (e) {
-      console.error("Error al copiar", e);
+      console.error('Error al copiar', e);
     }
   }
 
@@ -54,7 +55,7 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
       <div className="informe-label">Texto para informe</div>
 
       <button
-        className={`copy-btn-dark ${copiado ? "copiado" : ""}`}
+        className={`copy-btn-dark ${copiado ? 'copiado' : ''}`}
         onClick={copiar}
         disabled={!textoSeguro}
         title="Copiar al portapapeles"
@@ -79,7 +80,7 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
         )}
       </button>
 
-      <pre className="informe-texto">{textoSeguro || "—"}</pre>
+      <pre className="informe-texto">{textoSeguro || '—'}</pre>
     </div>
   );
 }

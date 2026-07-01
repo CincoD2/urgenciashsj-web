@@ -347,6 +347,7 @@ body {
 
 .informe-wrapper {
   margin-top: 20px;
+  width: 100%;
   position: relative;
   border-radius: 12px;
   background: #0f172a;
@@ -379,6 +380,7 @@ body {
 
 /* Texto informe */
 .informe-texto {
+  width: 100%;
   padding: 16px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 14px;

@@ -56,6 +56,7 @@ export default function Header() {
     { label: 'Blatchford', href: '/escalas/blatchford' },
     { label: 'CHA2DS2-VA', href: '/escalas/cha2ds2va' },
     { label: 'CURB-65', href: '/escalas/curb65' },
+    { label: 'Fracaso Renal Agudo', href: '/escalas/fra' },
     { label: 'Glasgow', href: '/escalas/glasgow' },
     { label: 'Gradiente A-a O2', href: '/escalas/gradiente-aa-o2' },
     { label: 'HAS-BLED', href: '/escalas/hasbled' },

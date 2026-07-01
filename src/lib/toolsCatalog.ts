@@ -174,6 +174,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
   { slug: 'news-2', category: 'infecciosas' },
 
   { slug: 'anion-gap', category: 'metabolismo' },
+  { slug: 'fra', category: 'metabolismo', featured: true, badge: 'Nuevo' },
   { slug: 'hiperNa', category: 'metabolismo' },
   { slug: 'hipopotasemia', category: 'metabolismo' },
   { slug: 'hiponatremia', category: 'metabolismo' },

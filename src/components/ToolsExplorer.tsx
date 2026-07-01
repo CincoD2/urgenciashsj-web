@@ -101,6 +101,7 @@ const TOOL_ICON_BY_ID: Record<string, HealthIconName> = {
   sirs: 'riskAnalysis',
   'news-2': 'riskAnalysis',
   'anion-gap': 'testTubes',
+  fra: 'kidneys',
   hiperNa: 'labSearch',
   hiponatremia: 'labSearch',
   'urea-bun': 'testTubes',

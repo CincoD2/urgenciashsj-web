@@ -97,6 +97,23 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
     tags: ['analítica', 'orion', 'laboratorio'],
     keywords: ['gestlab', 'bioquímica', 'hemograma', 'parser'],
   },
+  fra: {
+    title: 'Fracaso Renal Agudo',
+    summary:
+      'Confirma criterios KDIGO de fracaso renal agudo, estima estadio, orienta la etiología y prioriza alertas de gravedad y manejo inicial.',
+    tags: ['fracaso renal agudo', 'kdigo', 'nefrología', 'urgencias'],
+    keywords: [
+      'lesión renal aguda',
+      'aki',
+      'insuficiencia renal aguda',
+      'prerrenal',
+      'renal parenquimatosa',
+      'postrenal',
+      'oliguria',
+      'anuria',
+      'creatinina',
+    ],
+  },
   glasgow: {
     title: 'Glasgow Coma Scale',
     summary:

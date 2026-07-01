@@ -187,6 +187,11 @@ const TOOL_METADATA_BY_ROUTE: Record<string, { title?: string; extraContent?: st
     extraContent:
       'antibioterapia antibiotico antibioticos antibiototerapia sepsis codigo sepsis bmr shock septico vancomicina linezolid meropenem aztreonam amikacina piperacilina tazobactam ceftriaxona foco respiratorio abdominal urologico urológico ppb snc intravascular',
   },
+  '/escalas/fra': {
+    title: 'Fracaso Renal Agudo',
+    extraContent:
+      'fracaso renal agudo lesion renal aguda aki kdigo creatinina diuresis oliguria anuria hiperpotasemia acidosis uremia prerrenal renal parenquimatosa postrenal obstruccion hidronefrosis',
+  },
   '/escalas/cha2ds2va': {
     title: 'CHA2DS2-VA',
     extraContent:
