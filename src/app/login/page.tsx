@@ -206,7 +206,9 @@ function LoginContent() {
                     password,
                   });
                   if (res?.error) {
-                    if (res.error === 'pending_approval') {
+                    if (res.error === 'too_many_attempts') {
+                      setError('Demasiados intentos. Espera unos minutos antes de volver a intentarlo.');
+                    } else if (res.error === 'pending_approval') {
                       setError('Tu usuario está pendiente de aprobación por el administrador.');
                     } else if (res.error === 'email_unverified') {
                       setError('Debes confirmar tu email antes de iniciar sesión.');

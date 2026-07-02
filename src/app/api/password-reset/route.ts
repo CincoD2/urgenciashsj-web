@@ -3,6 +3,13 @@ import crypto from 'node:crypto';
 import nodemailer from 'nodemailer';
 
 import { prisma } from '@/lib/prisma';
+import { getRateLimitStatus, recordRateLimitFailure } from '@/lib/rateLimit';
+
+const PASSWORD_RESET_RATE_LIMIT = {
+  maxFailures: 3,
+  windowMs: 15 * 60 * 1000,
+  blockMs: 30 * 60 * 1000,
+} as const;
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -11,10 +18,25 @@ function isValidEmail(email: string) {
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { email?: string } | null;
   const email = String(body?.email || '').trim().toLowerCase();
+  const forwardedFor = req.headers.get('x-forwarded-for') ?? '';
+  const clientIp = forwardedFor.split(',')[0]?.trim() || 'unknown';
+  const rateLimitKey = `${clientIp}:${email || 'invalid-email'}`;
+
+  const rateLimit = getRateLimitStatus(
+    'password-reset',
+    rateLimitKey,
+    PASSWORD_RESET_RATE_LIMIT
+  );
+  if (rateLimit.limited) {
+    return NextResponse.json({ ok: false }, { status: 429 });
+  }
 
   if (!email || !isValidEmail(email)) {
+    recordRateLimitFailure('password-reset', rateLimitKey, PASSWORD_RESET_RATE_LIMIT);
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+
+  recordRateLimitFailure('password-reset', rateLimitKey, PASSWORD_RESET_RATE_LIMIT);
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !user.email) {

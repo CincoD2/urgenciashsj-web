@@ -7,11 +7,6 @@ import { revalidatePath } from 'next/cache';
 
 import { prisma } from '@/lib/prisma';
 
-const adminEmails = (process.env.ADMIN_EMAILS ?? '')
-  .split(',')
-  .map((email) => email.trim().toLowerCase())
-  .filter(Boolean);
-
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -61,7 +56,6 @@ export async function registerUser(formData: FormData) {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const isAdmin = adminEmails.includes(email);
 
   await prisma.user.create({
     data: {
@@ -70,8 +64,8 @@ export async function registerUser(formData: FormData) {
       passwordHash,
       hospital,
       position,
-      role: isAdmin ? 'ADMIN' : 'USER',
-      approved: isAdmin,
+      role: 'USER',
+      approved: false,
     },
   });
 

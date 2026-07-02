@@ -7,20 +7,48 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+const protectedAdminEmails = (process.env.ADMIN_EMAILS ?? '')
+  .split(',')
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
 async function assertAdmin() {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== 'ADMIN') {
     throw new Error('No autorizado');
   }
+
+  return session.user;
+}
+
+function isProtectedAdminEmail(email: string | null | undefined) {
+  return email ? protectedAdminEmails.includes(email.toLowerCase()) : false;
 }
 
 export async function setUserApproved(formData: FormData) {
-  await assertAdmin();
+  const currentUser = await assertAdmin();
   const userId = String(formData.get('userId') || '');
   const approved = String(formData.get('approved') || '') === 'true';
 
   if (!userId) {
     return;
+  }
+
+  const targetUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, role: true },
+  });
+
+  if (!targetUser) {
+    return;
+  }
+
+  if (
+    userId === currentUser.id ||
+    targetUser.role === 'ADMIN' ||
+    isProtectedAdminEmail(targetUser.email)
+  ) {
+    throw new Error('No se puede modificar la aprobación de esta cuenta.');
   }
 
   const user = await prisma.user.update({
@@ -100,9 +128,8 @@ export async function setUserApproved(formData: FormData) {
 }
 
 export async function deleteUsers(formData: FormData) {
-  await assertAdmin();
-  const session = await getServerSession(authOptions);
-  const currentUserId = session?.user?.id;
+  const currentUser = await assertAdmin();
+  const currentUserId = currentUser.id;
   const ids = formData.getAll('userIds').map((id) => String(id));
 
   if (!ids.length) return;
@@ -113,12 +140,25 @@ export async function deleteUsers(formData: FormData) {
     return;
   }
 
+  const deletableUsers = await prisma.user.findMany({
+    where: { id: { in: filteredIds } },
+    select: { id: true, email: true, role: true },
+  });
+
+  const deletableIds = deletableUsers
+    .filter((user) => user.role !== 'ADMIN' && !isProtectedAdminEmail(user.email))
+    .map((user) => user.id);
+
+  if (!deletableIds.length) {
+    revalidatePath('/admin/usuarios');
+    return;
+  }
+
   await prisma.user.deleteMany({
     where: {
       id: {
-        in: filteredIds,
-      },
-      role: { not: 'ADMIN' },
+        in: deletableIds,
+      }
     },
   });
 
@@ -126,12 +166,25 @@ export async function deleteUsers(formData: FormData) {
 }
 
 export async function setUserRole(formData: FormData) {
-  await assertAdmin();
+  const currentUser = await assertAdmin();
   const userId = String(formData.get('userId') || '');
   const role = String(formData.get('role') || 'USER');
 
   if (!userId) {
     return;
+  }
+
+  const targetUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, role: true },
+  });
+
+  if (!targetUser) {
+    return;
+  }
+
+  if (userId === currentUser.id || isProtectedAdminEmail(targetUser.email)) {
+    throw new Error('No se puede modificar el rol de esta cuenta.');
   }
 
   await prisma.user.update({

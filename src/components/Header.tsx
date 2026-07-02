@@ -695,7 +695,6 @@ export default function Header() {
                 </button>
               </div>
               <form action={changeAction} className="mt-4 space-y-3">
-                <input type="hidden" name="email" value={session?.user?.email ?? ''} />
                 <div className="space-y-1">
                   <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Contraseña actual

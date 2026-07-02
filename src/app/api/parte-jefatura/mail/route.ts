@@ -4,7 +4,9 @@ import chromium from '@sparticuz/chromium';
 import nodemailer from 'nodemailer';
 import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
+import { getServerSession } from 'next-auth';
 import { buildParteJefaturaHtml } from '@/lib/parteJefaturaTemplate';
+import { authOptions } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
@@ -163,6 +165,11 @@ function isValidEmail(value: string) {
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session.user.approved) {
+      return NextResponse.json({ error: 'No autorizado.' }, { status: 401 });
+    }
+
     const body = (await req.json()) as Body;
     const email = trimText(body.email);
     const fecha = formatFecha(trimText(body.fecha));

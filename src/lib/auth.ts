@@ -5,11 +5,22 @@ import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 
 import { prisma } from '@/lib/prisma';
+import {
+  clearRateLimit,
+  getRateLimitStatus,
+  recordRateLimitFailure,
+} from '@/lib/rateLimit';
 
 const adminEmails = (process.env.ADMIN_EMAILS ?? '')
   .split(',')
   .map((email) => email.trim().toLowerCase())
   .filter(Boolean);
+
+const LOGIN_RATE_LIMIT = {
+  maxFailures: 5,
+  windowMs: 10 * 60 * 1000,
+  blockMs: 15 * 60 * 1000,
+} as const;
 
 const providers = [];
 
@@ -32,9 +43,15 @@ providers.push(
     async authorize(credentials) {
       const email = credentials?.email?.toLowerCase().trim();
       const password = credentials?.password ?? '';
+      const loginKey = email ? `credentials:${email}` : 'credentials:anonymous';
 
       if (!email || !password) {
         return null;
+      }
+
+      const rateLimit = getRateLimitStatus('login', loginKey, LOGIN_RATE_LIMIT);
+      if (rateLimit.limited) {
+        throw new Error('too_many_attempts');
       }
 
       const user = await prisma.user.findUnique({
@@ -51,21 +68,48 @@ providers.push(
       });
 
       if (!user?.passwordHash) {
+        recordRateLimitFailure('login', loginKey, LOGIN_RATE_LIMIT);
         throw new Error('invalid_credentials');
       }
 
       const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) {
+        recordRateLimitFailure('login', loginKey, LOGIN_RATE_LIMIT);
         throw new Error('invalid_credentials');
       }
 
-      if (!user.emailVerified && !adminEmails.includes(email)) {
+      const isBootstrapAdmin = adminEmails.includes(email);
+      const isTrustedAdmin =
+        isBootstrapAdmin && user.role === 'ADMIN' && user.approved;
+      const canBypassEmailVerification =
+        isTrustedAdmin ||
+        (process.env.NODE_ENV !== 'production' && isBootstrapAdmin);
+
+      if (!user.emailVerified && !canBypassEmailVerification) {
+        recordRateLimitFailure('login', loginKey, LOGIN_RATE_LIMIT);
         throw new Error('email_unverified');
       }
 
       if (!user.approved && !adminEmails.includes(email)) {
+        recordRateLimitFailure('login', loginKey, LOGIN_RATE_LIMIT);
         throw new Error('pending_approval');
       }
+
+      if (!user.approved && isBootstrapAdmin) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { role: 'ADMIN', approved: true },
+        });
+      }
+
+      if (!user.emailVerified && canBypassEmailVerification) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { emailVerified: new Date() },
+        });
+      }
+
+      clearRateLimit('login', loginKey);
 
       return {
         id: user.id,
@@ -85,8 +129,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user }) {
       if (user.email && adminEmails.includes(user.email.toLowerCase())) {
-        await prisma.user.update({
-          where: { id: user.id },
+        await prisma.user.updateMany({
+          where: { email: user.email.toLowerCase() },
           data: { role: 'ADMIN', approved: true },
         });
       }
