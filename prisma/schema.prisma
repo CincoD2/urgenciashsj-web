@@ -17,6 +17,21 @@ enum ChangelogReactionType {
   IMPROVABLE
 }
 
+enum ScheduleMonth {
+  ENE
+  FEB
+  MAR
+  ABR
+  MAY
+  JUN
+  JUL
+  AGO
+  SEP
+  OCT
+  NOV
+  DIC
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -113,4 +128,16 @@ model ExternalLinkCheck {
 
   @@index([createdAt])
   @@index([isError, createdAt])
+}
+
+model ScheduleEntry {
+  id        String        @id @default(cuid())
+  year      Int
+  month     ScheduleMonth
+  url       String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@unique([year, month])
+  @@index([year])
 }

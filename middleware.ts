@@ -14,7 +14,7 @@ export default withAuth(
       return NextResponse.redirect(new URL('/pendiente', req.url));
     }
 
-    if (pathname.startsWith('/admin/usuarios') && token.role !== 'ADMIN') {
+    if (pathname.startsWith('/admin/') && token.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/', req.url));
     }
 
@@ -31,5 +31,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ['/parte-jefatura/:path*', '/api/parte-jefatura/:path*', '/admin/usuarios/:path*'],
+  matcher: ['/parte-jefatura/:path*', '/api/parte-jefatura/:path*', '/admin/:path*'],
 };

@@ -263,10 +263,17 @@ export default function Header() {
                         <div className="my-1 h-px bg-[#dfe9eb]" />
                         <Link
                           className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
+                          href="/admin/horarios"
+                          onClick={() => setUserOpen(false)}
+                        >
+                          Admin horarios
+                        </Link>
+                        <Link
+                          className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
                           href="/admin/usuarios"
                           onClick={() => setUserOpen(false)}
                         >
-                          Administración
+                          Admin usuarios
                         </Link>
                       </>
                     )}
@@ -533,10 +540,17 @@ export default function Header() {
                       <div className="my-1 h-px bg-[#dfe9eb]" />
                       <Link
                         className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
+                        href="/admin/horarios"
+                        onClick={() => setUserOpen(false)}
+                      >
+                        Admin horarios
+                      </Link>
+                      <Link
+                        className="block rounded px-3 py-2 text-slate-800 hover:bg-slate-100"
                         href="/admin/usuarios"
                         onClick={() => setUserOpen(false)}
                       >
-                        Administración
+                        Admin usuarios
                       </Link>
                     </>
                   )}

@@ -4,7 +4,8 @@ import matter from 'gray-matter';
 
 import { getScaleMetaBySlug } from '@/lib/escalasMeta';
 import { getHomeSearchEntries } from '@/lib/homeContent';
-import { HORARIOS, MONTHS, MONTH_ALIASES, MONTH_LABELS } from '@/lib/horariosData';
+import { MONTHS, MONTH_ALIASES, MONTH_LABELS } from '@/lib/horariosData';
+import { getHorarios, getHorariosCacheKey } from '@/lib/horariosStore';
 
 type SearchItem = {
   type:
@@ -427,7 +428,7 @@ function loadPages(queryText?: string): SearchItem[] {
   ];
 }
 
-function loadHorarios(): SearchItem[] {
+async function loadHorarios(): Promise<SearchItem[]> {
   const items: SearchItem[] = [
     {
       type: 'horario',
@@ -437,7 +438,9 @@ function loadHorarios(): SearchItem[] {
     },
   ];
 
-  for (const entry of HORARIOS) {
+  const horarios = await getHorarios();
+
+  for (const entry of horarios) {
     const year = entry.year;
     const yearStr = String(year);
     const yearShort = yearStr.slice(-2);
@@ -749,7 +752,8 @@ function getLatestMtime(dirPath: string): number {
 async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
   const protocolosMtime = getLatestMtime(path.join(process.cwd(), 'content', 'protocolos'));
   const dietasMtime = getLatestMtime(path.join(process.cwd(), 'public', 'dietas_recom'));
-  const key = `all:${protocolosMtime}:${dietasMtime}:${queryText ?? ''}`;
+  const horariosCacheKey = await getHorariosCacheKey();
+  const key = `all:${protocolosMtime}:${dietasMtime}:${horariosCacheKey}:${queryText ?? ''}`;
   const now = Date.now();
   const cached = cache.get(key);
   if (cached && now - cached.ts < CACHE_TTL_MS) return cached.data;
@@ -761,7 +765,7 @@ async function loadAllItems(queryText?: string): Promise<SearchItem[]> {
 
   const items = [
     ...loadPages(queryText),
-    ...loadHorarios(),
+    ...(await loadHorarios()),
     ...loadProtocolos(),
     ...loadDietas(),
     ...protocolosSheet,

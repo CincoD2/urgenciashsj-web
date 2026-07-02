@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+import AdminNav from '../AdminNav';
 import { deleteUsers, setUserApproved, setUserRole, updateAutoLogout } from './actions';
 import AdminUsersTable from './AdminUsersTable';
 
@@ -46,8 +47,11 @@ export default async function AdminUsersPage() {
       <header>
         <h1 className="text-3xl font-semibold">Administración de usuarios</h1>
         <p className="mt-2 text-sm text-neutral-600">
-          Aprueba accesos y gestiona roles para el parte de jefatura.
+          Aprueba accesos y gestiona roles para la zona privada.
         </p>
+        <div className="mt-4">
+          <AdminNav current="usuarios" />
+        </div>
       </header>
 
       <section className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
