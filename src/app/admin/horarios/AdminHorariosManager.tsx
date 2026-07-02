@@ -1,62 +1,198 @@
 'use client';
 
-import { MONTHS, MONTH_LABELS, type MonthKey } from '@/lib/horariosData';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+
+import { MONTH_LABELS } from '@/lib/horariosData';
 import type { ScheduleRow } from '@/lib/horariosStore';
+
+import type { ScheduleActionState } from './actions';
 
 type AdminHorariosManagerProps = {
   rows: ScheduleRow[];
   source: 'database' | 'static' | 'empty';
   staticCount: number;
-  createScheduleEntry: (formData: FormData) => void;
-  updateScheduleEntry: (formData: FormData) => void;
-  deleteScheduleEntry: (formData: FormData) => void;
-  importStaticHorarios: () => void;
+  createScheduleEntry: (
+    state: ScheduleActionState,
+    formData: FormData
+  ) => Promise<ScheduleActionState>;
+  updateScheduleEntry: (
+    state: ScheduleActionState,
+    formData: FormData
+  ) => Promise<ScheduleActionState>;
+  deleteScheduleEntry: (
+    state: ScheduleActionState,
+    formData: FormData
+  ) => Promise<ScheduleActionState>;
+  importStaticHorarios: () => Promise<ScheduleActionState>;
 };
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 12 }, (_, index) => currentYear + 5 - index);
+const initialState: ScheduleActionState = {};
 
-function MonthSelect({
-  name,
-  defaultValue,
-}: {
-  name: string;
-  defaultValue?: MonthKey;
-}) {
+function Feedback({ state }: { state: ScheduleActionState }) {
+  if (!state?.message) return null;
+
   return (
-    <select
-      name={name}
-      defaultValue={defaultValue ?? MONTHS[0]}
-      className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
+    <div
+      className={`rounded-md border px-3 py-2 text-sm ${
+        state.ok
+          ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+          : 'border-rose-200 bg-rose-50 text-rose-700'
+      }`}
     >
-      {MONTHS.map((month) => (
-        <option key={month} value={month}>
-          {MONTH_LABELS[month]}
-        </option>
-      ))}
-    </select>
+      {state.message}
+    </div>
   );
 }
 
-function YearSelect({
-  name,
-  defaultValue,
+function SubmitButton({
+  idleLabel,
+  pendingLabel,
+  className,
 }: {
-  name: string;
-  defaultValue?: number;
+  idleLabel: string;
+  pendingLabel: string;
+  className: string;
 }) {
+  const { pending } = useFormStatus();
+
   return (
-    <select
-      name={name}
-      defaultValue={defaultValue ?? currentYear}
-      className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
+    <button type="submit" disabled={pending} className={`${className} disabled:opacity-60`}>
+      {pending ? pendingLabel : idleLabel}
+    </button>
+  );
+}
+
+function CreateScheduleForm({
+  createScheduleEntry,
+}: {
+  createScheduleEntry: AdminHorariosManagerProps['createScheduleEntry'];
+}) {
+  const [state, formAction] = useActionState(createScheduleEntry, initialState);
+
+  return (
+    <form action={formAction} className="mt-4 space-y-3">
+      <div className="grid gap-3 md:grid-cols-[140px_180px_1fr_auto]">
+        <select
+          name="year"
+          defaultValue={currentYear}
+          className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
+        >
+          {yearOptions.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+        <select
+          name="month"
+          defaultValue="ENE"
+          className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
+        >
+          {Object.entries(MONTH_LABELS).map(([month, label]) => (
+            <option key={month} value={month}>
+              {label}
+            </option>
+          ))}
+        </select>
+        <input
+          type="url"
+          name="url"
+          placeholder="https://..."
+          required
+          className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
+        />
+        <SubmitButton
+          idleLabel="Añadir"
+          pendingLabel="Guardando..."
+          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-semibold text-white"
+        />
+      </div>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+function ImportStaticForm({
+  importStaticHorarios,
+}: {
+  importStaticHorarios: AdminHorariosManagerProps['importStaticHorarios'];
+}) {
+  const [state, formAction] = useActionState(importStaticHorarios, initialState);
+
+  return (
+    <form action={formAction} className="mt-4 space-y-3">
+      <SubmitButton
+        idleLabel="Importar catálogo actual"
+        pendingLabel="Importando..."
+        className="rounded-md bg-amber-700 px-4 py-2 text-sm font-semibold text-white"
+      />
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+function UpdateScheduleForm({
+  row,
+  updateScheduleEntry,
+}: {
+  row: ScheduleRow;
+  updateScheduleEntry: AdminHorariosManagerProps['updateScheduleEntry'];
+}) {
+  const [state, formAction] = useActionState(updateScheduleEntry, initialState);
+
+  return (
+    <form action={formAction} className="space-y-2">
+      <div className="flex min-w-[420px] gap-2">
+        <input type="hidden" name="entryId" value={row.id} />
+        <input type="hidden" name="year" value={row.year} />
+        <input type="hidden" name="month" value={row.month} />
+        <input
+          type="url"
+          name="url"
+          defaultValue={row.url}
+          required
+          className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
+        />
+        <SubmitButton
+          idleLabel="Guardar"
+          pendingLabel="Guardando..."
+          className="rounded-md bg-neutral-900 px-3 py-2 text-xs font-semibold text-white"
+        />
+      </div>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+function DeleteScheduleForm({
+  row,
+  deleteScheduleEntry,
+}: {
+  row: ScheduleRow;
+  deleteScheduleEntry: AdminHorariosManagerProps['deleteScheduleEntry'];
+}) {
+  const [state, formAction] = useActionState(deleteScheduleEntry, initialState);
+
+  return (
+    <form
+      action={formAction}
+      onSubmit={(event) => {
+        const ok = window.confirm('¿Eliminar este horario?');
+        if (!ok) event.preventDefault();
+      }}
+      className="space-y-2"
     >
-      {yearOptions.map((year) => (
-        <option key={year} value={year}>
-          {year}
-        </option>
-      ))}
-    </select>
+      <input type="hidden" name="entryId" value={row.id} />
+      <SubmitButton
+        idleLabel="Eliminar"
+        pendingLabel="Eliminando..."
+        className="rounded-md bg-rose-600 px-3 py-2 text-xs font-semibold text-white"
+      />
+      <Feedback state={state} />
+    </form>
   );
 }
 
@@ -77,10 +213,10 @@ export default function AdminHorariosManager({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-neutral-900">Nuevo horario</h2>
-          <p className="mt-1 text-sm text-neutral-600">
-            Añade un PDF mensual sin tocar código. El enlace se puede editar abajo; si necesitas
-            cambiar año o mes, elimina el registro y créalo de nuevo.
-          </p>
+            <p className="mt-1 text-sm text-neutral-600">
+              Añade un PDF mensual sin tocar código. El enlace se puede editar abajo; si necesitas
+              cambiar año o mes, elimina el registro y créalo de nuevo.
+            </p>
           </div>
           <div
             className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
@@ -93,20 +229,7 @@ export default function AdminHorariosManager({
           </div>
         </div>
 
-        <form action={createScheduleEntry} className="mt-4 grid gap-3 md:grid-cols-[140px_180px_1fr_auto]">
-          <YearSelect name="year" />
-          <MonthSelect name="month" />
-          <input
-            type="url"
-            name="url"
-            placeholder="https://..."
-            required
-            className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
-          />
-          <button className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-semibold text-white">
-            Añadir
-          </button>
-        </form>
+        <CreateScheduleForm createScheduleEntry={createScheduleEntry} />
       </section>
 
       {!isDatabaseSource && (
@@ -116,11 +239,7 @@ export default function AdminHorariosManager({
             Ahora mismo la web está leyendo el catálogo legado del código. Importa esos{' '}
             {staticCount} registros a base de datos para poder editarlos desde este panel.
           </p>
-          <form action={importStaticHorarios} className="mt-4">
-            <button className="rounded-md bg-amber-700 px-4 py-2 text-sm font-semibold text-white">
-              Importar catálogo actual
-            </button>
-          </form>
+          <ImportStaticForm importStaticHorarios={importStaticHorarios} />
         </section>
       )}
 
@@ -154,36 +273,17 @@ export default function AdminHorariosManager({
               rows.map((row) => (
                 <tr key={row.id} className="border-t border-neutral-100 align-top">
                   <td className="px-4 py-3">
-                    {isDatabaseSource ? (
-                      <span className="font-medium text-neutral-900">{row.year}</span>
-                    ) : (
-                      <span className="font-medium text-neutral-900">{row.year}</span>
-                    )}
+                    <span className="font-medium text-neutral-900">{row.year}</span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="text-neutral-700">{MONTH_LABELS[row.month]}</span>
                   </td>
                   <td className="px-4 py-3">
                     {isDatabaseSource ? (
-                      <span className="text-neutral-700">{MONTH_LABELS[row.month]}</span>
-                    ) : (
-                      <span className="text-neutral-700">{MONTH_LABELS[row.month]}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {isDatabaseSource ? (
-                      <form action={updateScheduleEntry} className="flex min-w-[420px] gap-2">
-                        <input type="hidden" name="entryId" value={row.id} />
-                        <input type="hidden" name="year" value={row.year} />
-                        <input type="hidden" name="month" value={row.month} />
-                        <input
-                          type="url"
-                          name="url"
-                          defaultValue={row.url}
-                          required
-                          className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
-                        />
-                        <button className="rounded-md bg-neutral-900 px-3 py-2 text-xs font-semibold text-white">
-                          Guardar
-                        </button>
-                      </form>
+                      <UpdateScheduleForm
+                        row={row}
+                        updateScheduleEntry={updateScheduleEntry}
+                      />
                     ) : (
                       <a
                         href={row.url}
@@ -197,18 +297,10 @@ export default function AdminHorariosManager({
                   </td>
                   <td className="px-4 py-3">
                     {isDatabaseSource ? (
-                      <form
-                        action={deleteScheduleEntry}
-                        onSubmit={(event) => {
-                          const ok = window.confirm('¿Eliminar este horario?');
-                          if (!ok) event.preventDefault();
-                        }}
-                      >
-                        <input type="hidden" name="entryId" value={row.id} />
-                        <button className="rounded-md bg-rose-600 px-3 py-2 text-xs font-semibold text-white">
-                          Eliminar
-                        </button>
-                      </form>
+                      <DeleteScheduleForm
+                        row={row}
+                        deleteScheduleEntry={deleteScheduleEntry}
+                      />
                     ) : (
                       <span className="text-xs text-neutral-500">Importa primero para editar</span>
                     )}

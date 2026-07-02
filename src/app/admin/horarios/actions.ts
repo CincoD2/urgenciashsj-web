@@ -8,6 +8,11 @@ import { MONTHS, type MonthKey } from '@/lib/horariosData';
 import { getStaticScheduleRows } from '@/lib/horariosStore';
 import { prisma } from '@/lib/prisma';
 
+export type ScheduleActionState = {
+  ok?: boolean;
+  message?: string;
+};
+
 async function assertAdmin() {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== 'ADMIN') {
@@ -84,96 +89,137 @@ async function seedStaticHorariosIfDatabaseEmpty() {
   );
 }
 
-export async function createScheduleEntry(formData: FormData) {
-  await assertAdmin();
+export async function createScheduleEntry(
+  _prevState: ScheduleActionState,
+  formData: FormData
+) {
+  try {
+    await assertAdmin();
 
-  await seedStaticHorariosIfDatabaseEmpty();
+    await seedStaticHorariosIfDatabaseEmpty();
 
-  const year = parseYear(formData.get('year'));
-  const month = parseMonth(formData.get('month'));
-  const url = parseUrl(formData.get('url'));
+    const year = parseYear(formData.get('year'));
+    const month = parseMonth(formData.get('month'));
+    const url = parseUrl(formData.get('url'));
 
-  const existing = await prisma.scheduleEntry.findUnique({
-    where: {
-      year_month: {
+    const existing = await prisma.scheduleEntry.findUnique({
+      where: {
+        year_month: {
+          year,
+          month,
+        },
+      },
+      select: { id: true },
+    });
+
+    if (existing) {
+      return { ok: false, message: 'Ya existe un horario para ese año y mes.' } as const;
+    }
+
+    await prisma.scheduleEntry.create({
+      data: {
         year,
         month,
+        url,
       },
-    },
-    select: { id: true },
-  });
+    });
 
-  if (existing) {
-    throw new Error('Ya existe un horario para ese año y mes.');
+    revalidateHorarios();
+    return { ok: true, message: 'Horario añadido.' } as const;
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : 'No se pudo añadir el horario.',
+    } as const;
   }
-
-  await prisma.scheduleEntry.create({
-    data: {
-      year,
-      month,
-      url,
-    },
-  });
-
-  revalidateHorarios();
 }
 
-export async function updateScheduleEntry(formData: FormData) {
-  await assertAdmin();
+export async function updateScheduleEntry(
+  _prevState: ScheduleActionState,
+  formData: FormData
+) {
+  try {
+    await assertAdmin();
 
-  const entryId = String(formData.get('entryId') ?? '').trim();
-  if (!entryId) {
-    throw new Error('Registro no válido.');
+    const entryId = String(formData.get('entryId') ?? '').trim();
+    if (!entryId) {
+      return { ok: false, message: 'Registro no válido.' } as const;
+    }
+
+    const year = parseYear(formData.get('year'));
+    const month = parseMonth(formData.get('month'));
+    const url = parseUrl(formData.get('url'));
+
+    const duplicate = await prisma.scheduleEntry.findFirst({
+      where: {
+        year,
+        month,
+        id: { not: entryId },
+      },
+      select: { id: true },
+    });
+
+    if (duplicate) {
+      return { ok: false, message: 'Ya existe otro horario para ese año y mes.' } as const;
+    }
+
+    await prisma.scheduleEntry.update({
+      where: { id: entryId },
+      data: {
+        year,
+        month,
+        url,
+      },
+    });
+
+    revalidateHorarios();
+    return { ok: true, message: 'Horario guardado.' } as const;
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : 'No se pudo guardar el horario.',
+    } as const;
   }
-
-  const year = parseYear(formData.get('year'));
-  const month = parseMonth(formData.get('month'));
-  const url = parseUrl(formData.get('url'));
-
-  const duplicate = await prisma.scheduleEntry.findFirst({
-    where: {
-      year,
-      month,
-      id: { not: entryId },
-    },
-    select: { id: true },
-  });
-
-  if (duplicate) {
-    throw new Error('Ya existe otro horario para ese año y mes.');
-  }
-
-  await prisma.scheduleEntry.update({
-    where: { id: entryId },
-    data: {
-      year,
-      month,
-      url,
-    },
-  });
-
-  revalidateHorarios();
 }
 
-export async function deleteScheduleEntry(formData: FormData) {
-  await assertAdmin();
+export async function deleteScheduleEntry(
+  _prevState: ScheduleActionState,
+  formData: FormData
+) {
+  try {
+    await assertAdmin();
 
-  const entryId = String(formData.get('entryId') ?? '').trim();
-  if (!entryId) {
-    return;
+    const entryId = String(formData.get('entryId') ?? '').trim();
+    if (!entryId) {
+      return { ok: false, message: 'Registro no válido.' } as const;
+    }
+
+    await prisma.scheduleEntry.delete({
+      where: { id: entryId },
+    });
+
+    revalidateHorarios();
+    return { ok: true, message: 'Horario eliminado.' } as const;
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : 'No se pudo eliminar el horario.',
+    } as const;
   }
-
-  await prisma.scheduleEntry.delete({
-    where: { id: entryId },
-  });
-
-  revalidateHorarios();
 }
 
 export async function importStaticHorarios() {
-  await assertAdmin();
+  try {
+    await assertAdmin();
 
-  await seedStaticHorariosIfDatabaseEmpty();
+    await seedStaticHorariosIfDatabaseEmpty();
 
-  revalidateHorarios();
+    revalidateHorarios();
+    return { ok: true, message: 'Horarios importados.' } as const;
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : 'No se pudieron importar los horarios.',
+    } as const;
+  }
 }
