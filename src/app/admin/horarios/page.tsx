@@ -77,18 +77,21 @@ export default async function AdminHorariosPage({
               className={`rounded-md px-3 py-1 font-semibold ${
                 currentPage === 1
                   ? 'pointer-events-none bg-neutral-100 text-neutral-400'
-                  : 'bg-neutral-900 text-white'
+                  : 'bg-[#1f4c57] text-white'
               }`}
             >
               Anterior
             </Link>
+            <span className="inline-flex items-center rounded-md border border-[#c9dadd] bg-[#e7f0f2] px-3 py-1 font-semibold text-[#1f4c57]">
+              {currentPage}
+            </span>
             <Link
               href={`/admin/horarios?page=${currentPage + 1}`}
               aria-disabled={currentPage >= totalPages}
               className={`rounded-md px-3 py-1 font-semibold ${
                 currentPage >= totalPages
                   ? 'pointer-events-none bg-neutral-100 text-neutral-400'
-                  : 'bg-neutral-900 text-white'
+                  : 'bg-[#1f4c57] text-white'
               }`}
             >
               Siguiente

@@ -35,6 +35,15 @@ const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 12 }, (_, index) => currentYear + 5 - index);
 const initialState: ScheduleActionState = {};
 
+function getUrlSummary(url: string) {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.replace(/^www\./, '');
+  } catch {
+    return 'Enlace externo';
+  }
+}
+
 function Feedback({ state }: { state: ScheduleActionState }) {
   if (!state?.message) return null;
 
@@ -273,14 +282,14 @@ export default function AdminHorariosManager({
           </p>
         </div>
 
-        <table className="w-full text-left text-sm">
+        <table className="w-full table-fixed text-left text-sm">
           <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
-              <th className="px-4 py-3">Año</th>
-              <th className="px-4 py-3">Mes</th>
-              <th className="px-4 py-3">Versión</th>
+              <th className="w-[90px] px-4 py-3">Año</th>
+              <th className="w-[120px] px-4 py-3">Mes</th>
+              <th className="w-[120px] px-4 py-3">Versión</th>
               <th className="px-4 py-3">Enlace</th>
-              <th className="px-4 py-3">Acciones</th>
+              <th className="w-[210px] px-4 py-3">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -315,17 +324,22 @@ export default function AdminHorariosManager({
                         onCancel={() => setEditingId(null)}
                       />
                     ) : (
-                      <a
-                        href={row.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="line-clamp-2 text-[#1f4c57] underline underline-offset-2"
-                      >
-                        {row.url}
-                      </a>
+                      <div className="space-y-1">
+                        <a
+                          href={row.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center rounded-md border border-[#c9dadd] bg-[#f6f9fa] px-3 py-1 text-xs font-semibold text-[#1f4c57] transition hover:border-[#1f4c57]/40 hover:bg-[#e7f0f2]"
+                        >
+                          Abrir PDF
+                        </a>
+                        <p className="truncate text-xs text-neutral-500">
+                          {getUrlSummary(row.url)}
+                        </p>
+                      </div>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     {isDatabaseSource ? (
                       <div className="flex items-start gap-2">
                         {editingId === row.id ? null : (
