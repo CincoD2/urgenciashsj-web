@@ -20,8 +20,8 @@ export default function AdminNav({ current }: AdminNavProps) {
             href={item.href}
             className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
               active
-                ? 'border-neutral-900 bg-neutral-900 text-white'
-                : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
+                ? 'border-[#1f4c57] bg-[#e7f0f2] text-[#1f4c57]'
+                : 'border-neutral-200 bg-white text-neutral-700 hover:border-[#1f4c57]/40'
             }`}
           >
             {item.label}

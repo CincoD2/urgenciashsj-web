@@ -454,7 +454,8 @@ async function loadHorarios(): Promise<SearchItem[]> {
     });
 
     MONTHS.forEach((month, idx) => {
-      const url = entry.months[month];
+      const monthEntry = entry.months[month];
+      const url = monthEntry?.url;
       if (!url) return;
 
       const label = MONTH_LABELS[month];

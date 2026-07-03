@@ -134,10 +134,12 @@ model ScheduleEntry {
   id        String        @id @default(cuid())
   year      Int
   month     ScheduleMonth
+  version   Int           @default(1)
   url       String
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
-  @@unique([year, month])
+  @@unique([year, month, version])
   @@index([year])
+  @@index([year, month])
 }

@@ -15,6 +15,11 @@ export const MONTHS = [
 
 export type MonthKey = (typeof MONTHS)[number];
 
+export type ScheduleMonthLink = {
+  url: string;
+  version: number;
+};
+
 export const MONTH_LABELS: Record<MonthKey, string> = {
   ENE: 'Enero',
   FEB: 'Febrero',
@@ -45,13 +50,19 @@ export const MONTH_ALIASES: Record<MonthKey, string[]> = {
   DIC: ['dic', 'diciembre', '12'],
 };
 
-export type YearSchedule = {
+export type LegacyYearSchedule = {
   year: number;
   links?: { label: string; url: string }[];
   months: Partial<Record<MonthKey, string>>;
 };
 
-export const HORARIOS: YearSchedule[] = [
+export type YearSchedule = {
+  year: number;
+  links?: { label: string; url: string }[];
+  months: Partial<Record<MonthKey, ScheduleMonthLink>>;
+};
+
+export const HORARIOS: LegacyYearSchedule[] = [
   {
     year: 2026,
     /* links: [

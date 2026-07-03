@@ -101,9 +101,9 @@ export default function HorariosClient({ horarios }: HorariosClientProps) {
         : String(item.year).includes(normalizedQuery);
 
       const monthMatch = parsedQuery.month
-        ? Boolean(item.months[parsedQuery.month])
+        ? Boolean(item.months[parsedQuery.month]?.url)
         : MONTHS.some((month) => {
-            const url = item.months[month];
+            const url = item.months[month]?.url;
             if (!url) return false;
             const label = MONTH_LABELS[month].toLowerCase();
             return (
@@ -257,7 +257,8 @@ export default function HorariosClient({ horarios }: HorariosClientProps) {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {(matchedMonths.length > 0 ? matchedMonths : MONTHS).map(
               (month) => {
-                const url = active?.months?.[month];
+                const entry = active?.months?.[month];
+                const url = entry?.url;
                 if (url) {
                   return (
                     <a
@@ -273,6 +274,11 @@ export default function HorariosClient({ horarios }: HorariosClientProps) {
                       <span className="mt-1 block text-lg font-semibold text-[#1f4c57]">
                         {month}
                       </span>
+                      {entry.version > 1 ? (
+                        <span className="mt-1 inline-flex rounded-full bg-[#e7f0f2] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#2b5d68]">
+                          v{entry.version}
+                        </span>
+                      ) : null}
                       <span className="mt-2 inline-flex items-center text-xs font-semibold text-[#2b5d68]">
                         Abrir PDF
                         <svg

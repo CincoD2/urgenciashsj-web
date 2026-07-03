@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { MONTH_LABELS } from '@/lib/horariosData';
@@ -10,6 +10,7 @@ import type { ScheduleActionState } from './actions';
 
 type AdminHorariosManagerProps = {
   rows: ScheduleRow[];
+  totalRows: number;
   source: 'database' | 'static' | 'empty';
   staticCount: number;
   createScheduleEntry: (
@@ -24,7 +25,10 @@ type AdminHorariosManagerProps = {
     state: ScheduleActionState,
     formData: FormData
   ) => Promise<ScheduleActionState>;
-  importStaticHorarios: () => Promise<ScheduleActionState>;
+  importStaticHorarios: (
+    state: ScheduleActionState,
+    formData: FormData
+  ) => Promise<ScheduleActionState>;
 };
 
 const currentYear = new Date().getFullYear();
@@ -47,19 +51,31 @@ function Feedback({ state }: { state: ScheduleActionState }) {
   );
 }
 
-function SubmitButton({
+function Button({
   idleLabel,
   pendingLabel,
-  className,
+  tone = 'dark',
 }: {
   idleLabel: string;
   pendingLabel: string;
-  className: string;
+  tone?: 'dark' | 'rose' | 'amber' | 'neutral';
 }) {
   const { pending } = useFormStatus();
+  const toneClass =
+    tone === 'rose'
+      ? 'bg-rose-600 text-white'
+      : tone === 'amber'
+        ? 'bg-amber-700 text-white'
+        : tone === 'neutral'
+          ? 'bg-neutral-200 text-neutral-700'
+          : 'bg-neutral-900 text-white';
 
   return (
-    <button type="submit" disabled={pending} className={`${className} disabled:opacity-60`}>
+    <button
+      type="submit"
+      disabled={pending}
+      className={`inline-flex min-w-[88px] items-center justify-center rounded-md px-3 py-1 text-xs font-semibold whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60 ${toneClass}`}
+    >
       {pending ? pendingLabel : idleLabel}
     </button>
   );
@@ -104,11 +120,9 @@ function CreateScheduleForm({
           required
           className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
         />
-        <SubmitButton
-          idleLabel="Añadir"
-          pendingLabel="Guardando..."
-          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-semibold text-white"
-        />
+        <div className="flex items-center">
+          <Button idleLabel="Añadir" pendingLabel="Guardando..." />
+        </div>
       </div>
       <Feedback state={state} />
     </form>
@@ -124,11 +138,7 @@ function ImportStaticForm({
 
   return (
     <form action={formAction} className="mt-4 space-y-3">
-      <SubmitButton
-        idleLabel="Importar catálogo actual"
-        pendingLabel="Importando..."
-        className="rounded-md bg-amber-700 px-4 py-2 text-sm font-semibold text-white"
-      />
+      <Button idleLabel="Importar catálogo actual" pendingLabel="Importando..." tone="amber" />
       <Feedback state={state} />
     </form>
   );
@@ -137,11 +147,19 @@ function ImportStaticForm({
 function UpdateScheduleForm({
   row,
   updateScheduleEntry,
+  onCancel,
 }: {
   row: ScheduleRow;
   updateScheduleEntry: AdminHorariosManagerProps['updateScheduleEntry'];
+  onCancel: () => void;
 }) {
   const [state, formAction] = useActionState(updateScheduleEntry, initialState);
+
+  useEffect(() => {
+    if (state.ok) {
+      onCancel();
+    }
+  }, [onCancel, state.ok]);
 
   return (
     <form action={formAction} className="space-y-2">
@@ -149,6 +167,7 @@ function UpdateScheduleForm({
         <input type="hidden" name="entryId" value={row.id} />
         <input type="hidden" name="year" value={row.year} />
         <input type="hidden" name="month" value={row.month} />
+        <input type="hidden" name="version" value={row.version} />
         <input
           type="url"
           name="url"
@@ -156,11 +175,14 @@ function UpdateScheduleForm({
           required
           className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
         />
-        <SubmitButton
-          idleLabel="Guardar"
-          pendingLabel="Guardando..."
-          className="rounded-md bg-neutral-900 px-3 py-2 text-xs font-semibold text-white"
-        />
+        <Button idleLabel="Guardar" pendingLabel="Guardando..." />
+        <button
+          type="button"
+          onClick={onCancel}
+          className="inline-flex min-w-[88px] items-center justify-center rounded-md bg-neutral-200 px-3 py-1 text-xs font-semibold whitespace-nowrap text-neutral-700"
+        >
+          Cancelar
+        </button>
       </div>
       <Feedback state={state} />
     </form>
@@ -186,11 +208,7 @@ function DeleteScheduleForm({
       className="space-y-2"
     >
       <input type="hidden" name="entryId" value={row.id} />
-      <SubmitButton
-        idleLabel="Eliminar"
-        pendingLabel="Eliminando..."
-        className="rounded-md bg-rose-600 px-3 py-2 text-xs font-semibold text-white"
-      />
+      <Button idleLabel="Eliminar" pendingLabel="Eliminando..." tone="rose" />
       <Feedback state={state} />
     </form>
   );
@@ -198,6 +216,7 @@ function DeleteScheduleForm({
 
 export default function AdminHorariosManager({
   rows,
+  totalRows,
   source,
   staticCount,
   createScheduleEntry,
@@ -206,6 +225,7 @@ export default function AdminHorariosManager({
   importStaticHorarios,
 }: AdminHorariosManagerProps) {
   const isDatabaseSource = source === 'database';
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
@@ -214,8 +234,8 @@ export default function AdminHorariosManager({
           <div>
             <h2 className="text-lg font-semibold text-neutral-900">Nuevo horario</h2>
             <p className="mt-1 text-sm text-neutral-600">
-              Añade un PDF mensual sin tocar código. El enlace se puede editar abajo; si necesitas
-              cambiar año o mes, elimina el registro y créalo de nuevo.
+              Añade un PDF mensual sin tocar código. Si ese mes ya existe, se guardará como una
+              nueva versión.
             </p>
           </div>
           <div
@@ -247,9 +267,9 @@ export default function AdminHorariosManager({
         <div className="border-b border-neutral-100 px-4 py-3">
           <h2 className="text-lg font-semibold text-neutral-900">Horarios existentes</h2>
           <p className="mt-1 text-sm text-neutral-600">
-            {rows.length === 0
+            {totalRows === 0
               ? 'Todavía no hay registros en base de datos.'
-              : `Hay ${rows.length} registros cargados.`}
+              : `Mostrando ${rows.length} de ${totalRows} registros.`}
           </p>
         </div>
 
@@ -258,6 +278,7 @@ export default function AdminHorariosManager({
             <tr>
               <th className="px-4 py-3">Año</th>
               <th className="px-4 py-3">Mes</th>
+              <th className="px-4 py-3">Versión</th>
               <th className="px-4 py-3">Enlace</th>
               <th className="px-4 py-3">Acciones</th>
             </tr>
@@ -265,42 +286,62 @@ export default function AdminHorariosManager({
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-6 text-sm text-neutral-500">
+                <td colSpan={5} className="px-4 py-6 text-sm text-neutral-500">
                   No hay horarios en la base de datos todavía.
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
                 <tr key={row.id} className="border-t border-neutral-100 align-top">
+                  <td className="px-4 py-3 font-medium text-neutral-900">{row.year}</td>
+                  <td className="px-4 py-3 text-neutral-700">{MONTH_LABELS[row.month]}</td>
                   <td className="px-4 py-3">
-                    <span className="font-medium text-neutral-900">{row.year}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-1 text-xs font-semibold text-neutral-700">
+                        v{row.version}
+                      </span>
+                      {row.isLatest ? (
+                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">
+                          Actual
+                        </span>
+                      ) : null}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-neutral-700">{MONTH_LABELS[row.month]}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    {isDatabaseSource ? (
+                    {isDatabaseSource && editingId === row.id ? (
                       <UpdateScheduleForm
                         row={row}
                         updateScheduleEntry={updateScheduleEntry}
+                        onCancel={() => setEditingId(null)}
                       />
                     ) : (
                       <a
                         href={row.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[#1f4c57] underline underline-offset-2"
+                        className="line-clamp-2 text-[#1f4c57] underline underline-offset-2"
                       >
-                        Abrir enlace
+                        {row.url}
                       </a>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     {isDatabaseSource ? (
-                      <DeleteScheduleForm
-                        row={row}
-                        deleteScheduleEntry={deleteScheduleEntry}
-                      />
+                      <div className="flex items-start gap-2">
+                        {editingId === row.id ? null : (
+                          <button
+                            type="button"
+                            onClick={() => setEditingId(row.id)}
+                            className="inline-flex min-w-[88px] items-center justify-center rounded-md bg-neutral-900 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white"
+                          >
+                            Editar
+                          </button>
+                        )}
+                        <DeleteScheduleForm
+                          row={row}
+                          deleteScheduleEntry={deleteScheduleEntry}
+                        />
+                      </div>
                     ) : (
                       <span className="text-xs text-neutral-500">Importa primero para editar</span>
                     )}
