@@ -44,6 +44,54 @@ function getUrlSummary(url: string) {
   }
 }
 
+function SaveIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
+      <path d="M18.437,20.948H5.563a2.372,2.372,0,0,1-2.5-2.21v-11a2.372,2.372,0,0,1,2.5-2.211h.462a.5.5,0,0,1,0,1H5.563a1.38,1.38,0,0,0-1.5,1.211v11a1.38,1.38,0,0,0,1.5,1.21H18.437a1.38,1.38,0,0,0,1.5-1.21v-11a1.38,1.38,0,0,0-1.5-1.211h-.462a.5.5,0,0,1,0-1h.462a2.372,2.372,0,0,1,2.5,2.211v11A2.372,2.372,0,0,1,18.437,20.948Z" />
+      <path d="M15.355,10.592l-3,3a.5.5,0,0,1-.35.15.508.508,0,0,1-.36-.15l-3-3a.5.5,0,0,1,.71-.71l2.14,2.139V3.552a.508.508,0,0,1,.5-.5.5.5,0,0,1,.5.5v8.49l2.15-2.16a.5.5,0,0,1,.71.71Z" />
+    </svg>
+  );
+}
+
+function DeleteIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
+      <path d="M18.437,20.937H5.563a2.5,2.5,0,0,1-2.5-2.5V5.563a2.5,2.5,0,0,1,2.5-2.5H18.437a2.5,2.5,0,0,1,2.5,2.5V18.437A2.5,2.5,0,0,1,18.437,20.937ZM5.563,4.063a1.5,1.5,0,0,0-1.5,1.5V18.437a1.5,1.5,0,0,0,1.5,1.5H18.437a1.5,1.5,0,0,0,1.5-1.5V5.563a1.5,1.5,0,0,0-1.5-1.5Z" />
+      <path d="M13.767,14.477a.5.5,0,0,0,.71-.71L12.707,12l1.77-1.77a.5.5,0,0,0-.71-.7L12,11.3l-1.77-1.77a.5.5,0,0,0-.7.7c.59.59,1.17,1.18,1.77,1.77l-1.77,1.77c-.46.45.25,1.16.7.71L12,12.707Z" />
+    </svg>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
+      <path
+        d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.04 3.02001L8.16 10.9C7.86 11.2 7.56 11.79 7.5 12.22L7.07 15.23C6.91 16.32 7.68 17.08 8.77 16.93L11.78 16.5C12.2 16.44 12.79 16.14 13.1 15.84L20.98 7.96001C22.34 6.60001 22.98 5.02001 20.98 3.02001C18.98 1.02001 17.4 1.66001 16.04 3.02001Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.91 4.1499C15.58 6.5399 17.45 8.4099 19.85 9.0899"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function Feedback({ state }: { state: ScheduleActionState }) {
   if (!state?.message) return null;
 
@@ -61,12 +109,14 @@ function Feedback({ state }: { state: ScheduleActionState }) {
 }
 
 function Button({
-  idleLabel,
+  label,
   pendingLabel,
+  icon,
   tone = 'dark',
 }: {
-  idleLabel: string;
+  label: string;
   pendingLabel: string;
+  icon: React.ReactNode;
   tone?: 'dark' | 'rose' | 'amber' | 'neutral';
 }) {
   const { pending } = useFormStatus();
@@ -83,9 +133,12 @@ function Button({
     <button
       type="submit"
       disabled={pending}
-      className={`inline-flex min-w-[88px] items-center justify-center rounded-md px-3 py-1 text-xs font-semibold whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60 ${toneClass}`}
+      aria-label={pending ? pendingLabel : label}
+      title={label}
+      className={`inline-flex h-9 w-9 items-center justify-center rounded-md text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${toneClass}`}
     >
-      {pending ? pendingLabel : idleLabel}
+      {icon}
+      <span className="sr-only">{pending ? pendingLabel : label}</span>
     </button>
   );
 }
@@ -130,7 +183,7 @@ function CreateScheduleForm({
           className="rounded-md border border-neutral-200 px-3 py-2 text-sm"
         />
         <div className="flex items-center">
-          <Button idleLabel="Añadir" pendingLabel="Guardando..." />
+          <Button label="Añadir horario" pendingLabel="Guardando..." icon={<SaveIcon />} />
         </div>
       </div>
       <Feedback state={state} />
@@ -147,7 +200,12 @@ function ImportStaticForm({
 
   return (
     <form action={formAction} className="mt-4 space-y-3">
-      <Button idleLabel="Importar catálogo actual" pendingLabel="Importando..." tone="amber" />
+      <button
+        type="submit"
+        className="rounded-md bg-amber-700 px-4 py-2 text-sm font-semibold text-white"
+      >
+        Importar catálogo actual
+      </button>
       <Feedback state={state} />
     </form>
   );
@@ -184,11 +242,11 @@ function UpdateScheduleForm({
           required
           className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm"
         />
-        <Button idleLabel="Guardar" pendingLabel="Guardando..." />
+        <Button label="Guardar cambios" pendingLabel="Guardando..." icon={<SaveIcon />} />
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex min-w-[88px] items-center justify-center rounded-md bg-neutral-200 px-3 py-1 text-xs font-semibold whitespace-nowrap text-neutral-700"
+          className="inline-flex h-9 px-3 items-center justify-center rounded-md bg-neutral-200 text-xs font-semibold whitespace-nowrap text-neutral-700"
         >
           Cancelar
         </button>
@@ -217,7 +275,12 @@ function DeleteScheduleForm({
       className="space-y-2"
     >
       <input type="hidden" name="entryId" value={row.id} />
-      <Button idleLabel="Eliminar" pendingLabel="Eliminando..." tone="rose" />
+      <Button
+        label="Eliminar horario"
+        pendingLabel="Eliminando..."
+        tone="rose"
+        icon={<DeleteIcon />}
+      />
       <Feedback state={state} />
     </form>
   );
@@ -346,9 +409,12 @@ export default function AdminHorariosManager({
                           <button
                             type="button"
                             onClick={() => setEditingId(row.id)}
-                            className="inline-flex min-w-[88px] items-center justify-center rounded-md bg-neutral-900 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white"
+                            aria-label="Editar horario"
+                            title="Editar horario"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-neutral-900 text-white"
                           >
-                            Editar
+                            <EditIcon />
+                            <span className="sr-only">Editar horario</span>
                           </button>
                         )}
                         <DeleteScheduleForm
