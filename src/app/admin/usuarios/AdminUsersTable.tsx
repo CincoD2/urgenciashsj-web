@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 
+import { DeleteIcon, SaveIcon } from "@/components/ActionIcons";
+
 type UserRow = {
   id: string;
   name: string | null;
@@ -53,6 +55,9 @@ export default function AdminUsersTable({
     setSelected((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]));
   };
 
+  const iconButtonClass =
+    "inline-flex h-9 w-9 items-center justify-center rounded-md text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
+
   return (
     <section className="overflow-x-auto rounded-2xl border border-neutral-200 bg-white shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100 px-4 py-3">
@@ -78,9 +83,12 @@ export default function AdminUsersTable({
           <button
             type="submit"
             disabled={selected.length === 0}
-            className="rounded-md bg-rose-600 px-3 py-1 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+            aria-label="Eliminar usuarios seleccionados"
+            title="Eliminar usuarios seleccionados"
+            className={`${iconButtonClass} bg-rose-600 text-white`}
           >
-            Eliminar seleccionados
+            <DeleteIcon />
+            <span className="sr-only">Eliminar usuarios seleccionados</span>
           </button>
         </form>
       </div>
@@ -139,8 +147,13 @@ export default function AdminUsersTable({
                       <option value="ADMIN">Administrador</option>
                     </select>
                     {!isProtectedEmail && (
-                      <button className="rounded-md bg-neutral-900 px-3 py-1 text-xs font-semibold text-white">
-                        Guardar
+                      <button
+                        aria-label="Guardar rol"
+                        title="Guardar rol"
+                        className={`${iconButtonClass} border border-[#c9dadd] bg-[#e7f0f2] text-[#1f4c57] shadow-sm hover:border-[#1f4c57]/40 hover:bg-[#f6f9fa]`}
+                      >
+                        <SaveIcon />
+                        <span className="sr-only">Guardar rol</span>
                       </button>
                     )}
                   </form>

@@ -74,10 +74,10 @@ export default async function AdminHorariosPage({
             <Link
               href={currentPage > 1 ? `/admin/horarios?page=${currentPage - 1}` : '/admin/horarios'}
               aria-disabled={currentPage === 1}
-              className={`rounded-md px-3 py-1 font-semibold ${
+              className={`rounded-md px-3 py-1 font-semibold no-underline ${
                 currentPage === 1
                   ? 'pointer-events-none bg-neutral-100 text-neutral-400'
-                  : 'bg-[#1f4c57] text-white'
+                  : 'bg-[#1f4c57] !text-white hover:!text-white'
               }`}
             >
               Anterior
@@ -88,10 +88,10 @@ export default async function AdminHorariosPage({
             <Link
               href={`/admin/horarios?page=${currentPage + 1}`}
               aria-disabled={currentPage >= totalPages}
-              className={`rounded-md px-3 py-1 font-semibold ${
+              className={`rounded-md px-3 py-1 font-semibold no-underline ${
                 currentPage >= totalPages
                   ? 'pointer-events-none bg-neutral-100 text-neutral-400'
-                  : 'bg-[#1f4c57] text-white'
+                  : 'bg-[#1f4c57] !text-white hover:!text-white'
               }`}
             >
               Siguiente

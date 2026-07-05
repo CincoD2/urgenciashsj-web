@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
+import { SaveIcon } from '@/components/ActionIcons';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
@@ -83,8 +84,13 @@ export default async function AdminUsersPage() {
             />
           </label>
           <div className="flex items-end">
-            <button className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-semibold text-white">
-              Guardar
+            <button
+              aria-label="Guardar configuración"
+              title="Guardar configuración"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#c9dadd] bg-[#e7f0f2] text-[#1f4c57] shadow-sm transition hover:border-[#1f4c57]/40 hover:bg-[#f6f9fa]"
+            >
+              <SaveIcon />
+              <span className="sr-only">Guardar configuración</span>
             </button>
           </div>
         </form>
