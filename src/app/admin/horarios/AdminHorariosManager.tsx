@@ -75,7 +75,7 @@ function Button({
   const { pending } = useFormStatus();
   const toneClass =
     tone === 'rose'
-      ? 'bg-rose-600 text-white'
+      ? 'border border-rose-200 bg-rose-50 text-rose-700 shadow-sm hover:border-rose-300 hover:bg-rose-100'
       : tone === 'amber'
         ? 'bg-amber-700 text-white'
         : tone === 'brandSoft'
@@ -397,7 +397,7 @@ export default function AdminHorariosManager({
                             onClick={() => setEditingId(row.id)}
                             aria-label="Editar horario"
                             title="Editar horario"
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-neutral-900 text-white"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#c9dadd] bg-[#e7f0f2] text-[#1f4c57] shadow-sm transition hover:border-[#1f4c57]/40 hover:bg-[#f6f9fa]"
                           >
                             <EditIcon />
                             <span className="sr-only">Editar horario</span>
