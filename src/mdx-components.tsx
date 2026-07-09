@@ -14,6 +14,9 @@ import { Callout } from '@/components/mdx/Callout';
 import { MdxImage } from '@/components/mdx/MdxImage';
 import { LinkChip, LinkChips } from '@/components/mdx/LinkChips';
 import { ScaleModalChips } from '@/components/mdx/ScaleModalChips';
+import { ProtocolSectionNav } from '@/components/mdx/ProtocolSectionNav';
+import { ProtocolAccordion } from '@/components/mdx/ProtocolAccordion';
+import { ProtocolChecklistSheet } from '@/components/mdx/ProtocolChecklistSheet';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -32,6 +35,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     LinkChip,
     LinkChips,
     ScaleModalChips,
+    ProtocolSectionNav,
+    ProtocolAccordion,
+    ProtocolChecklistSheet,
     Image: MdxImage,
     ...components,
   };

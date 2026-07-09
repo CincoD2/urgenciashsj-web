@@ -1,0 +1,625 @@
+---
+title: 'Fibrilación Auricular en Urgencias'
+description: 'Resumen operativo del desarrollo del protocolo de fibrilación auricular del Hospital de San Juan para consulta rápida en Urgencias. Prioriza la decisión inicial, la anticoagulación, el control de frecuencia, la cardioversión y los criterios prácticos de ingreso o alta.'
+date: '2026-07-07'
+pdf: 'https://itcsan.cs.san.gva.es/doc-intranet/f/1346'
+tags:
+  [
+    'Fibrilación auricular',
+    'FA',
+    'FA rápida',
+    'Respuesta ventricular rápida',
+    'RVR',
+    'Arritmias',
+    'Urgencias',
+    'Cardioversión',
+    'Cardioversión eléctrica',
+    'Cardioversión farmacológica',
+    'Anticoagulación',
+    'CHA2DS2-VASc',
+    'CHA2DS2VASc',
+    'CHA2DS2-VA',
+    'CHA2DS2VA',
+    'HAS-BLED',
+    'HASBLED',
+    'SAMe-TT2R2',
+    'SAMeTT2R2',
+    'Control de frecuencia',
+    'Control de frecuencia ventricular',
+    'Control de ritmo',
+    'Vernakalant',
+    'Flecainida',
+    'Amiodarona',
+    'ACOD',
+  ]
+---
+
+<Warning>Resumen basado en el protocolo FA en Urgencias (v202307). No sustituye al PDF.</Warning>
+
+<ScaleModalChips
+  title="Escalas relacionadas:"
+  items={[
+    { href: '/escalas/cha2ds2va', label: 'CHA2DS2-VA' },
+    { href: '/escalas/hasbled', label: 'HAS-BLED' },
+  ]}
+/>
+
+<div className="not-prose my-6 flex justify-center">
+  <Image
+    src="/img/fa/Algoritmo protocolo FA.svg"
+    alt="Algoritmo del protocolo de fibrilación auricular en Urgencias"
+    width={1200}
+    height={1600}
+    caption=""
+  />
+</div>
+
+<ProtocolSectionNav
+  title="Pasos"
+  columns={5}
+  items={[
+    {
+      href: '#valoracion-inicial',
+      eyebrow: 'Paso 1',
+      label: 'Valoración inicial',
+      description: 'Diferencia inestabilidad hemodinámica de FA estable y corrige desencadenantes.',
+    },
+    {
+      href: '#anticoagulacion',
+      eyebrow: 'Paso 2',
+      label: 'Anticoagulación',
+      description: 'Calcula riesgo embólico y hemorrágico; decide ACOD, AVK o contraindicación.',
+    },
+    {
+      href: '#frecuencia',
+      eyebrow: 'Paso 3a',
+      label: 'Control de frecuencia',
+      description: 'Elige frenadores según FEVI, insuficiencia cardiaca y situación crítica.',
+    },
+    {
+      href: '#ritmo',
+      eyebrow: 'Paso 3b',
+      label: 'Control del ritmo',
+      description: 'Decide si intentar CV, cuál y con qué condiciones de seguridad tromboembólica.',
+    },
+    {
+      href: '#alta',
+      eyebrow: 'Paso 4',
+      label: 'Alta',
+      description: 'Criterios de ingreso, alta y puntos que no deberían salir sin resolver.',
+    },
+  ]}
+/>
+
+<ProtocolSectionNav
+  title="Extras"
+  columns={2}
+  items={[
+    {
+      href: '#consideraciones',
+      eyebrow: 'Extras',
+      label: 'Consideraciones',
+      description: 'SCA, ictus/AIT, HIC y embarazo condensados en conducta práctica.',
+    },
+    {
+      href: '#checklist',
+      eyebrow: 'Cierre',
+      label: 'Checklist',
+      description: 'Repaso final de seguridad y de cierre del episodio en Urgencias.',
+    },
+  ]}
+/>
+
+<ProtocolAccordion
+  id="valoracion-inicial"
+  title="Paso 1: Valoración inicial"
+  summary="Define si hay inestabilidad hemodinámica y corrige desencadenantes antes de afinar la estrategia."
+  defaultOpen
+>
+  <BoxGrid>
+    <Box title="Paciente inestable">
+      Inestabilidad hemodinámica con <strong>disfunción orgánica y riesgo vital inmediato</strong>:
+      cardioversión eléctrica sincronizada <strong>sin demora</strong>.
+    </Box>
+    <Box title="Paciente estable">
+      Antes de encasillarlo en frecuencia o ritmo, revisa <strong>factores desencadenantes</strong> y
+      trátalos: infección, hipovolemia, anemia, isquemia, tirotoxicosis, alteraciones
+      hidroelectrolíticas o dolor.
+    </Box>
+  </BoxGrid>
+
+  <Callout type="danger" title="Regla de oro">
+    En la FA inestable el protocolo no plantea una secuencia larga de pruebas: la prioridad es la
+    <strong> cardioversión eléctrica sincronizada</strong>.
+  </Callout>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="anticoagulacion"
+  title="Paso 2: Anticoagulación"
+  summary="Riesgo embólico, riesgo hemorrágico y elección práctica entre AVK y ACOD."
+>
+  <Note>
+    El protocolo original usa <strong>CHA2DS2-VASc</strong>. En la web está disponible la
+    calculadora <a href="/escalas/cha2ds2va"><strong>CHA2DS2-VA</strong></a>, alineada con guías
+    ESC más recientes y sin el punto por sexo femenino; tenlo en cuenta si quieres seguir
+    literalmente el documento de 2023.
+  </Note>
+
+<BoxGrid>
+  <Box title="Quién se beneficia de ACO">
+    <strong>Hombres &gt; 1 punto</strong> y <strong>mujeres &gt; 2 puntos</strong>. La indicación
+    fuerte aparece en <strong>hombres ≥ 2</strong> y <strong>mujeres ≥ 3</strong>.
+  </Box>
+  <Box title="Lo que no sirve">
+    Los <strong>antiagregantes</strong> no reducen el riesgo embólico en FA y sí aumentan el riesgo
+    hemorrágico.
+  </Box>
+  <Box title="Riesgo hemorrágico">
+    La escala{' '}
+    <a href="/escalas/hasbled">
+      <strong>HAS-BLED</strong>
+    </a>{' '}
+    con <strong>≥ 3 puntos</strong> implica riesgo hemorrágico alto y seguimiento más estrecho; no
+    equivale automáticamente a contraindicar anticoagulación.
+  </Box>
+  <Box title="Contraindicaciones absolutas relevantes">
+    Hemorragia activa grave, <strong>plaquetas &lt; 50.000</strong>, anemia grave en estudio o
+    <strong> HIC reciente</strong>.
+  </Box>
+</BoxGrid>
+
+### Elegir el tipo de anticoagulación
+
+<DataTable
+  headers={['Escenario', 'Conducta práctica']}
+  rows={[
+    [
+      {
+        content: 'Válvula mecánica o estenosis mitral moderada/grave',
+        className: 'bg-[#e9f1f3] font-semibold',
+      },
+      'Preferir AVK. Los ACOD no son la opción de referencia en este contexto.',
+    ],
+    [
+      { content: 'FA no valvular habitual', className: 'bg-[#f8fafc] font-semibold' },
+      'Preferir ACOD por mejor balance eficacia/seguridad y manejo más sencillo.',
+    ],
+    [
+      { content: 'Mala probabilidad de buen TRT con AVK', className: 'bg-[#e9f1f3] font-semibold' },
+      'Usa SAMe-TT2R2: si > 2, refuerza seguimiento del INR y revalora si un ACOD encaja mejor.',
+    ],
+    [
+      {
+        content: 'Dabigatrán con sangrado vital o procedimiento urgente no demorable',
+        className: 'bg-[#f8fafc] font-semibold',
+      },
+      'Puede revertirse con idarucizumab 5 g IV.',
+    ],
+  ]}
+/>
+
+### Dosis útiles de ACOD para la guardia
+
+  <DataTable
+    headers={['Fármaco', 'Dosis estándar', 'Cuándo reducir', 'Evitar']}
+    rows={[
+      [
+        { content: 'Dabigatrán', className: 'bg-[#e9f1f3] font-semibold' },
+        '150 mg/12 h',
+        '110 mg/12 h si edad > 80 a, verapamilo o riesgo hemorrágico alto',
+        'ClCr < 30 ml/min',
+      ],
+      [
+        { content: 'Rivaroxaban', className: 'bg-[#f8fafc] font-semibold' },
+        '20 mg/24 h',
+        '15 mg/24 h si ClCr 15-49 ml/min',
+        'ClCr < 15 ml/min',
+      ],
+      [
+        { content: 'Apixaban', className: 'bg-[#e9f1f3] font-semibold' },
+        '5 mg/12 h',
+        '2,5 mg/12 h si cumple al menos 2: edad ≥ 80 a, peso ≤ 60 kg, Cr ≥ 1,5 mg/dl',
+        'ClCr < 15 ml/min',
+      ],
+      [
+        { content: 'Edoxaban', className: 'bg-[#f8fafc] font-semibold' },
+        '60 mg/24 h',
+        '30 mg/24 h si ClCr 15-50 ml/min, peso ≤ 60 kg o uso de dronedarona/ciclosporina/eritromicina/ketoconazol',
+        'ClCr < 15 ml/min',
+      ],
+    ]}
+  />
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="frecuencia"
+  title="Paso 3a: Control de frecuencia"
+  summary="Elige frenadores del nodo AV según FEVI, insuficiencia cardiaca y estado clínico."
+>
+  <BoxGrid>
+    <Box title="FEVI ≥ 40%">
+      Primera línea con <strong>betabloqueantes</strong> o <strong>verapamilo/diltiazem</strong>.
+    </Box>
+    <Box title="FEVI < 40%">
+      Prioriza <strong>betabloqueantes</strong> y <strong>digoxina</strong>.
+      La <strong>amiodarona</strong> queda como
+      último recurso si la FE está muy deprimida o el paciente está crítico.
+    </Box>
+  </BoxGrid>
+
+<DataTable
+  headers={['Fármaco', 'Pauta IV del protocolo', 'Inicio', 'Puntos de seguridad']}
+  rows={[
+    [
+      { content: 'Atenolol', className: 'bg-[#e9f1f3] font-semibold' },
+      '2,5 mg IV en bolo lento, hasta 4 dosis',
+      '< 5 min',
+      'Evitar en insuficiencia cardiaca aguda o antecedente de broncoespasmo grave.',
+    ],
+    [
+      { content: 'Esmolol', className: 'bg-[#f8fafc] font-semibold' },
+      '500 mcg/kg en bolo + 50-300 mcg/kg/min',
+      '< 1 min',
+      'Útil si quieres titulación rápida.',
+    ],
+    [
+      { content: 'Verapamilo', className: 'bg-[#e9f1f3] font-semibold' },
+      '2,5-10 mg IV en bolo',
+      '3-5 min',
+      'Contraindicado en IC-FEr. Ajustar en IR/IH.',
+    ],
+    [
+      { content: 'Diltiazem', className: 'bg-[#f8fafc] font-semibold' },
+      '0,25 mg/kg IV en bolo + 5-15 mg/h',
+      '2-7 min',
+      'Alternativa útil si FEVI preservada.',
+    ],
+    [
+      { content: 'Digoxina', className: 'bg-[#e9f1f3] font-semibold' },
+      '0,5 mg IV; total 0,75-1,5 mg en 24 h',
+      '> 2 h',
+      'Vigilar función renal; concentraciones altas se asocian a más mortalidad.',
+    ],
+    [
+      { content: 'Amiodarona', className: 'bg-[#f8fafc] font-semibold' },
+      '300 mg en 30 min + 900-1200 mg IV en 20 h',
+      'Variable',
+      'Último recurso en FE muy deprimida o estado crítico; precaución si patología tiroidea.',
+    ],
+  ]}
+/>
+
+  <Callout type="warning" title="Perla práctica">
+    Si sospechas <strong>preexcitación/WPW</strong> o cardiopatía estructural relevante, la balanza
+    del protocolo se desplaza hacia <strong>cardioversión eléctrica</strong> antes que a estrategias
+    farmacológicas complejas.
+  </Callout>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="ritmo"
+  title="Paso 3b: Control del ritmo"
+  summary="Cuándo intentar CV, cuándo hacer CVe y cómo seleccionar la CV farmacológica."
+>
+
+### Cuando merece la pena intentar restaurar ritmo sinusal
+
+<DataTable
+  headers={['A favor de intentar CV', 'Alta probabilidad de recurrencia o bajo rendimiento']}
+  rows={[
+    ['Primer episodio de FA', 'Duración > 1 año'],
+    ['Antecedente de FA paroxística', '≥ 2 CV previas o fracaso de ≥ 2 antiarrítmicos'],
+    ['FA secundaria a causa transitoria o corregible', 'Recaída precoz < 1 mes'],
+    ['FA muy sintomática', 'Valvulopatía mitral'],
+    ['Elección del paciente', 'Aurícula izquierda > 55 mm o rechazo del paciente'],
+  ]}
+/>
+
+<BoxGrid>
+  <Box title="Cardioversión segura">
+    La CV se considera segura si la FA dura <strong>&lt; 48 h</strong> (ideal{' '}
+    <strong>&lt; 12 h</strong>), si el paciente ha estado{' '}
+    <strong>bien anticoagulado 3 semanas</strong> o si un ETE descarta trombo en aurícula izquierda.
+  </Box>
+  <Box title="Si no sabes la duración">
+    Trata el episodio como una FA de <strong>más de 12-24 h</strong> y sé más estricto con la
+    estrategia antitrombótica.
+  </Box>
+</BoxGrid>
+
+### Cardioversión eléctrica
+
+<Checklist
+  items={[
+    { text: 'Es la técnica de elección en la FA inestable.' },
+    { text: 'También es muy buena primera opción si hay cardiopatía estructural o WPW.' },
+    { text: 'Usar descarga bifásica sincronizada con energía máxima fija.' },
+    { text: 'Colocar electrodos en posición anteroposterior.' },
+    { text: 'Sedación IV: midazolam o propofol; analgesia con fentanilo.' },
+  ]}
+/>
+
+<DataTable
+  headers={['Fármaco', 'Dosis del protocolo', 'Inicio', 'Duración']}
+  rows={[
+    [
+      { content: 'Midazolam', className: 'bg-[#e9f1f3] font-semibold' },
+      '0,1 mg/kg IV',
+      '3-5 min',
+      '15-30 min',
+    ],
+    [
+      { content: 'Propofol', className: 'bg-[#f8fafc] font-semibold' },
+      '2 mg/kg IV',
+      '15-45 s',
+      '5-8 min',
+    ],
+    [
+      { content: 'Fentanilo', className: 'bg-[#e9f1f3] font-semibold' },
+      '1 mcg/kg IV',
+      '30-60 s',
+      '1-15 min',
+    ],
+  ]}
+/>
+
+### Cardioversión farmacológica
+
+<DataTable
+  headers={['Escenario', 'Fármaco preferente', 'Claves operativas']}
+  rows={[
+    [
+      { content: 'Sin cardiopatía estructural', className: 'bg-[#e9f1f3] font-semibold' },
+      'Flecainida',
+      'Muy eficaz y rápida. Si falla, plantear CVe antes de 48 h.',
+    ],
+    [
+      { content: 'Con cardiopatía estructural', className: 'bg-[#f8fafc] font-semibold' },
+      'Vernakalant',
+      'Rápido y seguro salvo hipotensión, SCA reciente, IC III-IV, estenosis aórtica grave o QT largo.',
+    ],
+    [
+      {
+        content: 'Si vernakalant no encaja o prevés ingreso/observación',
+        className: 'bg-[#e9f1f3] font-semibold',
+      },
+      'Amiodarona',
+      'Más lenta; útil si hay cardiopatía estructural, IC avanzada o estenosis aórtica grave.',
+    ],
+  ]}
+/>
+
+<DataTable
+  headers={['Fármaco', 'Dosis inicial', 'Extras', 'Evitar o vigilar']}
+  rows={[
+    [
+      { content: 'Flecainida', className: 'bg-[#e9f1f3] font-semibold' },
+      '200-300 mg VO o 2 mg/kg IV en 10 min (max 150 mg)',
+      'Eficacia 60-78%; buena respuesta precoz',
+      'No usar en cardiopatía isquémica o estructural significativa. Riesgo de flutter 1:1.',
+    ],
+    [
+      { content: 'Vernakalant', className: 'bg-[#f8fafc] font-semibold' },
+      '3 mg/kg IV en 10 min',
+      'Puede repetirse 2 mg/kg IV a los 15 min',
+      'Contraindicado si TAS < 100, SCA en el último mes, IC III-IV, estenosis aórtica grave o QT largo.',
+    ],
+    [
+      { content: 'Amiodarona', className: 'bg-[#e9f1f3] font-semibold' },
+      '300 mg IV en 15 min',
+      'Luego 50 mg/h, max 1,2 g en 24 h; o perfusión 900 mg en 250 ml de G5% en 8 h',
+      'Vigilar toxicidad tiroidea y que el efecto puede tardar horas o días.',
+    ],
+  ]}
+/>
+
+<Warning>
+  Si un antiarrítmico falla, el protocolo recomienda <strong>no encadenar otro</strong> como norma
+  general. Si hay síndrome de preexcitación, los antiarrítmicos están contraindicados, incluida la
+  amiodarona: mejor <strong>CVe</strong>.
+</Warning>
+
+### Anticoagulación tras restaurar ritmo sinusal
+
+<BoxGrid>
+  <Box title="Regla corta">
+    Tras una CVe, CVf o conversión espontánea de un episodio de <strong>12 h o más</strong>, la
+    tendencia embolígena aumenta y suele requerir <strong>ACO al menos 4 semanas</strong>.
+  </Box>
+  <Box title="Escenario de más riesgo">
+    Si la FA dura <strong>&gt; 48 h</strong>, el tiempo es indeterminado, existe valvulopatía mitral o
+    antecedentes de embolia arterial, anticoagula <strong>3 semanas antes</strong> y al menos
+    <strong> 4 semanas después</strong>.
+  </Box>
+</BoxGrid>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="alta"
+  title="Paso 4: Alta"
+  summary="Qué pacientes deberían ingresar y qué condiciones mínimas dejar cerradas al alta."
+>
+  <DataTable
+    headers={['Ingresar si...', 'Alta si...']}
+    rows={[
+      [
+        'Inestabilidad hemodinámica inicial, angina grave, insuficiencia cardiaca o tromboembolia arterial atribuible a la FA.',
+        'No hay criterios de ingreso y dejas plan de control, anticoagulación y seguimiento por Cardiología.',
+      ],
+      [
+        'Mal control de respuesta ventricular o de síntomas pese al tratamiento.',
+        'Se ha descartado situación de alto riesgo inmediato y el paciente queda con reevaluación estructurada.',
+      ],
+      [
+        'Conversión a flutter por el tratamiento farmacológico o riesgo proarrítmico relevante.',
+        'La reevaluación ecocardiográfica y el manejo crónico pueden hacerse en consultas externas.',
+      ],
+    ]}
+  />
+
+  <Tip>
+    El bloque <strong>C</strong> de la estrategia ABC (factores de riesgo cardiovascular y
+    comorbilidades) es importante, pero el propio protocolo lo deja sobre todo para seguimiento
+    crónico desde Primaria o Cardiología.
+  </Tip>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="consideraciones"
+  title="Consideraciones"
+  summary="SCA, ictus/AIT, HIC y embarazo en formato de conducta rápida."
+>
+  <BoxGrid>
+    <Box title="Síndrome coronario agudo">
+      Si un paciente anticoagulado por FA va a ICP primaria urgente, antiagrega con
+      <strong> AAS + clopidogrel</strong>. Tras SCA con ICP: <strong>ACO + clopidogrel</strong>
+      durante 12 meses; en SCC, durante 6 meses.
+    </Box>
+    <Box title="Ictus isquémico o AIT">
+      Trombólisis si AVK con <strong>INR ≤ 1,7</strong>. Si toma ACOD, suele exigirse
+      <strong> 48 h desde la última dosis</strong> con función renal normal. Con dabigatrán puede
+      revertirse con idarucizumab.
+    </Box>
+    <Box title="Hemorragia intracraneal">
+      La reintroducción de anticoagulación se plantea tras valoración multidisciplinar, de forma
+      orientativa <strong>después de 4 semanas</strong>. Si el riesgo de recurrencia es muy alto,
+      valorar cierre de orejuela.
+    </Box>
+    <Box title="Embarazo">
+      Anticoagula con <strong>HBPM o AVK</strong> según trimestre. Para frecuencia, preferir
+      <strong> metoprolol o bisoprolol</strong>; si no basta, digoxina o verapamilo. La estrategia
+      de ritmo preferida es la <strong>CVe</strong>.
+    </Box>
+  </BoxGrid>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="checklist"
+  title="Checklist"
+  summary="Checklist real del Anexo 2 para cardioversión eléctrica."
+>
+  <ProtocolChecklistSheet
+    badge="Anexo 2 • Cardioversión eléctrica"
+    title="Checklist para la CVe"
+    subtitle={
+      <>
+        Adaptado del <strong>Anexo 2: Checklist para la cardioversión eléctrica</strong> del
+        protocolo.
+      </>
+    }
+    sections={[
+      {
+        title: 'Al entrar en el box de críticos',
+        tone: 'default',
+        items: [
+          { text: 'Confirmar identidad del paciente.' },
+          { text: 'Consentimiento informado firmado, si procede.' },
+          { text: 'ECG de 12 derivaciones realizado.' },
+          { text: 'Alergias revisadas.' },
+          { text: 'Material de intubación y reanimación disponible.' },
+          { text: 'Monitor-desfibrilador conectado, funcional y visible.' },
+          { text: 'Pulsioxímetro conectado y captando bien.' },
+          { text: 'Parches o palas accesibles y correctamente conectados.' },
+          { text: 'Retirar prótesis dentales y objetos del tórax.' },
+          { text: 'Comprobar acceso venoso.' },
+          { text: 'Preoxigenar al paciente.' },
+          { text: 'Valorar riesgo de aspiración (6 h desde última ingesta).' },
+          { text: 'Valorar necesidad de heparina.' },
+          { text: 'Medicación preparada: sedoanalgesia, atropina y adrenalina.' },
+          { text: 'Equipo completo presente: médico, enfermería y auxiliar.' },
+          { text: 'Comprobar que el monitor tiene papel.' },
+          { text: 'Ajustar parámetros del monitor, energía y modo sincrónico.' },
+          { text: 'Confirmar que enfermería no tiene dudas con la medicación.' },
+          { text: 'Valorar existencia de marcapasos o DAI.' },
+          { text: 'Colocar correctamente parches o palas.' },
+        ],
+      },
+      {
+        title: 'En el momento de la cardioversión',
+        tone: 'warning',
+        items: [
+          { text: 'Monitor en modo sincrónico.' },
+          { text: 'Comprobar que la sedación es adecuada.' },
+          { text: 'Desconectar el oxígeno.' },
+          { text: 'Mantener visible el monitor.' },
+          { text: 'Avisar y comprobar que todo el personal está separado de la camilla.' },
+          { text: 'Registrar cardioversión y ritmo de salida.' },
+        ],
+      },
+      {
+        title: 'Tras la cardioversión',
+        tone: 'success',
+        items: [
+          { text: 'Repetir ECG de 12 derivaciones.' },
+          { text: 'Confirmar recuperación del nivel de conciencia.' },
+          { text: 'Registrar constantes hemodinámicas.' },
+          { text: 'Anotar en la historia clínica el número de descargas y el nivel de energía.' },
+          { text: 'Informar a familiares del resultado del procedimiento.' },
+        ],
+      },
+    ]}
+    procedureTitle="Procedimiento recomendado para CVe"
+    procedureSteps={[
+      'Comprobar indicación para realizar la CVE.',
+      'Explicar al paciente el procedimiento. Riesgos y beneficios.',
+      'Firmar el consentimiento informado (si no estamos ante una emergencia).',
+      'Pre oxigenar al paciente (VMK 50%).',
+      'Comprobar buen funcionamiento de acceso venoso.',
+      'Control de constantes. Monitorización con monitor desfibrilador.',
+      'Obtener una tira de ritmo inicial (basal).',
+      'Asegurar disponibilidad de material de reanimación y aspiración.',
+      'Comprobar en monitor frecuencia cardíaca, ritmo cardiaco y adecuar derivación para la visualización óptima del trazado.',
+      'Administrar medicación: sedo analgesia (tabla).',
+      'Aplicar parches al paciente o gel a las palas.',
+      <span key="sync-mode-step">
+        Presionar <strong>MODO SINCRÓNICO</strong> en el desfibrilador. Confirmar en pantalla.
+      </span>,
+      'Elegir energía (se recomienda máxima energía en modo bifásico).',
+      'Presionar CHARGE y esperar sonido de confirmación.',
+      'Registrar tira de ritmo.',
+      'Aplicar palas con gel sobre el paciente.',
+      'Decir en voz alta “TODOS FUERA” y confirmar visualmente que no hay contactos con el paciente, la cama y el equipo.',
+      'Confirmar inmediatamente antes de la descarga el ritmo cardíaco.',
+      'Presionar simultáneamente los dos botones de las palas para realizar descarga o el botón número 3 del desfibrilador.',
+      'Comprobar pulso y ritmo cardíaco.',
+      <span key="sync-warning-step">
+        Si no ha sido efectivo: repetir pasos 11 al 19. Tras cada descarga el monitor desfibrilador{' '}
+        <strong>desactiva el modo SYNC.</strong>
+      </span>,
+      'Realizar ECG de 12 derivaciones.',
+      'Aplicar crema hidratante o para quemaduras en la zona de apoyo de las palas para reducir posible quemadura.',
+      'Completar historia clínica. Adjuntar ECG y tiras de ritmo.',
+      'Limpiar equipo, eliminar desechables, reponer material.',
+    ]}
+    medicationsTitle="Fármacos más utilizados en la cardioversión eléctrica"
+    medications={[
+      { drug: 'MIDAZOLAM', dose: '0,1 mg/kg', onset: '3 min' },
+      { drug: 'PROPOFOL', dose: '1-2,5 mg/kg', onset: '1 min' },
+      { drug: 'FENTANILO', dose: '1 mcg/kg', onset: '30-60 seg' },
+    ]}
+    notes={[
+      {
+        title: 'Colocación de palas o parches',
+        body: (
+          <>
+            Infraclavicular derecha paraesternal y ápex, o bien infraclavicular izquierda
+            paraesternal con infraescapular izquierdo. Si hay marcapasos o DAI, colocar la pala al
+            menos a 8 cm del generador; se recomienda posición anteroposterior e interrogar el
+            dispositivo tras la CVe.
+          </>
+        ),
+      },
+      {
+        title: 'Observación posterior',
+        body: (
+          <>
+            Tras la cardioversión eléctrica, mantener al paciente en observación durante{' '}
+            <strong>2 horas</strong>, preferiblemente monitorizado y con pulsioximetría hasta
+            recuperar el nivel normal de conciencia.
+          </>
+        ),
+      },
+    ]}
+  />
+</ProtocolAccordion>
