@@ -25,6 +25,11 @@ type InfoCard = {
   body: ReactNode;
 };
 
+type ToolbarLink = {
+  label: string;
+  href: string;
+};
+
 const SHEET_CSS = `
   .pcs-sheet {
     margin: 1.5rem 0;
@@ -79,7 +84,17 @@ const SHEET_CSS = `
     flex-shrink: 0;
   }
 
+  .pcs-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.6rem;
+  }
+
   .pcs-print-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     border-radius: 999px;
     background: linear-gradient(135deg, #3d7684 0%, #2b5d68 100%);
@@ -95,10 +110,37 @@ const SHEET_CSS = `
       filter 150ms ease;
   }
 
-  .pcs-print-button:hover {
+  .pcs-print-button:hover,
+  .pcs-secondary-link:hover {
     transform: translateY(-1px);
     filter: saturate(1.05);
     box-shadow: 0 16px 28px rgba(61, 118, 132, 0.28);
+  }
+
+  .pcs-secondary-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(61, 118, 132, 0.18);
+    background: rgba(255, 255, 255, 0.96);
+    padding: 0.8rem 1rem;
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: #2b5d68;
+    text-decoration: none;
+    box-shadow: 0 10px 20px rgba(61, 118, 132, 0.1);
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease,
+      filter 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .pcs-secondary-link:hover {
+    border-color: rgba(61, 118, 132, 0.34);
+    color: #2b5d68;
+    text-decoration: none;
   }
 
   .pcs-print-help {
@@ -514,6 +556,7 @@ export function ProtocolChecklistSheet({
   medicationsTitle,
   medications,
   notes = [],
+  secondaryAction,
 }: {
   title: string;
   subtitle?: ReactNode;
@@ -524,6 +567,7 @@ export function ProtocolChecklistSheet({
   medicationsTitle?: string;
   medications?: ProcedureMedication[];
   notes?: InfoCard[];
+  secondaryAction?: ToolbarLink;
 }) {
   const [checkedItems, setCheckedItems] = useState(() =>
     sections.map((section) => section.items.map((item) => Boolean(item.checked)))
@@ -617,9 +661,21 @@ export function ProtocolChecklistSheet({
           </div>
 
           <div className="pcs-toolbar">
-            <button type="button" className="pcs-print-button" onClick={handlePrint}>
-              Imprimir / Guardar PDF
-            </button>
+            <div className="pcs-toolbar-actions">
+              {secondaryAction ? (
+                <a
+                  className="pcs-secondary-link"
+                  href={secondaryAction.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {secondaryAction.label}
+                </a>
+              ) : null}
+              <button type="button" className="pcs-print-button" onClick={handlePrint}>
+                Imprimir / Guardar PDF
+              </button>
+            </div>
           </div>
         </div>
 

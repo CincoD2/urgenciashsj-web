@@ -303,7 +303,7 @@ tags:
   summary="Cuándo intentar CV, cuándo hacer CVe y cómo seleccionar la CV farmacológica."
 >
 
-### Cuando merece la pena intentar restaurar ritmo sinusal
+### Cuándo merece la pena intentar restaurar ritmo sinusal
 
 <DataTable
   headers={['A favor de intentar CV', 'Alta probabilidad de recurrencia o bajo rendimiento']}
@@ -508,13 +508,30 @@ tags:
         protocolo.
       </>
     }
+    secondaryAction={{
+      label: 'Consentimiento informado',
+      href: 'https://www.san.gva.es/documents/d/portal-del-paciente/cardioversion-electrica',
+    }}
     sections={[
       {
         title: 'Al entrar en el box de críticos',
         tone: 'default',
         items: [
           { text: 'Confirmar identidad del paciente.' },
-          { text: 'Consentimiento informado firmado, si procede.' },
+          {
+            text: (
+              <>
+                <a
+                  href="https://www.san.gva.es/documents/d/portal-del-paciente/cardioversion-electrica"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Consentimiento informado
+                </a>{' '}
+                firmado, si procede.
+              </>
+            ),
+          },
           { text: 'ECG de 12 derivaciones realizado.' },
           { text: 'Alergias revisadas.' },
           { text: 'Material de intubación y reanimación disponible.' },
@@ -563,7 +580,17 @@ tags:
     procedureSteps={[
       'Comprobar indicación para realizar la CVE.',
       'Explicar al paciente el procedimiento. Riesgos y beneficios.',
-      'Firmar el consentimiento informado (si no estamos ante una emergencia).',
+      <span key="consent-step">
+        Firmar el{' '}
+        <a
+          href="https://www.san.gva.es/documents/d/portal-del-paciente/cardioversion-electrica"
+          target="_blank"
+          rel="noreferrer"
+        >
+          consentimiento informado
+        </a>{' '}
+        (si no estamos ante una emergencia).
+      </span>,
       'Pre oxigenar al paciente (VMK 50%).',
       'Comprobar buen funcionamiento de acceso venoso.',
       'Control de constantes. Monitorización con monitor desfibrilador.',
