@@ -30,8 +30,20 @@ function normalize(text: string) {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
+function normalizeSearchAliases(text: string) {
+  return text
+    .replace(/\bcheck[\s-]*list\b/g, 'checklist')
+    .replace(/\bchek[\s-]*list\b/g, 'checklist')
+    .replace(/\bcheklist\b/g, 'checklist')
+    .replace(/\bcheclist\b/g, 'checklist');
+}
+
+function normalizeForSearch(text: string) {
+  return normalizeSearchAliases(normalize(text));
+}
+
 function tokenize(text: string) {
-  return normalize(text)
+  return normalizeForSearch(text)
     .split(/[^a-z0-9]+/)
     .filter((token) => token.length >= 2);
 }
@@ -787,8 +799,8 @@ function buildSnippet(item: SearchItem, query: string) {
   const source = cleanSnippet(`${item.title} ${item.content}`);
   if (!source) return '';
 
-  const normalizedSource = normalize(source);
-  const matchIndex = normalizedSource.indexOf(query);
+  const searchableSource = normalizeForSearch(source);
+  const matchIndex = searchableSource.indexOf(query);
   if (matchIndex < 0) return source.slice(0, 120);
 
   const start = Math.max(0, matchIndex - 40);
@@ -799,9 +811,9 @@ function buildSnippet(item: SearchItem, query: string) {
 }
 
 function exactMatchScore(item: SearchItem, query: string) {
-  const normalizedTitle = normalize(item.title);
-  const normalizedSnippet = normalize(item.snippet ?? '');
-  const normalizedContent = normalize(item.content);
+  const normalizedTitle = normalizeForSearch(item.title);
+  const normalizedSnippet = normalizeForSearch(item.snippet ?? '');
+  const normalizedContent = normalizeForSearch(item.content);
 
   if (normalizedTitle === query) return 2000;
   if (normalizedTitle.startsWith(query)) return 1400;
@@ -820,12 +832,12 @@ export async function GET(req: Request) {
     return Response.json({ results: [] });
   }
 
-  const query = normalize(q);
+  const query = normalizeForSearch(q);
   const items = [...(await loadAllItems(q)), ...loadTools()];
 
   const results = items
     .map((it) => {
-      const hay = normalize(`${it.title} ${it.content}`);
+      const hay = normalizeForSearch(`${it.title} ${it.content}`);
       const idx = hay.indexOf(query);
       return { it, idx, score: exactMatchScore(it, query) };
     })

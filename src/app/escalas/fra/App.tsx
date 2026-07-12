@@ -47,6 +47,7 @@ function resultTitle(mostLikely: EtiologyAssessment['mostLikely']) {
 export default function FraApp() {
   const [input, setInput] = useState<FraInput>(createDefaultFraInput);
   const assessment = evaluateFraCase(input);
+  const matchedKdigoCriteria = assessment.kdigo.matchedCriteria.filter((criterion) => criterion.matched);
   const prerenalScore =
     assessment.etiology.scores.find((score) => score.bucket === 'prerenal')?.score ?? 0;
   const intrinsicScore =
@@ -97,10 +98,19 @@ export default function FraApp() {
               {assessment.kdigo.hasFra ? 'Cumple criterios de FRA' : 'FRA no confirmado'}
             </div>
             <div className="resultado-subtexto">
-              {assessment.kdigo.stage === 0
-                ? 'No hay estadio KDIGO confirmado con los datos actuales.'
-                : `Estadio KDIGO ${assessment.kdigo.stage}.`}
+              {assessment.kdigo.hasFra
+                ? assessment.kdigo.stage === 0
+                  ? 'Criterios KDIGO positivos con los datos actuales.'
+                  : `Estadio KDIGO ${assessment.kdigo.stage}.`
+                : 'No hay criterios KDIGO confirmados con los datos actuales.'}
             </div>
+          </div>
+
+          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <b>Criterio(s) positivo(s):</b>{' '}
+            {matchedKdigoCriteria.length > 0
+              ? matchedKdigoCriteria.map((criterion) => criterion.label).join(' · ')
+              : 'ninguno con los datos introducidos.'}
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

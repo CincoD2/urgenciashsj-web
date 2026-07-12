@@ -231,6 +231,28 @@ export default function PatientInputForm({ value, onChange }: PatientInputFormPr
     });
   }
 
+  function updateCurrentCreatinine(nextValue: number | null) {
+    onChange({
+      ...value,
+      creatinineCurrentMgDl: nextValue,
+      urineStudies: {
+        ...value.urineStudies,
+        plasmaCreatinineMgDl: nextValue,
+      },
+    });
+  }
+
+  function updatePlasmaCreatinine(nextValue: number | null) {
+    onChange({
+      ...value,
+      creatinineCurrentMgDl: nextValue,
+      urineStudies: {
+        ...value.urineStudies,
+        plasmaCreatinineMgDl: nextValue,
+      },
+    });
+  }
+
   function resetForm() {
     setBaselineUnit('days');
     onChange(createDefaultFraInput());
@@ -320,7 +342,7 @@ export default function PatientInputForm({ value, onChange }: PatientInputFormPr
           <NumberField
             label="Creatinina actual (mg/dl)"
             value={value.creatinineCurrentMgDl}
-            onChange={(next) => updateTopLevel('creatinineCurrentMgDl', next)}
+            onChange={updateCurrentCreatinine}
           />
           <NumberField
             label="Creatinina basal (mg/dl)"
@@ -387,7 +409,7 @@ export default function PatientInputForm({ value, onChange }: PatientInputFormPr
             <NumberField
               label="Creatinina plasma (mg/dl)"
               value={value.urineStudies.plasmaCreatinineMgDl}
-              onChange={(next) => updateUrineField('plasmaCreatinineMgDl', next)}
+              onChange={updatePlasmaCreatinine}
             />
             <NumberField
               label="Creatinina orina (mg/dl)"

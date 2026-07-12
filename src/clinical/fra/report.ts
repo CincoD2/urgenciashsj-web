@@ -54,7 +54,9 @@ export function buildFraReport(assessment: FraAssessment) {
   }
 
   if (positiveCriteria.length > 0) {
-    lines.push(`Criterios: ${positiveCriteria.join('; ')}.`);
+    lines.push(
+      `${positiveCriteria.length === 1 ? 'Criterio positivo' : 'Criterios positivos'}: ${positiveCriteria.join('; ')}.`
+    );
   }
 
   if (kdigo.urine.rateMlKgHour !== null) {
@@ -62,8 +64,10 @@ export function buildFraReport(assessment: FraAssessment) {
   }
 
   const calculationBits: string[] = [];
-  if (etiology.fenaPercent !== null) calculationBits.push(`FeNa ${formatNumber(etiology.fenaPercent)}%`);
-  if (etiology.feUreaPercent !== null) calculationBits.push(`FEUrea ${formatNumber(etiology.feUreaPercent)}%`);
+  if (etiology.fenaPercent !== null)
+    calculationBits.push(`FeNa ${formatNumber(etiology.fenaPercent)}%`);
+  if (etiology.feUreaPercent !== null)
+    calculationBits.push(`FEUrea ${formatNumber(etiology.feUreaPercent)}%`);
   if (etiology.urinePlasmaCreatinineRatio !== null) {
     calculationBits.push(`CrU/CrP ${formatNumber(etiology.urinePlasmaCreatinineRatio)}`);
   }
@@ -72,7 +76,9 @@ export function buildFraReport(assessment: FraAssessment) {
   }
 
   if (etiology.urinePattern.length > 0) {
-    lines.push(`Patrón urinario: ${normalizeReportText(etiology.urinePattern.slice(0, 5).join('; '))}.`);
+    lines.push(
+      `Patrón urinario: ${normalizeReportText(etiology.urinePattern.slice(0, 5).join('; '))}.`
+    );
   }
 
   lines.push(
