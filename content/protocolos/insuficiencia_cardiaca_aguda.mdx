@@ -1,0 +1,336 @@
+---
+title: 'Insuficiencia cardíaca aguda y descompensada en Urgencias'
+description: 'Resumen práctico para valorar y tratar la insuficiencia cardíaca aguda o descompensada en Urgencias según el perfil de congestión, perfusión, edema pulmonar, fallo derecho o shock, con los cambios destacados del marco ESC 2026 frente a 2021.'
+date: '2026-08-29'
+pdf: 'https://gvaes-my.sharepoint.com/:b:/r/personal/dieguez_san_gva_es/Documents/Shared_GVA/Gu%C3%ADas%20ESC%202026%20Insuficiencia%20Cardiaca.pdf?d=wbf3dd5c21e624c568edf8d9d0c7bbffc&csf=1&web=1&e=UorNcJ'
+tags:
+  [
+    'Insuficiencia cardíaca aguda',
+    'Insuficiencia cardíaca descompensada',
+    'ICA',
+    'Edema agudo de pulmón',
+    'Fallo derecho',
+    'Shock cardiogénico',
+    'Congestión',
+    'Perfusión',
+    'Furosemida',
+    'Acetazolamida',
+    'Diuréticos',
+    'VNI',
+    'CHAMPIT',
+    'SCAI',
+    'ESC 2026',
+    'ESC 2021',
+    'Urgencias',
+    'Ecocardio clínica',
+    'POCUS',
+    'Ecografía cardiopulmonar',
+    'Ecografía pulmonar',
+    'LUS',
+    'VExUS',
+    'Sodio urinario',
+    'NaU',
+    'Congestión residual',
+    'Descongestión',
+    'NT-proBNP',
+    'Shock Team',
+  ]
+---
+
+<Warning>
+  <strong>Herramienta de apoyo.</strong> No sustituye el juicio clínico, la valoración por un
+  equipo experto ni los protocolos locales del Hospital de San Juan. Ajusta cada decisión a la
+  situación hemodinámica, la función renal, los electrolitos y la respuesta observada.
+</Warning>
+
+<ProtocolSectionNav
+  title="Ruta rápida"
+  columns={5}
+  items={[
+    { href: '#triage', eyebrow: '1', label: 'Triage', description: '¿Qué perfil tienes delante?' },
+    { href: '#causa', eyebrow: '2', label: 'Causa', description: 'Busca CHAMPIT desde el inicio.' },
+    { href: '#tratamiento', eyebrow: '3', label: 'Tratamiento', description: 'Respiración, presión y perfusión.' },
+    { href: '#diuresis', eyebrow: '4', label: 'Diuresis', description: 'Mide respuesta y escala pronto.' },
+    { href: '#cierre', eyebrow: '5', label: 'Cierre', description: 'Shock, alta y seguimiento.' },
+  ]}
+/> 
+
+## En 30 segundos
+
+<BoxGrid>
+  <Box title="1 · Define el fenotipo">
+    <strong>Congestión</strong>: pulmonar y/o sistémica. <strong>Perfusión</strong>: conservada o
+    baja. Separa ICA descompensada, edema pulmonar, fallo derecho y shock.
+  </Box>
+  <Box title="2 · Busca la causa">
+    ECG y constantes precoces. Pregunta por <strong>CHAMPIT</strong> y trata el precipitante sin
+    demora.
+  </Box>
+  <Box title="3 · Trata lo que amenaza">
+    Oxígeno solo si <strong>SpO2 &lt; 90%</strong> o <strong>PaO2 &lt; 60</strong>. VNI si edema
+    pulmonar/insuficiencia respiratoria y el paciente lo tolera.
+  </Box>
+  <Box title="4 · Mide la respuesta">
+    Diurético IV si hay congestión. Comprueba <strong>NaU a las 2 h</strong> y diuresis hasta las
+    <strong> 6 h</strong>; escala si la respuesta es insuficiente.
+  </Box>
+</BoxGrid>
+
+<Callout type="info" title="Novedad ESC 2026">
+  Marco <strong>DHF/WHF</strong>, guía por sodio urinario, escalada diurética más explícita,
+  iSGLT2 tras estabilización, clasificación <strong>SCAI</strong>, <strong>Shock Team</strong> y
+  titulación intensiva después del alta.
+</Callout>
+
+<ProtocolAccordion
+  id="triage"
+  title="1. Triage: congestión + perfusión"
+  summary="La combinación de ambos ejes orienta la primera intervención."
+  defaultOpen
+>
+  <DataTable
+    headers={['Perfil que ves', 'Pistas rápidas', 'Primera orientación']}
+    rows={[
+      [
+        { content: 'Congestionado / perfundido', className: 'bg-[#e9f1f3] font-semibold' },
+        'Disnea, ortopnea, edemas o congestión ecográfica; perfusión conservada.',
+        'Diurético de asa IV y reevaluación objetiva.',
+      ],
+      [
+        { content: 'Edema pulmonar hipertensivo', className: 'bg-[#f8fafc] font-semibold' },
+        'Hipoxemia y trabajo respiratorio; redistribución rápida; PAS habitualmente elevada.',
+        'VNI + vasodilatador IV si PAS > 110 y no hay contraindicaciones. No presupongas sobrecarga intensa.',
+      ],
+      [
+        { content: 'Hipoperfundido / hipotenso', className: 'bg-[#e9f1f3] font-semibold' },
+        'Frialdad, oliguria, confusión, lactato elevado o deterioro renal/hepático.',
+        'Busca causa, diuresis prudente si congestión y soporte de perfusión si persiste.',
+      ],
+      [
+        { content: 'Fallo derecho', className: 'bg-[#f8fafc] font-semibold' },
+        'Congestión venosa/edemas con sospecha de VD, EP, IAM de VD o taponamiento.',
+        'Descarta causa y preserva precarga efectiva; evita cargar volumen automáticamente.',
+      ],
+      [
+        { content: 'Shock', className: 'bg-[#e9f1f3] font-semibold' },
+        'Hipoperfusión persistente, deterioro de órgano o lactato arterial > 2 mmol/L.',
+        'Clasifica SCAI y activa pronto el circuito/equipo de shock.',
+      ],
+    ]}
+  />
+
+  <Callout type="warning" title="No uses la presión arterial como único marcador">
+    Puede existir hipoperfusión con normotensión. Integra piel, estado mental, diuresis, lactato,
+    función renal/hepática y ecocardiografía.
+  </Callout>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="causa"
+  title="2. Diagnóstico y precipitante"
+  summary="Constantes, ECG, pruebas dirigidas y búsqueda activa de CHAMPIT."
+>
+  <DataTable
+    headers={['En Urgencias', 'Qué pedir o revisar']}
+    rows={[
+      [{ content: 'Siempre', className: 'bg-[#e9f1f3] font-semibold' }, 'Constantes, monitorización, ECG precoz, exploración de congestión/perfusión y diuresis.'],
+      [{ content: 'Analítica', className: 'bg-[#f8fafc] font-semibold' }, 'Troponina, función renal, sodio, potasio, magnesio, hemograma y glucosa; lactato si inestable.'],
+      [{ content: 'Imagen', className: 'bg-[#e9f1f3] font-semibold' }, 'Rx de tórax + ecografía cardiopulmonar clínica a pie de cama (ecocardio dirigida/POCUS) si está disponible y hay personal entrenado; ecocardiografía reglada si está indicada.'],
+      [{ content: 'Péptidos', className: 'bg-[#f8fafc] font-semibold' }, 'NT-proBNP/BNP/MR-proANP como apoyo, interpretados con edad, FA, obesidad y función renal.'],
+    ]}
+  />
+
+  <Callout type="info" title="Ecocardio clínica / POCUS cardiopulmonar">
+    Usarla de forma dirigida para orientar congestión, función de VI/VD, derrame pericárdico y
+    posibles causas mecánicas, integrada con la ecografía pulmonar. Es una herramienta de apoyo y no
+    sustituye la ecocardiografía reglada cuando la decisión clínica lo requiera.
+  </Callout>
+
+  <Callout type="info" title="Péptidos natriuréticos: umbrales de apoyo">
+    Hacen menos probable ICA: <strong>NT-proBNP &lt; 300</strong>, <strong>BNP &lt; 100</strong> o
+    <strong> MR-proANP &lt; 120</strong>. Un <strong>NT-proBNP &gt; 5000</strong> identifica riesgo muy
+    alto, pero ninguno de estos valores sustituye la valoración clínica.
+  </Callout>
+
+  <h3 className="not-prose my-5 border-l-4 border-[var(--primary)] bg-[#eef5f7] px-4 py-3 text-lg font-bold text-[var(--primary-dark)] shadow-sm">CHAMPIT · precipitantes que no debes perder</h3>
+  <DataTable
+    headers={['C', 'H', 'A', 'M', 'P', 'I', 'T']}
+    rows={[
+      ['SCA', 'Emergencia hipertensiva', 'Arritmia', 'Mecánica/valvular', 'EP', 'Infección/miocarditis', 'Taponamiento'],
+      ['Reperfusión', 'Control de PA', 'CVe si FA inestable', 'Eco + equipo', 'Circuito EP', 'Tratamiento precoz', 'Eco + drenaje si procede'],
+    ]}
+  />
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="tratamiento"
+  title="3. Tratamiento según el caso"
+  summary="Respiración, presión arterial, ritmo y perfusión."
+>
+  <BoxGrid>
+    <Box title="Hipoxemia / edema pulmonar">
+      Oxígeno si <strong>SpO2 &lt; 90%</strong> o <strong>PaO2 &lt; 60</strong>. Considera VNI precoz si
+      <strong> FR &gt; 25</strong> y <strong>SpO2 &lt; 90%</strong>, especialmente con edema pulmonar.
+    </Box>
+    <Box title="VNI: freno de seguridad">
+      Precaución en hipotensión, bajo gasto, fallo derecho, vómitos, deterioro de conciencia o
+      incapacidad para proteger la vía aérea.
+    </Box>
+    <Box title="Edema hipertensivo">
+      Si <strong>PAS &gt; 110</strong>, considerar vasodilatador IV + VNI. La redistribución puede
+      predominar sin gran sobrecarga: no imponer alta diuresis sin signos de congestión.
+    </Box>
+    <Box title="Cuándo intubar">
+      Fracaso progresivo, parada, deterioro de conciencia, incapacidad para proteger la vía aérea o
+      inestabilidad persistente.
+    </Box>
+  </BoxGrid>
+
+  <DataTable
+    headers={['Situación', 'Conducta práctica']}
+    rows={[
+      [{ content: 'FA inestable + HFrEF', className: 'bg-[#e9f1f3] font-semibold' }, 'Cardioversión eléctrica sincronizada sin demorarla por pruebas no esenciales.'],
+      [{ content: 'FA estable + HFrEF', className: 'bg-[#f8fafc] font-semibold' }, 'Amiodarona o digoxina IV solo en pacientes seleccionados, monitorizados y según función renal/TA/protocolo.'],
+      [{ content: 'Fallo derecho', className: 'bg-[#e9f1f3] font-semibold' }, 'Descartar EP e IAM de VD; preservar precarga efectiva; evitar bolos repetidos sin respuesta. VNI con cautela.'],
+      [{ content: 'Opiáceos', className: 'bg-[#f8fafc] font-semibold' }, 'No rutinarios para el edema pulmonar.'],
+    ]}
+  />
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="diuresis"
+  title="4. Descongestión: medir y escalar"
+  summary="La respuesta temprana decide la siguiente dosis."
+>
+  <DataTable
+    headers={['Momento', 'Objetivo / acción']}
+    rows={[
+      [{ content: 'Inicio', className: 'bg-[#e9f1f3] font-semibold' }, 'Sin diurético previo: furosemida 40 mg IV. Usuario crónico: aproximadamente 2× la dosis oral diaria IV, individualizando.'],
+      [{ content: '2 horas', className: 'bg-[#f8fafc] font-semibold' }, 'Medir sodio urinario. Respuesta orientativa: NaU ≥ 70 mmol/L.'],
+      [{ content: '6 horas', className: 'bg-[#e9f1f3] font-semibold' }, 'Medir diuresis. Respuesta orientativa: ≥ 100 mL/h durante 6 h.'],
+      [{ content: 'Sin respuesta', className: 'bg-[#f8fafc] font-semibold' }, 'Confirmar causa/congestión y duplicar asa y/o añadir acetazolamida 500 mg IV/día o HCTZ ajustada a FG.'],
+      [{ content: 'Fracaso de escalada', className: 'bg-[#e9f1f3] font-semibold' }, 'Valorar ultrafiltración con equipo experto.'],
+    ]}
+  />
+
+  <Callout type="info" title="Novedad ESC 2026: respuesta sí/no">
+    Si responde, repetir el régimen diurético aproximadamente cada 12 h hasta completar la
+    descongestión, con reevaluación clínica y analítica. Si no responde, duplicar el asa o añadir
+    acetazolamida/HCTZ según el contexto y los controles.
+  </Callout>
+
+  <BoxGrid>
+    <Box title="HCTZ según FG">
+      <strong>25 mg</strong> si FG &gt; 50 · <strong>50 mg</strong> si FG 20-50 · <strong>100 mg</strong>
+      si FG &lt; 20. Controlar sodio, potasio, magnesio, creatinina y TA.
+    </Box>
+    <Box title="Creatinina">
+      Un pequeño aumento no obliga a parar automáticamente si hay descongestión y perfusión
+      adecuadas. Si hay deterioro progresivo o hipoperfusión, reevalúa y cambia la estrategia.
+    </Box>
+  </BoxGrid>
+
+  <h3 className="not-prose my-5 border-l-4 border-[var(--primary)] bg-[#eef5f7] px-4 py-3 text-lg font-bold text-[var(--primary-dark)] shadow-sm">Objetivos de descongestión antes del alta</h3>
+  <Callout type="warning" title="Objetivos orientativos, no una checklist obligatoria">
+    La figura de la ESC presenta estas herramientas como opcionales y complementarias. Úsalas para
+    documentar la tendencia y la congestión residual, siempre junto a la valoración clínica.
+  </Callout>
+  <DataTable
+    headers={['Dominio', 'Objetivo orientativo', 'Aceptable / matiz']}
+    rows={[
+      [{ content: 'Clínica', className: 'bg-[#e9f1f3] font-semibold' }, 'Score de congestión 0; pérdida de peso; NYHA ≤ II.', 'Score 1-2 puede indicar congestión leve; integrar exploración y evolución.'],
+      [{ content: 'Laboratorio', className: 'bg-[#f8fafc] font-semibold' }, 'Descenso de péptidos ≥ 30%.', 'Como referencia: NT-proBNP < 1500 pg/mL o BNP < 250 pg/mL, interpretados en contexto.'],
+      [{ content: 'Rx de tórax', className: 'bg-[#e9f1f3] font-semibold' }, 'Resolución de los signos de congestión.', 'La radiografía no debe ser el único criterio de respuesta.'],
+      [{ content: 'Ecocardio clínica / POCUS', className: 'bg-[#f8fafc] font-semibold' }, 'E/e’ < 10; VCI < 21 mm y colapsabilidad > 50%; LUS < 5 líneas B.', 'E/e’ < 15; VCI < 21 mm o colapsabilidad > 50%; LUS < 15 líneas B. Requiere personal entrenado.'],
+    ]}
+  />
+
+  <div className="text-sm text-slate-600">
+    La evaluación puede combinar ecocardio clínica dirigida, ecografía pulmonar y, si se dispone de
+    experiencia, VExUS. No es necesario obtener todos los objetivos ni convertirlos en umbrales
+    absolutos de alta.
+  </div>
+
+  <Callout type="info" title="Novedad ESC 2026">
+    La guía por <strong>NaU a las 2 h</strong> y diuresis a las <strong>6 h</strong> hace visible si
+    hay respuesta y permite escalar pronto, en lugar de esperar a la reevaluación del día siguiente.
+  </Callout>
+</ProtocolAccordion>
+
+<ProtocolAccordion
+  id="cierre"
+  title="5. Shock, estabilización y alta"
+  summary="No termines el episodio hasta dejar resuelta la perfusión, la congestión y el plan de seguimiento."
+>
+  <h3 className="not-prose my-5 border-l-4 border-[var(--primary)] bg-[#eef5f7] px-4 py-3 text-lg font-bold text-[var(--primary-dark)] shadow-sm">Shock</h3>
+  <BoxGrid>
+    <Box title="SCAI A-E">
+      Clasificar de forma seriada con clínica, lactato, diuresis, función orgánica, ecocardiografía
+      y respuesta a las intervenciones.
+    </Box>
+    <Box title="Soporte de perfusión">
+      Noradrenalina como vasopresor preferente si se necesita sostener la presión. Inotrópico solo
+      si <strong>PAS &lt; 90 + hipoperfusión</strong> pese a medidas iniciales; no por hipotensión aislada.
+    </Box>
+    <Box title="Shock Team">
+      Activar ante lactato elevado, hipoperfusión persistente, deterioro de órgano o necesidad
+      creciente de soporte.
+    </Box>
+    <Box title="Soporte mecánico">
+      Solo pacientes seleccionados y centro experto. <strong>IABP no rutinario</strong> ni soporte
+      indiscriminado.
+    </Box>
+  </BoxGrid>
+
+  <Callout type="info" title="Novedad ESC 2026">
+    SCAI + Shock Team + selección estricta de soporte mecánico: actuar pronto ante deterioro y evitar
+    la escalada indiscriminada en quien no se beneficia.
+  </Callout>
+
+  <h3 className="not-prose my-5 border-l-4 border-[var(--primary)] bg-[#eef5f7] px-4 py-3 text-lg font-bold text-[var(--primary-dark)] shadow-sm">Después de estabilizar · preparar el alta</h3>
+  <Checklist
+    items={[
+      { text: 'Revisar tratamiento fundamental según fenotipo, fracción de eyección, función renal, potasio y presión.' },
+      { text: 'Considerar iniciar iSGLT2 durante el ingreso solo tras la estabilización; no es rescate del paciente inestable.' },
+      { text: 'No dar el alta con congestión residual relevante.' },
+      { text: 'Dejar por escrito dosis/horario del diurético, objetivo de peso, señales de alarma y qué hacer si aumenta el peso.' },
+      { text: 'Programar control precoz y titulación intensiva del tratamiento hasta aproximadamente 6 semanas.' },
+    ]}
+  />
+
+  <Callout type="warning" title="Novedad ESC 2026: el alta es parte del tratamiento">
+    La optimización no termina al salir del hospital: iniciar o reintroducir tratamiento cuando sea
+    seguro y titularlo pronto, con control de función renal, potasio, presión y congestión.
+  </Callout>
+</ProtocolAccordion>
+
+## Fuentes y alcance
+
+<Note>
+  Resumen web práctico. Las etiquetas «Novedad ESC 2026» señalan cambios de marco o estrategia
+  frente a ESC 2021; no sustituyen las tablas de recomendaciones, clases de indicación ni anexos de
+  la publicación completa. Verifica la versión vigente y los protocolos locales.
+</Note>
+
+<Box title="Bibliografía y enlaces de referencia">
+  <ol>
+    <li>
+      <a href="https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/heart-failure" target="_blank" rel="noreferrer">
+        2026 ESC Guidelines for the management of heart failure
+      </a>{' '}
+      (ESC, 28 de agosto de 2026).
+    </li>
+    <li>
+      <a href="https://www.escardio.org/guidelines/clinical-practice-guidelines/all-esc-practice-guidelines/acute-and-chronic-heart-failure" target="_blank" rel="noreferrer">
+        2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure
+      </a>{' '}
+      (referencia comparativa).
+    </li>
+    <li>
+      <a href="https://www.escardio.org/guidelines/practice-tools/clinical-decision-making-toolkit/" target="_blank" rel="noreferrer">
+        ACVC Clinical Decision-Making Toolkit: Acute Heart Failure y Cardiogenic Shock
+      </a>{' '}
+      (recurso práctico ESC/ACVC).
+    </li>
+  </ol>
+</Box>

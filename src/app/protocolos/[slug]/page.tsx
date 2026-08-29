@@ -18,10 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
 
   const raw = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(raw);
+  const keywords = Array.isArray(data.tags)
+    ? data.tags.filter((tag): tag is string => typeof tag === 'string')
+    : undefined;
 
   return {
     title: data.title ?? 'Protocolos',
     description: data.description ?? '',
+    keywords,
   };
 }
 
