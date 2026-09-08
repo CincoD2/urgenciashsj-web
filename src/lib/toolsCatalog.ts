@@ -135,6 +135,12 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
 ];
 
 const TOOL_DEFINITIONS: ToolDefinition[] = [
+  {
+    slug: 'contingencia-camas-urgencias',
+    category: 'triaje',
+    featured: true,
+    badge: 'Nuevo',
+  },
   { slug: 'OrionSF', category: 'orion', featured: true },
   {
     slug: 'triaje-manchester',

@@ -6,6 +6,22 @@ export type ScaleMeta = {
 };
 
 export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
+  'contingencia-camas-urgencias': {
+    title: 'Contingencia camas urgencias',
+    summary: 'Asistente orientativo para estimar la fase del plan hospitalario ante falta de camas de hospitalización.',
+    tags: ['contingencia', 'urgencias', 'camas', 'organización'],
+    keywords: [
+      'plan hospitalario',
+      'plan de contingencia hospitalario',
+      'falta de camas',
+      'saturación de camas',
+      'gestión de camas',
+      'ocupación camas urgencias',
+      'pendientes de ingreso',
+      'bloqueo hospitalario',
+      'PLAN-HOSP-01',
+    ],
+  },
   OrionSF: {
     title: 'Orion Smart Formatter',
     summary:

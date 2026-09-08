@@ -55,6 +55,7 @@ export default function Header() {
     { label: 'BISAP', href: '/escalas/bisap' },
     { label: 'Blatchford', href: '/escalas/blatchford' },
     { label: 'CHA2DS2-VA', href: '/escalas/cha2ds2va' },
+    { label: 'Contingencia camas urgencias', href: '/escalas/contingencia-camas-urgencias' },
     { label: 'CURB-65', href: '/escalas/curb65' },
     { label: 'Fracaso Renal Agudo', href: '/escalas/fra' },
     { label: 'Glasgow', href: '/escalas/glasgow' },
