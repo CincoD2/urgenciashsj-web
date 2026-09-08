@@ -68,7 +68,7 @@ function OccupancyGraphic({
     Array.from({ length: total }, (_, index) => (
       <span
         key={index}
-        className="-mx-1.5 inline-flex shrink-0 sm:-mx-2"
+        className="-mx-0.5 inline-flex shrink-0 sm:-mx-2"
         title={index < occupied ? occupiedLabel : 'Cama libre'}
       >
         <BedIcon
@@ -113,7 +113,7 @@ function OccupancyGraphic({
             </span>
           </div>
           <div>
-            <div className="flex min-w-0 flex-nowrap gap-0 overflow-hidden">
+            <div className="grid min-w-0 grid-cols-11 gap-0 overflow-hidden sm:flex sm:flex-nowrap">
               {renderBeds(
                 pendingObservation,
                 pendingObservation,
@@ -138,7 +138,7 @@ function OccupancyGraphic({
             </span>
           </div>
           <div>
-            <div className="flex min-w-0 flex-nowrap gap-0 overflow-hidden">
+            <div className="grid min-w-0 grid-cols-11 gap-0 overflow-hidden sm:flex sm:flex-nowrap">
               {renderBeds(pendingLevel2, pendingLevel2, '#8f1717', 'Paciente pendiente de ingreso')}
               {renderBeds(occupiedLevel2, occupiedLevel2, '#ef9a9a', 'Cama ocupada de Nivel 2')}
               {renderBeds(18 - level2, 0, '#cbd5e1', 'Cama libre de Nivel 2')}
