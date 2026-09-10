@@ -4,7 +4,9 @@ import { useMemo, useState } from 'react';
 import InformeCopiable from '@/components/InformeCopiable';
 import {
   determineContingencyPhase,
+  getInheritedPhaseMeasures,
   getContingencyTotals,
+  type ContingencyPhase,
   type ContingencyState,
 } from '@/clinical/contingenciaCamas';
 
@@ -19,6 +21,7 @@ const initialState: ContingencyState = {
   bedsUnavailable: false,
   pendingDischarges: false,
   phase2Implemented: false,
+  phase3Implemented: false,
   persistentBlock: false,
   noImmediateCapacity: false,
 };
@@ -150,6 +153,132 @@ function OccupancyGraphic({
   );
 }
 
+type NumberFieldKey =
+  | 'pendingLevel2'
+  | 'occupiedLevel2'
+  | 'pendingObservation'
+  | 'occupiedObservation'
+  | 'polyvalent';
+
+function NumberField({
+  field,
+  label,
+  value,
+  max,
+  onChange,
+}: {
+  field: NumberFieldKey;
+  label: string;
+  value: number;
+  max: number;
+  onChange: (field: NumberFieldKey, value: string) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+
+  const updateDraft = (nextDraft: string) => {
+    setDraft(nextDraft);
+    // Allow the field to be empty while the user is editing it. The numeric
+    // value is restored on blur if it is left empty.
+    if (nextDraft !== '' && Number.isInteger(Number(nextDraft))) {
+      onChange(field, nextDraft);
+    }
+  };
+
+  const adjust = (amount: number) => {
+    const nextValue = Math.min(max, Math.max(0, value + amount));
+    setDraft(String(nextValue));
+    onChange(field, String(nextValue));
+  };
+
+  const inputId = `contingency-${field}`;
+
+  return (
+    <div className="text-sm font-medium text-slate-700">
+      <label htmlFor={inputId}>{label}</label>
+      <div className="mt-1 flex items-stretch">
+        <button
+          type="button"
+          className="rounded-l-lg border border-r-0 border-slate-300 px-3 text-lg leading-none text-[#2b5d68] md:hidden"
+          aria-label={`Disminuir ${label.toLowerCase()}`}
+          onClick={() => adjust(-1)}
+          disabled={value <= 0}
+        >
+          −
+        </button>
+        <input
+          id={inputId}
+          className="block min-w-0 flex-1 rounded-none border border-slate-300 px-3 py-2 text-center text-base md:rounded-lg"
+          type="number"
+          min="0"
+          max={max}
+          step="1"
+          inputMode="numeric"
+          value={focused ? draft : String(value)}
+          onFocus={(event) => {
+            setFocused(true);
+            event.currentTarget.select();
+          }}
+          onChange={(event) => updateDraft(event.target.value)}
+          onBlur={() => {
+            if (draft === '') onChange(field, '0');
+            else if (!Number.isInteger(Number(draft))) setDraft(String(value));
+            setFocused(false);
+          }}
+        />
+        <button
+          type="button"
+          className="rounded-r-lg border border-l-0 border-slate-300 px-3 text-lg leading-none text-[#2b5d68] md:hidden"
+          aria-label={`Aumentar ${label.toLowerCase()}`}
+          onClick={() => adjust(1)}
+          disabled={value >= max}
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ActionText({ text, phase }: { text: string; phase: ContingencyPhase }) {
+  const inheritedMeasures = text.toLowerCase().startsWith('mantener')
+    ? getInheritedPhaseMeasures(phase)
+    : [];
+
+  if (inheritedMeasures.length === 0) return <span>{text}</span>;
+
+  const tooltipId = `inherited-measures-phase-${phase}`;
+  return (
+    <span className="group relative inline">
+      <button
+        type="button"
+        className="text-left underline decoration-dotted underline-offset-2"
+        aria-describedby={tooltipId}
+      >
+        {text}
+      </button>
+      <span
+        id={tooltipId}
+        role="tooltip"
+        className="pointer-events-none invisible absolute left-0 top-full z-20 mt-2 w-[min(24rem,calc(100vw-3rem))] rounded-lg border border-[#b9d4d8] bg-white p-3 text-left text-xs font-normal leading-relaxed text-slate-700 opacity-0 shadow-lg transition-opacity group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
+      >
+        {inheritedMeasures.map(({ phase: inheritedPhase, actions }) => (
+          <span key={inheritedPhase} className="block">
+            <strong className="text-[#2b5d68]">Medidas de la Fase {inheritedPhase}</strong>
+            <span className="mt-1 block">
+              {actions.map((action) => (
+                <span key={action.text} className="mb-1 block last:mb-0">
+                  • {action.text}
+                </span>
+              ))}
+            </span>
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 export default function ContingenciaCamasApp() {
   const [state, setState] = useState(initialState);
   const result = useMemo(() => determineContingencyPhase(state), [state]);
@@ -167,12 +296,15 @@ export default function ContingenciaCamasApp() {
   ) =>
     setState((current) => {
       if (field === 'polyvalent') {
-        return { ...current, polyvalent: Math.min(4, Math.max(0, Number(value) || 0)) };
+        return {
+          ...current,
+          polyvalent: Math.min(4, Math.max(0, Math.trunc(Number(value)) || 0)),
+        };
       }
 
       const isLevel2 = field === 'pendingLevel2' || field === 'occupiedLevel2';
       const capacity = isLevel2 ? 18 : 21;
-      const nextValue = Math.min(capacity, Math.max(0, Number(value) || 0));
+      const nextValue = Math.min(capacity, Math.max(0, Math.trunc(Number(value)) || 0));
       const otherField =
         field === 'pendingLevel2'
           ? 'occupiedLevel2'
@@ -206,7 +338,7 @@ export default function ContingenciaCamasApp() {
   ][result.phase];
 
   return (
-    <main className="escala-wrapper space-y-6" style={{ padding: 24 }}>
+    <main className="escala-wrapper prevent-ios-zoom space-y-6" style={{ padding: 24 }}>
       <div>
         <h1 className="text-2xl font-semibold">Contingencia camas urgencias</h1>
         <p className="mt-2 text-sm text-slate-600">
@@ -223,93 +355,100 @@ export default function ContingenciaCamasApp() {
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <fieldset className="rounded-lg border border-slate-200 p-4">
             <legend className="px-1 text-sm font-semibold text-[#2b5d68]">Nivel 2</legend>
-            <div className="grid gap-3">
-              <label className="text-sm font-medium text-slate-700">
-                Pendientes de ingreso
-                <input
-                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
-                  type="number"
-                  min="0"
-              max={18}
-                  value={state.pendingLevel2}
-                  onChange={(e) => setNumber('pendingLevel2', e.target.value)}
-                />
-              </label>
-              <label className="text-sm font-medium text-slate-700">
-                Ocupadas Urgencias
-                <input
-                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
-                  type="number"
-                  min="0"
-              max={18}
-                  value={state.occupiedLevel2}
-                  onChange={(e) => setNumber('occupiedLevel2', e.target.value)}
-                />
-              </label>
-              <p className="text-xs text-slate-500">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <NumberField
+                field="pendingLevel2"
+                label="Pendientes de ingreso"
+                value={state.pendingLevel2}
+                max={18}
+                onChange={setNumber}
+              />
+              <NumberField
+                field="occupiedLevel2"
+                label="Ocupadas Urgencias"
+                value={state.occupiedLevel2}
+                max={18}
+                onChange={setNumber}
+              />
+              <p className="text-xs text-slate-500 sm:col-span-2">
                 Total Nivel 2: {totals.level2}/18 ({Math.round((totals.level2 / 18) * 1000) / 10}%)
               </p>
             </div>
           </fieldset>
           <fieldset className="rounded-lg border border-slate-200 p-4">
             <legend className="px-1 text-sm font-semibold text-[#2b5d68]">Observación</legend>
-            <div className="grid gap-3">
-              <label className="text-sm font-medium text-slate-700">
-                Pendientes de ingreso
-                <input
-                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
-                  type="number"
-                  min="0"
-              max={21}
-                  value={state.pendingObservation}
-                  onChange={(e) => setNumber('pendingObservation', e.target.value)}
-                />
-              </label>
-              <label className="text-sm font-medium text-slate-700">
-                Ocupadas Urgencias
-                <input
-                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
-                  type="number"
-                  min="0"
-              max={21}
-                  value={state.occupiedObservation}
-                  onChange={(e) => setNumber('occupiedObservation', e.target.value)}
-                />
-              </label>
-              <p className="text-xs text-slate-500">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <NumberField
+                field="pendingObservation"
+                label="Pendientes de ingreso"
+                value={state.pendingObservation}
+                max={21}
+                onChange={setNumber}
+              />
+              <NumberField
+                field="occupiedObservation"
+                label="Ocupadas Urgencias"
+                value={state.occupiedObservation}
+                max={21}
+                onChange={setNumber}
+              />
+              <p className="text-xs text-slate-500 sm:col-span-2">
                 Total Observación: {totals.observation}/21 (
                 {Math.round((totals.observation / 21) * 1000) / 10}%)
               </p>
             </div>
           </fieldset>
-          <label className="text-sm font-medium text-slate-700 sm:col-span-2">
-            Área polivalente ocupada
-            <input
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
-              type="number"
-              min="0"
-              max="4"
+          <fieldset className="rounded-lg border border-slate-200 p-4">
+            <legend className="px-1 text-sm font-semibold text-[#2b5d68]">
+              Área polivalente
+            </legend>
+            <NumberField
+              field="polyvalent"
+              label="Puestos ocupados"
               value={state.polyvalent}
-              onChange={(e) => setNumber('polyvalent', e.target.value)}
+              max={4}
+              onChange={setNumber}
             />
             <span className="mt-1 block text-xs text-slate-500">
               {state.polyvalent}/4 ({Math.round((state.polyvalent / 4) * 1000) / 10}%)
             </span>
-          </label>
+            <span className="mt-2 block text-xs leading-relaxed text-slate-500">
+              Para pacientes con alta médica pendientes de ambulancia, preferentemente acompañados,
+              y siempre según disponibilidad de profesionales y seguridad asistencial.
+            </span>
+          </fieldset>
+          <fieldset className="rounded-lg border border-slate-200 p-4">
+            <legend className="px-1 text-sm font-semibold text-[#2b5d68]">
+              Momento organizativo
+            </legend>
+            <div className="mt-1 grid gap-2 sm:grid-cols-2">
+              <button
+                type="button"
+                className={`rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                  state.ordinaryHours
+                    ? 'border-[#3d7684] bg-[#e8f4f6] text-[#275966]'
+                    : 'border-slate-300 text-slate-700'
+                }`}
+                aria-pressed={state.ordinaryHours}
+                onClick={() => setState((s) => ({ ...s, ordinaryHours: true }))}
+              >
+                Horario ordinario
+              </button>
+              <button
+                type="button"
+                className={`rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                  !state.ordinaryHours
+                    ? 'border-[#3d7684] bg-[#e8f4f6] text-[#275966]'
+                    : 'border-slate-300 text-slate-700'
+                }`}
+                aria-pressed={!state.ordinaryHours}
+                onClick={() => setState((s) => ({ ...s, ordinaryHours: false }))}
+              >
+                Tarde / noche / festivo
+              </button>
+            </div>
+          </fieldset>
         </div>
-        <label className="mt-5 block text-sm font-medium text-slate-700">
-          Momento organizativo
-          <select
-            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
-            value={state.ordinaryHours ? 'ordinary' : 'out'}
-            onChange={(e) =>
-              setState((s) => ({ ...s, ordinaryHours: e.target.value === 'ordinary' }))
-            }
-          >
-            <option value="ordinary">Horario ordinario</option>
-            <option value="out">Tarde / noche / fin de semana / festivo</option>
-          </select>
-        </label>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           {(
             [
@@ -323,6 +462,7 @@ export default function ContingenciaCamasApp() {
               ],
               ['pendingDischarges', 'Existen altas hospitalarias pendientes relevantes.'],
               ['phase2Implemented', 'La Fase 2 está plenamente implantada.'],
+              ['phase3Implemented', 'La Fase 3 está plenamente implantada.'],
               ['persistentBlock', 'Persiste el bloqueo pese a la aplicación de las fases previas.'],
               [
                 'noImmediateCapacity',
@@ -361,13 +501,15 @@ export default function ContingenciaCamasApp() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-[#2b5d68]">Resultado</h2>
           <span className={`rounded-full px-3 py-1 text-sm font-bold ${phaseTone}`}>
-            {result.anticipatedActivation
+            {result.unclassifiedSituation
+              ? 'Situación intermedia: requiere valoración'
+              : result.anticipatedActivation
               ? `Posible activación anticipada de Fase ${result.phase}`
               : `Fase ${result.phase}`}
           </span>
         </div>
         <h3 className="text-xl font-semibold">
-          Fase {result.phase} · {result.phaseName}
+          {result.unclassifiedSituation ? result.phaseName : `Fase ${result.phase} · ${result.phaseName}`}
         </h3>
         <p className="text-sm text-slate-600">
           Nivel 2 {totals.level2}/18 ({Math.round((totals.level2 / 18) * 1000) / 10}%), Observación{' '}
@@ -379,7 +521,9 @@ export default function ContingenciaCamasApp() {
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <h4 className="font-semibold">Criterios cumplidos</h4>
+            <h4 className="font-semibold">
+              {result.unclassifiedSituation ? 'Situación revisada' : `Criterios de Fase ${result.phase}`}
+            </h4>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
               {result.criteriaMet.map((item) => (
                 <li key={item}>{item}</li>
@@ -387,7 +531,7 @@ export default function ContingenciaCamasApp() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold">Criterios pendientes</h4>
+            <h4 className="font-semibold">Aspectos pendientes de valoración</h4>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
               {result.criteriaMissing.map((item) => (
                 <li key={item}>{item}</li>
@@ -403,13 +547,13 @@ export default function ContingenciaCamasApp() {
                 key={action.text}
                 className="grid gap-1 p-3 text-sm sm:grid-cols-[1fr_auto] sm:gap-4"
               >
-                <span>{action.text}</span>
+                <ActionText text={action.text} phase={result.phase} />
                 <span className="font-semibold text-[#3d7684]">{action.responsible}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="grid gap-3 rounded-lg border border-[#dfe9eb] p-4 text-sm md:grid-cols-3">
+        <div className="grid gap-3 rounded-lg border border-[#dfe9eb] p-4 text-sm md:grid-cols-4">
           <div>
             <strong>Activación y dirección</strong>
             <p>{result.responsibilities.activation}</p>
@@ -421,6 +565,10 @@ export default function ContingenciaCamasApp() {
           <div>
             <strong>Comunicación</strong>
             <p>{result.responsibilities.communication}</p>
+          </div>
+          <div>
+            <strong>Referente operativo en Nivel 2</strong>
+            <p>{result.responsibilities.operationalReference}</p>
           </div>
         </div>
         <InformeCopiable texto={result.reportText} />

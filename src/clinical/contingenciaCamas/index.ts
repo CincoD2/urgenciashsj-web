@@ -11,6 +11,7 @@ export type ContingencyState = {
   bedsUnavailable: boolean;
   pendingDischarges: boolean;
   phase2Implemented: boolean;
+  phase3Implemented: boolean;
   persistentBlock: boolean;
   noImmediateCapacity: boolean;
 };
@@ -35,8 +36,10 @@ export type ContingencyResult = {
     activation: string;
     beds: string;
     communication: string;
+    operationalReference: string;
   };
   reportText: string;
+  unclassifiedSituation: boolean;
 };
 
 const PHASE_NAMES: Record<ContingencyPhase, string> = {
@@ -89,17 +92,34 @@ const PHASE_ACTIONS: Record<ContingencyPhase, ContingencyAction[]> = {
   ],
 };
 
+export function getInheritedPhaseMeasures(phase: ContingencyPhase) {
+  return Array.from({ length: Math.max(0, phase - 1) }, (_, index) => index + 1)
+    .map((inheritedPhase) => ({
+      phase: inheritedPhase as ContingencyPhase,
+      actions: PHASE_ACTIONS[inheritedPhase as ContingencyPhase].filter(
+        (action) => !action.text.toLowerCase().startsWith('mantener')
+      ),
+    }))
+    .filter(({ actions }) => actions.length > 0);
+}
+
 function responsibilities(ordinaryHours: boolean) {
   return ordinaryHours
     ? {
         activation: 'Dirección Médica y Dirección de Enfermería',
         beds: 'Admisión / Gestión de Camas junto con Dirección de Enfermería',
-        communication: 'Gestión de Camas comunica a Dirección de Enfermería, que coordina con Dirección Médica',
+        communication:
+          'Gestión de Camas comunica a Dirección de Enfermería, que coordina con Dirección Médica. La fase y las medidas adoptadas se comunican a los servicios y unidades afectados y a la Jefatura de Personal Subalterno.',
+        operationalReference:
+          'Profesional de enfermería más veterano presente en el turno, como referente operativo del Nivel 2',
       }
     : {
         activation: 'Jefe/a de Guardia y Supervisor/a General',
         beds: 'Supervisión General',
-        communication: 'Admisión de Urgencias comunica a Supervisión General, que lo traslada a Jefe/a de Guardia',
+        communication:
+          'Admisión de Urgencias comunica a Supervisión General, que lo traslada a Jefe/a de Guardia. La fase y las medidas adoptadas se comunican a los servicios y unidades afectados y a la Jefatura de Personal Subalterno.',
+        operationalReference:
+          'Profesional de enfermería más veterano presente en el turno, como referente operativo del Nivel 2',
       };
 }
 
@@ -109,7 +129,15 @@ function phaseCriteria(state: ContingencyState) {
   const phase1 = level2 >= 16 || (observation >= 15 && observation <= 18);
   const phase2 = level2 === 18 || observation >= 19;
   const phase3 = state.phase2Implemented && level2 === 18 && observation === 21 && state.polyvalent === 4 && pendingAdmissions > 0;
-  const phase4 = state.persistentBlock && level2 === 18 && observation === 21 && state.polyvalent === 4 && state.noImmediateCapacity;
+  const phase4 =
+    state.phase2Implemented &&
+    state.phase3Implemented &&
+    state.persistentBlock &&
+    level2 === 18 &&
+    observation === 21 &&
+    state.polyvalent === 4 &&
+    pendingAdmissions > 0 &&
+    state.noImmediateCapacity;
   return { phase0, phase1, phase2, phase3, phase4 };
 }
 
@@ -123,7 +151,13 @@ export function determineContingencyPhase(state: ContingencyState): ContingencyR
 
   if (context && completePhase < 4) {
     const nextPhase = completePhase === 0 ? 1 : completePhase === 1 ? 2 : completePhase === 2 && state.phase2Implemented ? 3 : completePhase === 3 ? 4 : 1;
-    const target4 = nextPhase === 4 && state.persistentBlock && state.noImmediateCapacity;
+    const target4 =
+      nextPhase === 4 &&
+      state.phase2Implemented &&
+      state.phase3Implemented &&
+      state.persistentBlock &&
+      pendingAdmissions > 0 &&
+      state.noImmediateCapacity;
     const target3 = nextPhase === 3 && state.phase2Implemented;
     const target2 = nextPhase === 2 && (state.forecastUnfavourable || state.bedsUnavailable || state.pendingDischarges);
     if (target4 || target3 || target2 || nextPhase === 1) {
@@ -132,17 +166,44 @@ export function determineContingencyPhase(state: ContingencyState): ContingencyR
     }
   }
 
+  const unclassifiedSituation = phase === 0 && !criteria.phase0;
   const met: string[] = [];
   const missing: string[] = [];
-  if (level2 >= 16) met.push(`Nivel 2 ${level2}/18 alcanza el umbral de tensión`); else missing.push('Nivel 2 en umbral de Fase 1 (16-18 boxes)');
-  if (observation >= 15) met.push(`Observación ${observation}/21 alcanza el umbral de tensión`); else missing.push('Observación en umbral de Fase 1 (15-18 camas o más)');
-  if (level2 === 18) met.push('Nivel 2 al 100%'); else missing.push('Nivel 2 al 100% (18/18)');
-  if (observation >= 19) met.push('Observación por encima del 90%'); else missing.push('Observación por encima del 90% (19 o más)');
-  if (state.phase2Implemented) met.push('Fase 2 plenamente implantada'); else missing.push('Fase 2 plenamente implantada');
-  if (state.polyvalent === 4) met.push('Área polivalente completa (4/4)'); else missing.push('Área polivalente completa (4/4)');
-  if (pendingAdmissions > 0) met.push(`Persisten ${pendingAdmissions} pacientes pendientes de ingreso`); else missing.push('Pacientes pendientes de ingreso');
-  if (state.persistentBlock) met.push('Persiste el bloqueo pese a fases previas'); else missing.push('Persistencia del bloqueo pese a fases previas');
-  if (state.noImmediateCapacity) met.push('No existe capacidad inmediata para absorber ingresos'); else missing.push('Ausencia de capacidad inmediata');
+
+  if (unclassifiedSituation) {
+    missing.push('Situación intermedia: no encaja completamente en los umbrales definidos del plan');
+  } else if (phase === 0) {
+    if (level2 <= 14) met.push(`Nivel 2 dentro de normalidad (${level2}/18)`);
+    if (observation <= 14) met.push(`Observación dentro de normalidad (${observation}/21)`);
+    if (state.polyvalent === 0) met.push('Área polivalente sin uso');
+  } else if (phase === 1) {
+    if (level2 >= 16) met.push(`Nivel 2 ${level2}/18 supera el 90%`);
+    if (observation >= 15 && observation <= 18) {
+      met.push(`Observación ${observation}/21 se encuentra entre el 70% y el 90% aproximadamente`);
+    }
+    if (met.length === 0) missing.push('Nivel 2 con 16-18 boxes u Observación con 15-18 camas aproximadamente');
+  } else if (phase === 2) {
+    if (level2 === 18) met.push('Nivel 2 al 100% (18/18)');
+    if (observation >= 19) met.push(`Observación por encima del 90% (${observation}/21)`);
+    if (met.length === 0) missing.push('Nivel 2 al 100% u Observación con 19 o más camas');
+  } else if (phase === 3) {
+    if (state.phase2Implemented) met.push('Fase 2 plenamente implantada');
+    if (level2 === 18) met.push('Nivel 2 al 100% (18/18)');
+    if (observation === 21) met.push('Observación al 100% (21/21)');
+    if (state.polyvalent === 4) met.push('Área polivalente completa (4/4)');
+    if (pendingAdmissions > 0) met.push(`Persisten ${pendingAdmissions} pacientes pendientes de ingreso`);
+    if (met.length < 5) missing.push('Debe cumplirse el conjunto de criterios orientativos de Fase 3');
+  } else {
+    if (state.phase2Implemented) met.push('Fase 2 plenamente implantada');
+    if (state.phase3Implemented) met.push('Fase 3 plenamente implantada');
+    if (level2 === 18) met.push('Nivel 2 al 100% (18/18)');
+    if (observation === 21) met.push('Observación al 100% (21/21)');
+    if (state.polyvalent === 4) met.push('Área polivalente ocupada (4/4)');
+    if (pendingAdmissions > 0) met.push(`Existen ${pendingAdmissions} pacientes pendientes de ingreso`);
+    if (state.persistentBlock) met.push('Persiste el bloqueo pese a las fases previas');
+    if (state.noImmediateCapacity) met.push('No existe capacidad inmediata para absorber los ingresos pendientes');
+    if (met.length < 8) missing.push('Debe cumplirse el conjunto de criterios orientativos de Fase 4');
+  }
 
   const activation = responsibilities(state.ordinaryHours);
   const pendingDescription = pendingAdmissions === 1 ? '1 paciente pendiente de ingreso' : `${pendingAdmissions} pacientes pendientes de ingreso`;
@@ -150,7 +211,21 @@ export function determineContingencyPhase(state: ContingencyState): ContingencyR
   const rationale = anticipatedActivation
     ? `La situación no reúne necesariamente todos los criterios simultáneos de Fase ${phase}, si bien la previsión asistencial y/o la disponibilidad real de camas permite valorar su activación anticipada conforme al PLAN-HOSP-01.`
     : `La situación es compatible con Fase ${phase} porque ${phase === 0 && criteria.phase0 ? 'se mantiene dentro de los umbrales orientativos de normalidad' : phase === 0 ? 'no se cumplen de forma completa los criterios de una fase superior y requiere valoración organizativa' : 'se cumplen los criterios orientativos de ocupación y contexto disponibles'}; la fase estimada debe ser validada por los responsables del plan.`;
-  const reportText = `Situación asistencial: ${occupancy}. La situación resulta compatible con Fase ${phase} (${PHASE_NAMES[phase]}) conforme a los criterios orientativos del PLAN-HOSP-01. Corresponde a ${activation.activation} valorar y, en su caso, activar la fase, con coordinación de la gestión de camas a cargo de ${activation.beds}. ${anticipatedActivation ? rationale + ' ' : ''}Se indican las medidas acumulativas previstas para la fase, manteniendo seguimiento periódico de ocupación, ingresos pendientes, altas previstas, disponibilidad real de camas y necesidades de transporte.`;
+  const phaseDescription = unclassifiedSituation
+    ? 'La situación no encaja completamente en una fase definida del PLAN-HOSP-01 y requiere valoración organizativa.'
+    : `La situación resulta compatible con Fase ${phase} (${PHASE_NAMES[phase]}) conforme a los criterios orientativos del PLAN-HOSP-01.`;
+  const reportText = `Situación asistencial: ${occupancy}. ${phaseDescription} Corresponde a ${activation.activation} valorar y, en su caso, activar la fase, con coordinación de la gestión de camas a cargo de ${activation.beds}. ${anticipatedActivation ? rationale + ' ' : ''}El referente operativo del Nivel 2 será ${activation.operationalReference}. Se indican las medidas acumulativas previstas para la fase, manteniendo seguimiento periódico de ocupación, ingresos pendientes, altas previstas, disponibilidad real de camas y necesidades de transporte.`;
 
-  return { phase, phaseName: PHASE_NAMES[phase], criteriaMet: met, criteriaMissing: missing, anticipatedActivation, rationale, actions: PHASE_ACTIONS[phase], responsibilities: activation, reportText };
+  return {
+    phase,
+    phaseName: unclassifiedSituation ? 'Valoración organizativa (situación intermedia)' : PHASE_NAMES[phase],
+    criteriaMet: met,
+    criteriaMissing: missing,
+    anticipatedActivation,
+    rationale,
+    actions: PHASE_ACTIONS[phase],
+    responsibilities: activation,
+    reportText,
+    unclassifiedSituation,
+  };
 }
