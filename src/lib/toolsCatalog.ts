@@ -3,6 +3,7 @@ import { getScaleMetaBySlug } from '@/lib/escalasMeta';
 export type ToolCategoryId =
   | 'orion'
   | 'triaje'
+  | 'gestion'
   | 'respiratorio'
   | 'infecciosas'
   | 'metabolismo'
@@ -61,6 +62,13 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
     description: 'Herramientas de clasificación inicial y priorización asistencial en urgencias.',
     accent: 'text-[#24526a]',
     softAccent: 'bg-[#eaf4fb]',
+  },
+  {
+    id: 'gestion',
+    label: 'Gestión',
+    description: 'Herramientas prácticas para organizar recursos y circuitos asistenciales.',
+    accent: 'text-[#49657a]',
+    softAccent: 'bg-[#eef4f8]',
   },
   {
     id: 'respiratorio',
@@ -137,7 +145,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
 const TOOL_DEFINITIONS: ToolDefinition[] = [
   {
     slug: 'contingencia-camas-urgencias',
-    category: 'triaje',
+    category: 'gestion',
     featured: true,
     badge: 'Nuevo',
   },

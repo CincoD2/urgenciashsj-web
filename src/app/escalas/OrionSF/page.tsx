@@ -1,7 +1,7 @@
 'use client';
 // @ts-nocheck
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Papa from 'papaparse';
 import InformeCopiable from '@/components/InformeCopiable';
@@ -21,6 +21,7 @@ type OrionPreferences = {
   includeRequestLine: boolean;
   includeComments: boolean;
   onlyAltered: boolean;
+  includePosologia: boolean;
 };
 
 type Regla = {
@@ -213,7 +214,7 @@ function limpiarPosologia(raw: string) {
   return normEspacios(`${qty} ${unit} ${rest}`);
 }
 
-function depurarTratamiento(textoOriginal: string, multilinea: boolean) {
+function depurarTratamiento(textoOriginal: string, multilinea: boolean, includePosologia: boolean) {
   const fechaActual = new Date().toLocaleDateString('es-ES');
   const lineas = (textoOriginal || '').replace(/\r/g, '').split('\n').map((l) => l.trimEnd());
   const items = [];
@@ -253,8 +254,8 @@ function depurarTratamiento(textoOriginal: string, multilinea: boolean) {
 
   const header = `Tratamiento (por SIA a fecha ${fechaActual}):`;
   if (!itemsLimpios.length) return header;
-  if (multilinea) return header + '\n' + itemsLimpios.map(({ med, poso }) => `- ${med}${poso ? ` (${poso})` : ''}`).join('\n');
-  return header + ' ' + itemsLimpios.map(({ med, poso }) => `${med}${poso ? ` (${poso})` : ''}`).join('; ');
+  if (multilinea) return header + '\n' + itemsLimpios.map(({ med, poso }) => `- ${med}${includePosologia && poso ? ` (${poso})` : ''}`).join('\n');
+  return header + ' ' + itemsLimpios.map(({ med, poso }) => `${med}${includePosologia && poso ? ` (${poso})` : ''}`).join('; ');
 }
 
 function extraerMedicamentos(textoOriginal: string): Medicamento[] {
@@ -711,14 +712,15 @@ function formatEntryLineColumns(entry: LabEntry, includeReference: boolean, incl
   return text.trimEnd();
 }
 
-function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference: boolean, includeConfidence: boolean, includeRequestLine: boolean, includeComments: boolean, onlyAltered: boolean, useColumns: boolean, fontProfile: VisualFontProfile): string {
+function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference: boolean, includeConfidence: boolean, includeRequestLine: boolean, includeComments: boolean, onlyAltered: boolean, useColumns: boolean, fontProfile: VisualFontProfile, includedGroups?: string[]): string {
   const parsed = parseInput(input);
+  const groups = includedGroups ? parsed.groups.filter((group) => includedGroups.includes(group.name)) : parsed.groups;
   const out: string[] = [];
   const paramIndent = '  ';
   const isVisibleEntry = (entry: LabEntry) =>
     (includeComments || !isCommentOnlyEntry(entry)) &&
     (!onlyAltered || isUrineGroup(entry.group) || isAlteredEntry(entry));
-  const entriesForColumns = parsed.groups
+  const entriesForColumns = groups
     .flatMap((group) => group.entries)
     .filter((entry) => !isMicrobiologyGroup(entry.group) && isVisibleEntry(entry));
   const nameColumnTarget =
@@ -745,7 +747,7 @@ function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference:
     out.push('');
   }
 
-  for (const group of parsed.groups) {
+  for (const group of groups) {
     const visibleEntries = group.entries.filter(isVisibleEntry);
     if (!visibleEntries.length) continue;
 
@@ -862,6 +864,7 @@ function OrionUnificadoClient() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [variasLineas, setVariasLineas] = useState(false);
   const [seleccion, setSeleccion] = useState<Record<string, boolean>>({});
+  const [seleccionBloques, setSeleccionBloques] = useState<Record<string, boolean>>({});
   const [reglas, setReglas] = useState<Regla[]>([]);
   const [reglasListas, setReglasListas] = useState(false);
   const [reglasCargando, setReglasCargando] = useState(false);
@@ -871,8 +874,10 @@ function OrionUnificadoClient() {
   const [includeRequestLine, setIncludeRequestLine] = useState(true);
   const [includeComments, setIncludeComments] = useState(true);
   const [onlyAltered, setOnlyAltered] = useState(false);
+  const [includePosologia, setIncludePosologia] = useState(true);
   const [preferencesMessage, setPreferencesMessage] = useState('');
-  const [optionsOpen, setOptionsOpen] = useState(true);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const hadTextRef = useRef(false);
   const includeConfidence = false;
   const fontProfile: VisualFontProfile = 'helvetica';
 
@@ -881,6 +886,14 @@ function OrionUnificadoClient() {
   const medicamentos = useMemo(
     () => (resolvedKind === 'tratamiento' && texto.trim() ? extraerMedicamentos(texto) : []),
     [texto, resolvedKind]
+  );
+  const bloquesAnalitica = useMemo(
+    () => (resolvedKind === 'analitica' && texto.trim() ? parseInput(texto).groups.map((group) => group.name) : []),
+    [texto, resolvedKind]
+  );
+  const bloquesAnaliticaIncluidos = useMemo(
+    () => bloquesAnalitica.filter((name) => seleccionBloques[name] ?? true),
+    [bloquesAnalitica, seleccionBloques]
   );
 
   const cargarReglas = useCallback(() => {
@@ -939,6 +952,7 @@ function OrionUnificadoClient() {
         if (typeof saved.includeRequestLine === 'boolean') setIncludeRequestLine(saved.includeRequestLine);
         if (typeof saved.includeComments === 'boolean') setIncludeComments(saved.includeComments);
         if (typeof saved.onlyAltered === 'boolean') setOnlyAltered(saved.onlyAltered);
+        if (typeof saved.includePosologia === 'boolean') setIncludePosologia(saved.includePosologia);
       } catch {
         try {
           window.localStorage.removeItem(ORION_PREFERENCES_KEY);
@@ -957,6 +971,16 @@ function OrionUnificadoClient() {
     return () => window.clearTimeout(timer);
   }, [preferencesMessage]);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const hasText = Boolean(texto.trim());
+      if (!hasText) setOptionsOpen(false);
+      else if (!hadTextRef.current) setOptionsOpen(true);
+      hadTextRef.current = hasText;
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [texto]);
+
   const guardarPreferencias = () => {
     const preferences: OrionPreferences = {
       inputKind,
@@ -967,6 +991,7 @@ function OrionUnificadoClient() {
       includeRequestLine,
       includeComments,
       onlyAltered,
+      includePosologia,
     };
 
     try {
@@ -992,6 +1017,7 @@ function OrionUnificadoClient() {
     setIncludeRequestLine(true);
     setIncludeComments(true);
     setOnlyAltered(false);
+    setIncludePosologia(true);
     setPreferencesMessage(storageCleared ? 'Preferencias restablecidas' : 'No se han podido borrar las preferencias guardadas');
   };
 
@@ -1004,12 +1030,12 @@ function OrionUnificadoClient() {
 
   const resultado = useMemo(() => {
     if (!texto.trim()) return '';
-    if (resolvedKind === 'tratamiento') return depurarTratamiento(textoTratamientoFiltrado, variasLineas);
+    if (resolvedKind === 'tratamiento') return depurarTratamiento(textoTratamientoFiltrado, variasLineas, includePosologia);
     if (resolvedKind === 'analitica') {
-      return buildAnaliticaOutput(texto, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, fontProfile);
+      return buildAnaliticaOutput(texto, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, fontProfile, bloquesAnaliticaIncluidos);
     }
     return '';
-  }, [texto, resolvedKind, textoTratamientoFiltrado, variasLineas, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns]);
+  }, [texto, resolvedKind, textoTratamientoFiltrado, variasLineas, includePosologia, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, bloquesAnaliticaIncluidos]);
 
   const detectionBadgeClass =
     detection.detected === 'tratamiento'
@@ -1050,61 +1076,8 @@ function OrionUnificadoClient() {
             style={{ minHeight: 220 }}
           />
           <div className="orion-detection-row">
-            <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${detectionBadgeClass}`}>
-              {getDetectionLabel(detection.detected)}
-            </span>
-            <span className="orion-detection-score">score tto {detection.treatmentScore} | score analítica {detection.analyticScore}</span>
-            <button
-              type="button"
-              className="reset-btn orion-reset"
-              onClick={() => {
-                setTexto('');
-                setSeleccion({});
-              }}
-            >
-              Limpiar
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="orion-card orion-controls-card">
-        <div className="orion-options-header">
-          <div className="orion-options-heading-copy">
-            <h2 className="orion-options-heading">Opciones</h2>
-            {preferencesMessage ? (
-              <span className="orion-preferences-message" role="status" aria-live="polite">
-                {preferencesMessage}
-              </span>
-            ) : null}
-          </div>
-          <div className="orion-preferences-actions">
-            <button type="button" className="orion-preferences-button is-primary" onClick={guardarPreferencias}>
-              Guardar predeterminadas
-            </button>
-            <button type="button" className="orion-preferences-button" onClick={restablecerPreferencias}>
-              Restablecer
-            </button>
-            <button
-              type="button"
-              className="orion-collapse-button"
-              aria-expanded={optionsOpen}
-              aria-controls="orion-options-content"
-              onClick={() => setOptionsOpen((open) => !open)}
-            >
-              {optionsOpen ? 'Ocultar' : 'Mostrar'}
-              <span className={`orion-collapse-chevron ${optionsOpen ? 'is-open' : ''}`} aria-hidden="true">⌄</span>
-            </button>
-          </div>
-        </div>
-
-        {optionsOpen ? (
-          <div
-            id="orion-options-content"
-            className={`orion-compact-grid ${resolvedKind === 'tratamiento' ? 'is-treatment' : ''} ${resolvedKind === null ? 'is-mode-only' : ''}`}
-          >
-            <section className="orion-compact-section">
-              <h3 className="orion-compact-title">Modo</h3>
+            <div className="orion-mode-inline">
+              <span className="orion-mode-inline-label">Modo</span>
               <div className="orion-mode-selector">
                 <button
                   type="button"
@@ -1128,8 +1101,92 @@ function OrionUnificadoClient() {
                   Analítica
                 </button>
               </div>
-            </section>
+            </div>
+            {texto.trim() ? (
+              <div className="orion-detection-summary">
+                <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${detectionBadgeClass}`}>
+                  {getDetectionLabel(detection.detected)}
+                </span>
+                <span className="orion-detection-score">score tto {detection.treatmentScore} | score analítica {detection.analyticScore}</span>
+              </div>
+            ) : null}
+            <button
+              type="button"
+              className="reset-btn orion-reset"
+              onClick={() => {
+                setTexto('');
+                setSeleccion({});
+                setSeleccionBloques({});
+              }}
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </section>
 
+      <section className="orion-card orion-controls-card">
+        <div className="orion-options-header">
+          <div className="orion-options-heading-copy">
+            <button
+              type="button"
+              className="orion-collapse-button"
+              aria-label={optionsOpen ? 'Ocultar opciones' : 'Mostrar opciones'}
+              aria-expanded={optionsOpen}
+              aria-controls="orion-options-content"
+              onClick={() => setOptionsOpen((open) => !open)}
+            >
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                className={`orion-collapse-chevron ${optionsOpen ? 'is-open' : ''}`}
+                aria-hidden="true"
+              >
+                <path d="m8 6 4 4-4 4" />
+              </svg>
+            </button>
+            <h2 className="orion-options-heading">Opciones</h2>
+            {preferencesMessage ? (
+              <span className="orion-preferences-message" role="status" aria-live="polite">
+                {preferencesMessage}
+              </span>
+            ) : null}
+          </div>
+          <div className="orion-preferences-actions">
+            <button
+              type="button"
+              className="orion-preferences-button orion-preferences-icon-button is-primary"
+              aria-label="Guardar opciones como predeterminadas"
+              title="Guardar predeterminadas"
+              onClick={guardarPreferencias}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                <path d="M5 4.5h11.5L19.5 7v12.5h-15z" />
+                <path d="M8 4.5v5h8v-5M8 19.5v-5h8v5" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="orion-preferences-button orion-preferences-icon-button"
+              aria-label="Restablecer opciones"
+              title="Restablecer"
+              onClick={restablecerPreferencias}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                <path d="M4.5 10a7.5 7.5 0 1 1 2.1 6.2" />
+                <path d="M4.5 4.5v5.5H10" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {optionsOpen ? (
+          <div
+            id="orion-options-content"
+            className={`orion-compact-grid ${resolvedKind === 'tratamiento' ? 'is-treatment' : ''}`}
+          >
             {resolvedKind === 'tratamiento' ? (
               <section className="orion-compact-section">
                 <h3 className="orion-compact-title">Formato</h3>
@@ -1138,6 +1195,12 @@ function OrionUnificadoClient() {
                   note="Una línea por medicamento"
                   checked={variasLineas}
                   onChange={setVariasLineas}
+                />
+                <OrionToggle
+                  label="Posología"
+                  note="Mostrar indicaciones y pauta"
+                  checked={includePosologia}
+                  onChange={setIncludePosologia}
                 />
               </section>
             ) : null}
@@ -1165,7 +1228,6 @@ function OrionUnificadoClient() {
                 </div>
                 <OrionToggle
                   label="Alinear columnas"
-                  note={mode === 'lineas' ? 'Alinea valores y rangos' : 'Solo disponible en Líneas'}
                   checked={mode === 'lineas' && useColumns}
                   disabled={mode !== 'lineas'}
                   onChange={setUseColumns}
@@ -1182,7 +1244,6 @@ function OrionUnificadoClient() {
                   <OrionToggle label="Comentarios" checked={includeComments} onChange={setIncludeComments} />
                   <OrionToggle
                     label="Solo alterados"
-                    note="Orina siempre completa"
                     checked={onlyAltered}
                     onChange={setOnlyAltered}
                   />
@@ -1195,7 +1256,35 @@ function OrionUnificadoClient() {
 
       {resolvedKind === 'tratamiento' && medicamentos.length ? (
         <section className="depurador-lista">
-          <div className="depurador-lista-titulo">Medicamentos detectados ({medicamentos.length})</div>
+          <div className="orion-blocks-header">
+            <div className="depurador-lista-titulo">Medicamentos detectados ({medicamentos.length})</div>
+            <div className="orion-blocks-actions">
+              <button
+                type="button"
+                className="orion-block-action"
+                aria-label="Seleccionar todos los medicamentos"
+                title="Seleccionar todos"
+                onClick={() => setSeleccion(Object.fromEntries(medicamentos.map((medicamento) => [medicamento.id, true])))}
+              >
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="3" y="3" width="14" height="14" rx="2" />
+                  <path d="m6.5 10 2.3 2.3 4.7-4.7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="orion-block-action"
+                aria-label="Deseleccionar todos los medicamentos"
+                title="Deseleccionar todos"
+                onClick={() => setSeleccion(Object.fromEntries(medicamentos.map((medicamento) => [medicamento.id, false])))}
+              >
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="3" y="3" width="14" height="14" rx="2" />
+                  <path d="M6.5 10h7" />
+                </svg>
+              </button>
+            </div>
+          </div>
           <div className="depurador-lista-items">
             {medicamentos.map((m) => (
               <label key={m.id} className="depurador-item">
@@ -1210,6 +1299,57 @@ function OrionUnificadoClient() {
                   }
                 />
                 <span>{m.nombre || 'Sin nombre'}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {resolvedKind === 'analitica' && bloquesAnalitica.length ? (
+        <section className="depurador-lista">
+          <div className="orion-blocks-header">
+            <div className="depurador-lista-titulo">Bloques detectados ({bloquesAnalitica.length})</div>
+            <div className="orion-blocks-actions">
+              <button
+                type="button"
+                className="orion-block-action"
+                aria-label="Seleccionar todos los bloques"
+                title="Seleccionar todos"
+                onClick={() => setSeleccionBloques(Object.fromEntries(bloquesAnalitica.map((bloque) => [bloque, true])))}
+              >
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="3" y="3" width="14" height="14" rx="2" />
+                  <path d="m6.5 10 2.3 2.3 4.7-4.7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="orion-block-action"
+                aria-label="Deseleccionar todos los bloques"
+                title="Deseleccionar todos"
+                onClick={() => setSeleccionBloques(Object.fromEntries(bloquesAnalitica.map((bloque) => [bloque, false])))}
+              >
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="3" y="3" width="14" height="14" rx="2" />
+                  <path d="M6.5 10h7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="depurador-lista-items">
+            {bloquesAnalitica.map((bloque) => (
+              <label key={bloque} className="depurador-item">
+                <input
+                  type="checkbox"
+                  checked={seleccionBloques[bloque] ?? true}
+                  onChange={() =>
+                    setSeleccionBloques((prev) => ({
+                      ...prev,
+                      [bloque]: !(prev[bloque] ?? true),
+                    }))
+                  }
+                />
+                <span>{bloque}</span>
               </label>
             ))}
           </div>
