@@ -12,6 +12,17 @@ type DetectedKind = 'tratamiento' | 'analitica' | 'ambiguo' | 'desconocido';
 type OutputMode = 'lineas' | 'parrafos';
 type VisualFontProfile = 'tahoma' | 'helvetica';
 
+type OrionPreferences = {
+  inputKind: InputKind;
+  variasLineas: boolean;
+  mode: OutputMode;
+  useColumns: boolean;
+  includeReference: boolean;
+  includeRequestLine: boolean;
+  includeComments: boolean;
+  onlyAltered: boolean;
+};
+
 type Regla = {
   patron: string;
   reemplazo: string;
@@ -32,6 +43,7 @@ type LabEntry = {
   result: string;
   unit: string;
   reference: string;
+  comment: string;
   confidenceNote: string;
 };
 
@@ -42,6 +54,7 @@ type ParsedPayload = {
 
 const REGLAS_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-HP_OCXjtFN6cCrpBgViv59ufFzUBerAK5jvTSLoT27zC_ux_3YTpX4oQcmCNIZg7blWaBANXtUkF/pub?output=csv';
+const ORION_PREFERENCES_KEY = 'orion-sf-preferences-v1';
 
 const RX_TERA = /^Terapia\/Medicamento:\s*(.*)\s*$/i;
 const RX_POSO = /^Posolog[ií]a\/Observaciones:\s*(.*)\s*$/i;
@@ -75,6 +88,7 @@ const GROUP_LABELS: Array<{ needle: string; label: string }> = [
   { needle: 'SEROLOGIA DE VIH', label: 'Serología VIH' },
   { needle: 'SEROLOGIA DE SIFILIS', label: 'Serología sífilis' },
   { needle: 'LABORATORIO EXTERNO', label: 'Laboratorio externo' },
+  { needle: 'DROGAS DE ABUSO', label: 'Drogas de abuso' },
   { needle: 'ORINAS', label: 'Orina' },
   { needle: 'SEDIMENTO', label: 'Orina' },
   { needle: 'ANORMALES', label: 'Orina' },
@@ -330,6 +344,31 @@ function parseResultAndUnit(valueUnitRaw: string): { result: string; unit: strin
   return { result: valueUnit, unit: '' };
 }
 
+function splitReferenceAndComment(raw: string): { reference: string; comment: string } {
+  const value = raw.trim();
+  if (!value) return { reference: '', comment: '' };
+  if (/^cut\s*off\b/i.test(value)) return { reference: '', comment: value };
+
+  const bracketedReference = value.match(/^(\[[^\]]+\])\s*(.*)$/);
+  if (bracketedReference) {
+    return {
+      reference: bracketedReference[1].trim(),
+      comment: bracketedReference[2].trim(),
+    };
+  }
+
+  return { reference: value, comment: '' };
+}
+
+function isOptionalCommentLine(line: string): boolean {
+  const key = normalizeForMatch(line);
+  return (
+    key.includes('DETERMINACION CUALITATIVA') ||
+    key.includes('PARA USO CLINICO') ||
+    key.includes('RESULTADO POSITIVO REQUIERE CONFIRMACION')
+  );
+}
+
 function parseResultLine(line: string, group: string): LabEntry | null {
   const cols = splitColumns(line);
   if (cols.length < 2) return null;
@@ -343,7 +382,15 @@ function parseResultLine(line: string, group: string): LabEntry | null {
     index = 2;
   }
 
-  const tailCols = cols.slice(index).filter((col) => !isIgnorableLabToken(col));
+  let tailCols = cols.slice(index).filter((col) => !isIgnorableLabToken(col));
+  if (!tailCols.length) return null;
+
+  let comment = '';
+  const cutOffIndex = tailCols.findIndex((col) => /^cut\s*off\b/i.test(col));
+  if (cutOffIndex >= 0) {
+    comment = tailCols.slice(cutOffIndex).join(' ').trim();
+    tailCols = tailCols.slice(0, cutOffIndex);
+  }
   if (!tailCols.length) return null;
 
   let referenceStart = tailCols.length;
@@ -366,6 +413,10 @@ function parseResultLine(line: string, group: string): LabEntry | null {
     }
   }
 
+  const referenceParts = splitReferenceAndComment(reference);
+  reference = referenceParts.reference;
+  comment = [comment, referenceParts.comment].filter(Boolean).join(' ').trim();
+
   const parsed = parseResultAndUnit(valueUnitRaw);
   if (!parsed.result) return null;
 
@@ -376,6 +427,7 @@ function parseResultLine(line: string, group: string): LabEntry | null {
     result: parsed.result,
     unit: parsed.unit,
     reference,
+    comment,
     confidenceNote: '',
   };
 }
@@ -471,6 +523,11 @@ function parseInput(input: string): ParsedPayload {
       continue;
     }
 
+    if (lastEntry && isOptionalCommentLine(line)) {
+      lastEntry.comment = `${lastEntry.comment} ${line}`.trim();
+      continue;
+    }
+
     if (lastEntry && canAppendContinuation(lastEntry)) lastEntry.result = `${lastEntry.result}\n${line}`.trim();
   }
 
@@ -552,6 +609,13 @@ function formatResultForOutput(entry: LabEntry): string {
   const nameKey = normalizeForMatch(entry.name);
   if (nameKey.includes('CULTIVO')) return formatCultureResult(entry.result);
   const raw = entry.result.replace(/\s+/g, ' ').trim();
+  if (isDrugAbuseGroup(entry.group)) {
+    const resultKey = normalizeForMatch(raw.replace(/[.!?]+$/g, ''));
+    if (resultKey === 'NEGATIVO') return 'Negativo';
+    if (resultKey === 'POSITIVO') return 'POSITIVO';
+    if (resultKey === 'DUDOSO') return 'DUDOSO';
+    return raw.replace(/[.!?]+$/g, '');
+  }
   if (entry.unit) return raw;
   if (/^([<>]=?|=)?\s*-?\d+(?:[.,]\d+)?$/.test(raw)) return raw;
   return normalizeNarrative(raw);
@@ -575,11 +639,38 @@ function isMicrobiologyGroup(group: string): boolean {
   return normalizeForMatch(group).includes('MICROBIOLOGIA');
 }
 
+function isDrugAbuseGroup(group: string): boolean {
+  return normalizeForMatch(group).includes('DROGAS DE ABUSO');
+}
+
+function isUrineGroup(group: string): boolean {
+  const key = normalizeForMatch(group);
+  return key === 'ORINA' || key === 'BIOQUIMICA ORINA';
+}
+
+function isAlteredEntry(entry: LabEntry): boolean {
+  if (entry.flag === '*') return true;
+  if (!isDrugAbuseGroup(entry.group)) return false;
+  const resultKey = normalizeForMatch(entry.result.replace(/[.!?]+$/g, ''));
+  return resultKey === 'POSITIVO' || resultKey === 'DUDOSO';
+}
+
+function isCommentOnlyEntry(entry: LabEntry): boolean {
+  return normalizeForMatch(entry.name).includes('PREDICCION ITU');
+}
+
+function formatCommentForOutput(entry: LabEntry): string {
+  if (isDrugAbuseGroup(entry.group)) {
+    return entry.comment.replace(/\s+/g, ' ').trim().replace(/[.!?]+$/g, '');
+  }
+  return normalizeNarrative(entry.comment);
+}
+
 function indentMultiline(text: string, indent: string): string {
   return text.split('\n').map((line) => `${indent}${line}`).join('\n');
 }
 
-function formatEntryLine(entry: LabEntry, includeReference: boolean, includeConfidence: boolean): string {
+function formatEntryLine(entry: LabEntry, includeReference: boolean, includeConfidence: boolean, includeComments: boolean): string {
   const displayResult = entry.unit ? formatResultForOutput(entry).replace(/\s*\n+\s*/g, ' ').trim() : formatResultForOutput(entry);
   const displayName = formatEntryNameForOutput(entry);
   const isMicro = isMicrobiologyGroup(entry.group);
@@ -590,11 +681,12 @@ function formatEntryLine(entry: LabEntry, includeReference: boolean, includeConf
   let text = chunks.join(' ').replace(/\s+/g, ' ').trim();
   if (entry.unit) text = text.replace(/\s*\n+\s*/g, ' ').trim();
   if (includeReference && entry.reference) text += ` ${entry.reference}`;
+  if (includeComments && entry.comment) text += ` ${formatCommentForOutput(entry)}`;
   if (includeConfidence && entry.confidenceNote) text += ` (${entry.confidenceNote})`;
   return text;
 }
 
-function formatEntryLineColumns(entry: LabEntry, includeReference: boolean, includeConfidence: boolean, indent: string, nameColumnTarget: number, valueColumnTarget: number): string {
+function formatEntryLineColumns(entry: LabEntry, includeReference: boolean, includeConfidence: boolean, includeComments: boolean, indent: string, nameColumnTarget: number, valueColumnTarget: number): string {
   const displayResult = formatResultForOutput(entry).replace(/\s*\n+\s*/g, ' ').trim();
   const displayUnit = entry.unit.replace(/\s+/g, ' ').trim();
   const valueAndUnit = displayUnit ? `${displayResult} ${displayUnit}` : displayResult;
@@ -611,6 +703,7 @@ function formatEntryLineColumns(entry: LabEntry, includeReference: boolean, incl
     const valueGap = `${spaces(valueSpaces)}${COLUMN_FORMAT.TAB}`;
     text += `${valueGap}${entry.reference}`;
   }
+  if (includeComments && entry.comment) text += ` ${formatCommentForOutput(entry)}`;
   if (includeConfidence && entry.confidenceNote) {
     const sep = text.endsWith(' ') ? '' : ' ';
     text += `${sep}(${entry.confidenceNote})`;
@@ -618,11 +711,16 @@ function formatEntryLineColumns(entry: LabEntry, includeReference: boolean, incl
   return text.trimEnd();
 }
 
-function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference: boolean, includeConfidence: boolean, includeRequestLine: boolean, useColumns: boolean, fontProfile: VisualFontProfile): string {
+function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference: boolean, includeConfidence: boolean, includeRequestLine: boolean, includeComments: boolean, onlyAltered: boolean, useColumns: boolean, fontProfile: VisualFontProfile): string {
   const parsed = parseInput(input);
   const out: string[] = [];
   const paramIndent = '  ';
-  const entriesForColumns = parsed.groups.flatMap((group) => group.entries).filter((entry) => !isMicrobiologyGroup(entry.group));
+  const isVisibleEntry = (entry: LabEntry) =>
+    (includeComments || !isCommentOnlyEntry(entry)) &&
+    (!onlyAltered || isUrineGroup(entry.group) || isAlteredEntry(entry));
+  const entriesForColumns = parsed.groups
+    .flatMap((group) => group.entries)
+    .filter((entry) => !isMicrobiologyGroup(entry.group) && isVisibleEntry(entry));
   const nameColumnTarget =
     Math.max(
       'VOLUMEN CORPUSCULAR MEDIO'.length,
@@ -641,27 +739,41 @@ function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference:
 
   void fontProfile;
 
-  if (includeRequestLine && parsed.requestLine) {
-    out.push(parsed.requestLine);
+  if (includeRequestLine && parsed.requestLine) out.push(parsed.requestLine);
+  if (onlyAltered) out.push('(Solo se muestran resultados alterados)');
+  if ((includeRequestLine && parsed.requestLine) || onlyAltered) {
     out.push('');
   }
 
   for (const group of parsed.groups) {
+    const visibleEntries = group.entries.filter(isVisibleEntry);
+    if (!visibleEntries.length) continue;
+
     if (mode === 'lineas') {
       out.push(group.name.toUpperCase());
-      for (const entry of group.entries) {
+      for (const entry of visibleEntries) {
         if (useColumns && !isMicrobiologyGroup(entry.group)) {
-          out.push(formatEntryLineColumns(entry, includeReference, includeConfidence, paramIndent, nameColumnTarget, valueColumnTarget).replace(/\s*\n+\s*/g, ' '));
+          out.push(formatEntryLineColumns(entry, includeReference, includeConfidence, includeComments, paramIndent, nameColumnTarget, valueColumnTarget).replace(/\s*\n+\s*/g, ' '));
         } else {
-          out.push(indentMultiline(formatEntryLine(entry, includeReference, includeConfidence), paramIndent));
+          out.push(indentMultiline(formatEntryLine(entry, includeReference, includeConfidence, includeComments), paramIndent));
         }
       }
       out.push('');
       continue;
     }
 
-    const joined = group.entries.map((entry) => formatEntryLine(entry, includeReference, includeConfidence)).join('; ');
-    out.push(`- ${group.name.toUpperCase()}: ${joined}`);
+    const regularEntries = visibleEntries.filter((entry) => !isCommentOnlyEntry(entry));
+    const commentOnlyEntries = visibleEntries.filter(isCommentOnlyEntry);
+    const joined = regularEntries
+      .map((entry, index) => {
+        const text = formatEntryLine(entry, includeReference, includeConfidence, includeComments);
+        return index < regularEntries.length - 1 ? text.replace(/\.+$/g, '') : text;
+      })
+      .join('; ');
+    if (joined) out.push(`- ${group.name.toUpperCase()}: ${joined}`);
+    for (const entry of commentOnlyEntries) {
+      out.push(`  ${formatEntryLine(entry, includeReference, includeConfidence, includeComments)}`);
+    }
     out.push('');
   }
 
@@ -711,6 +823,37 @@ function getInitialInputKind(value: string | null): InputKind {
   return 'auto';
 }
 
+function OrionToggle({
+  label,
+  note,
+  checked,
+  disabled = false,
+  onChange,
+}: {
+  label: string;
+  note?: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className={`orion-option-row ${disabled ? 'is-disabled' : ''}`}>
+      <span className="orion-option-copy">
+        <span className="orion-option-name">{label}</span>
+        {note ? <span className="orion-option-note">{note}</span> : null}
+      </span>
+      <input
+        type="checkbox"
+        className="orion-switch-input"
+        checked={checked}
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.checked)}
+      />
+      <span className="orion-switch-track" aria-hidden="true" />
+    </label>
+  );
+}
+
 function OrionUnificadoClient() {
   const searchParams = useSearchParams();
   const requestedKind = searchParams.get('kind');
@@ -726,6 +869,10 @@ function OrionUnificadoClient() {
   const [useColumns, setUseColumns] = useState(false);
   const [includeReference, setIncludeReference] = useState(true);
   const [includeRequestLine, setIncludeRequestLine] = useState(true);
+  const [includeComments, setIncludeComments] = useState(true);
+  const [onlyAltered, setOnlyAltered] = useState(false);
+  const [preferencesMessage, setPreferencesMessage] = useState('');
+  const [optionsOpen, setOptionsOpen] = useState(true);
   const includeConfidence = false;
   const fontProfile: VisualFontProfile = 'helvetica';
 
@@ -774,6 +921,80 @@ function OrionUnificadoClient() {
     void reglas;
   }, [reglas]);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const raw = window.localStorage.getItem(ORION_PREFERENCES_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw) as Partial<OrionPreferences>;
+        const hasRequestedKind = requestedKind === 'auto' || requestedKind === 'tratamiento' || requestedKind === 'analitica';
+
+        if (!hasRequestedKind && (saved.inputKind === 'auto' || saved.inputKind === 'tratamiento' || saved.inputKind === 'analitica')) {
+          setInputKind(saved.inputKind);
+        }
+        if (typeof saved.variasLineas === 'boolean') setVariasLineas(saved.variasLineas);
+        if (saved.mode === 'lineas' || saved.mode === 'parrafos') setMode(saved.mode);
+        if (typeof saved.useColumns === 'boolean') setUseColumns(saved.useColumns);
+        if (typeof saved.includeReference === 'boolean') setIncludeReference(saved.includeReference);
+        if (typeof saved.includeRequestLine === 'boolean') setIncludeRequestLine(saved.includeRequestLine);
+        if (typeof saved.includeComments === 'boolean') setIncludeComments(saved.includeComments);
+        if (typeof saved.onlyAltered === 'boolean') setOnlyAltered(saved.onlyAltered);
+      } catch {
+        try {
+          window.localStorage.removeItem(ORION_PREFERENCES_KEY);
+        } catch {
+          // El navegador puede bloquear por completo el almacenamiento local.
+        }
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [requestedKind]);
+
+  useEffect(() => {
+    if (!preferencesMessage) return undefined;
+    const timer = window.setTimeout(() => setPreferencesMessage(''), 2200);
+    return () => window.clearTimeout(timer);
+  }, [preferencesMessage]);
+
+  const guardarPreferencias = () => {
+    const preferences: OrionPreferences = {
+      inputKind,
+      variasLineas,
+      mode,
+      useColumns,
+      includeReference,
+      includeRequestLine,
+      includeComments,
+      onlyAltered,
+    };
+
+    try {
+      window.localStorage.setItem(ORION_PREFERENCES_KEY, JSON.stringify(preferences));
+      setPreferencesMessage('Preferencias guardadas');
+    } catch {
+      setPreferencesMessage('No se han podido guardar las preferencias');
+    }
+  };
+
+  const restablecerPreferencias = () => {
+    let storageCleared = true;
+    try {
+      window.localStorage.removeItem(ORION_PREFERENCES_KEY);
+    } catch {
+      storageCleared = false;
+    }
+    setInputKind(getInitialInputKind(requestedKind));
+    setVariasLineas(false);
+    setMode('lineas');
+    setUseColumns(false);
+    setIncludeReference(true);
+    setIncludeRequestLine(true);
+    setIncludeComments(true);
+    setOnlyAltered(false);
+    setPreferencesMessage(storageCleared ? 'Preferencias restablecidas' : 'No se han podido borrar las preferencias guardadas');
+  };
+
   const textoTratamientoFiltrado = useMemo(() => {
     if (!medicamentos.length) return texto;
     const activos = medicamentos.filter((m) => seleccion[m.id] ?? true);
@@ -785,10 +1006,10 @@ function OrionUnificadoClient() {
     if (!texto.trim()) return '';
     if (resolvedKind === 'tratamiento') return depurarTratamiento(textoTratamientoFiltrado, variasLineas);
     if (resolvedKind === 'analitica') {
-      return buildAnaliticaOutput(texto, mode, includeReference, includeConfidence, includeRequestLine, useColumns, fontProfile);
+      return buildAnaliticaOutput(texto, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, fontProfile);
     }
     return '';
-  }, [texto, resolvedKind, textoTratamientoFiltrado, variasLineas, mode, includeReference, includeConfidence, includeRequestLine, useColumns]);
+  }, [texto, resolvedKind, textoTratamientoFiltrado, variasLineas, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns]);
 
   const detectionBadgeClass =
     detection.detected === 'tratamiento'
@@ -828,11 +1049,11 @@ function OrionUnificadoClient() {
             placeholder="Pega aquí una analítica o un listado de tratamiento..."
             style={{ minHeight: 220 }}
           />
-          <div className="mt-2 flex flex-wrap items-center gap-2">
+          <div className="orion-detection-row">
             <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${detectionBadgeClass}`}>
               {getDetectionLabel(detection.detected)}
             </span>
-            <span className="text-xs text-slate-500">score tto {detection.treatmentScore} | score analítica {detection.analyticScore}</span>
+            <span className="orion-detection-score">score tto {detection.treatmentScore} | score analítica {detection.analyticScore}</span>
             <button
               type="button"
               className="reset-btn orion-reset"
@@ -847,73 +1068,129 @@ function OrionUnificadoClient() {
         </div>
       </section>
 
-      <section className="orion-card space-y-4">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Modo</p>
-          <div className="orion-mode-selector">
-            <button
-              type="button"
-              className={`orion-mode-option ${inputKind === 'auto' ? 'activo' : ''}`}
-              onClick={() => setInputKind('auto')}
-            >
-              Auto
+      <section className="orion-card orion-controls-card">
+        <div className="orion-options-header">
+          <div className="orion-options-heading-copy">
+            <h2 className="orion-options-heading">Opciones</h2>
+            {preferencesMessage ? (
+              <span className="orion-preferences-message" role="status" aria-live="polite">
+                {preferencesMessage}
+              </span>
+            ) : null}
+          </div>
+          <div className="orion-preferences-actions">
+            <button type="button" className="orion-preferences-button is-primary" onClick={guardarPreferencias}>
+              Guardar predeterminadas
+            </button>
+            <button type="button" className="orion-preferences-button" onClick={restablecerPreferencias}>
+              Restablecer
             </button>
             <button
               type="button"
-              className={`orion-mode-option ${inputKind === 'tratamiento' ? 'activo' : ''}`}
-              onClick={() => setInputKind('tratamiento')}
+              className="orion-collapse-button"
+              aria-expanded={optionsOpen}
+              aria-controls="orion-options-content"
+              onClick={() => setOptionsOpen((open) => !open)}
             >
-              Tratamiento
-            </button>
-            <button
-              type="button"
-              className={`orion-mode-option ${inputKind === 'analitica' ? 'activo' : ''}`}
-              onClick={() => setInputKind('analitica')}
-            >
-              Analítica
+              {optionsOpen ? 'Ocultar' : 'Mostrar'}
+              <span className={`orion-collapse-chevron ${optionsOpen ? 'is-open' : ''}`} aria-hidden="true">⌄</span>
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {resolvedKind === 'tratamiento' ? (
-            <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Multilínea</p>
-              <button type="button" className={`selector-btn selector-btn-compact w-full ${variasLineas ? 'activo' : ''}`} onClick={() => setVariasLineas((prev) => !prev)}>
-                {variasLineas ? 'SÍ' : 'NO'}
-              </button>
-            </div>
-          ) : null}
+        {optionsOpen ? (
+          <div
+            id="orion-options-content"
+            className={`orion-compact-grid ${resolvedKind === 'tratamiento' ? 'is-treatment' : ''} ${resolvedKind === null ? 'is-mode-only' : ''}`}
+          >
+            <section className="orion-compact-section">
+              <h3 className="orion-compact-title">Modo</h3>
+              <div className="orion-mode-selector">
+                <button
+                  type="button"
+                  className={`orion-mode-option ${inputKind === 'auto' ? 'activo' : ''}`}
+                  onClick={() => setInputKind('auto')}
+                >
+                  Auto
+                </button>
+                <button
+                  type="button"
+                  className={`orion-mode-option ${inputKind === 'tratamiento' ? 'activo' : ''}`}
+                  onClick={() => setInputKind('tratamiento')}
+                >
+                  Tratamiento
+                </button>
+                <button
+                  type="button"
+                  className={`orion-mode-option ${inputKind === 'analitica' ? 'activo' : ''}`}
+                  onClick={() => setInputKind('analitica')}
+                >
+                  Analítica
+                </button>
+              </div>
+            </section>
 
-          {resolvedKind === 'analitica' ? (
-            <>
-              <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vista</p>
-                <button type="button" className={`selector-btn selector-btn-compact w-full ${mode === 'lineas' ? 'activo' : ''}`} onClick={() => setMode((prev) => (prev === 'lineas' ? 'parrafos' : 'lineas'))}>
-                  {mode === 'lineas' ? 'LÍNEA' : 'PÁRRAFO'}
-                </button>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Columnas</p>
-                <button type="button" className={`selector-btn selector-btn-compact w-full ${mode === 'lineas' && useColumns ? 'activo' : ''}`} disabled={mode !== 'lineas'} onClick={() => setUseColumns((prev) => !prev)}>
-                  {useColumns ? 'SÍ' : 'NO'}
-                </button>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Rangos</p>
-                <button type="button" className={`selector-btn selector-btn-compact w-full ${includeReference ? 'activo' : ''}`} onClick={() => setIncludeReference((prev) => !prev)}>
-                  {includeReference ? 'SÍ' : 'NO'}
-                </button>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Encabezado</p>
-                <button type="button" className={`selector-btn selector-btn-compact w-full ${includeRequestLine ? 'activo' : ''}`} onClick={() => setIncludeRequestLine((prev) => !prev)}>
-                  {includeRequestLine ? 'SÍ' : 'NO'}
-                </button>
-              </div>
-            </>
-          ) : null}
-        </div>
+            {resolvedKind === 'tratamiento' ? (
+              <section className="orion-compact-section">
+                <h3 className="orion-compact-title">Formato</h3>
+                <OrionToggle
+                  label="Multilínea"
+                  note="Una línea por medicamento"
+                  checked={variasLineas}
+                  onChange={setVariasLineas}
+                />
+              </section>
+            ) : null}
+
+            {resolvedKind === 'analitica' ? (
+              <section className="orion-compact-section">
+                <h3 className="orion-compact-title">Formato</h3>
+                <div className="orion-view-selector" aria-label="Vista del resultado">
+                  <button
+                    type="button"
+                    className={`orion-view-option ${mode === 'lineas' ? 'activo' : ''}`}
+                    aria-pressed={mode === 'lineas'}
+                    onClick={() => setMode('lineas')}
+                  >
+                    Líneas
+                  </button>
+                  <button
+                    type="button"
+                    className={`orion-view-option ${mode === 'parrafos' ? 'activo' : ''}`}
+                    aria-pressed={mode === 'parrafos'}
+                    onClick={() => setMode('parrafos')}
+                  >
+                    Párrafo
+                  </button>
+                </div>
+                <OrionToggle
+                  label="Alinear columnas"
+                  note={mode === 'lineas' ? 'Alinea valores y rangos' : 'Solo disponible en Líneas'}
+                  checked={mode === 'lineas' && useColumns}
+                  disabled={mode !== 'lineas'}
+                  onChange={setUseColumns}
+                />
+              </section>
+            ) : null}
+
+            {resolvedKind === 'analitica' ? (
+              <section className="orion-compact-section orion-content-section">
+                <h3 className="orion-compact-title">Contenido</h3>
+                <div className="orion-content-options">
+                  <OrionToggle label="Rangos" checked={includeReference} onChange={setIncludeReference} />
+                  <OrionToggle label="Encabezado" checked={includeRequestLine} onChange={setIncludeRequestLine} />
+                  <OrionToggle label="Comentarios" checked={includeComments} onChange={setIncludeComments} />
+                  <OrionToggle
+                    label="Solo alterados"
+                    note="Orina siempre completa"
+                    checked={onlyAltered}
+                    onChange={setOnlyAltered}
+                  />
+                </div>
+              </section>
+            ) : null}
+          </div>
+        ) : null}
       </section>
 
       {resolvedKind === 'tratamiento' && medicamentos.length ? (
