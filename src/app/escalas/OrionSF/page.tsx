@@ -101,7 +101,14 @@ function normEspacios(s: string) {
 }
 
 function normalizeLine(text: string): string {
-  return text.replace(/\r/g, '').replace(/\u00A0/g, ' ').trimEnd();
+  return text
+    .replace(/\r/g, '')
+    .replace(/\u00A0/g, ' ')
+    .replace(/&nbsp;|&#x20;|&#32;/gi, ' ')
+    .replace(/&#x9;|&#9;/gi, '\t')
+    .replace(/&gt;|&#x3e;/gi, '>')
+    .replace(/\\>/g, '>')
+    .trimEnd();
 }
 
 function normalizeForMatch(text: string): string {
@@ -471,6 +478,8 @@ function parseInput(input: string): ParsedPayload {
   let lastEntry: LabEntry | null = null;
   const orderedGroups: Array<{ name: string; entries: LabEntry[] }> = [];
   const groupsMap = new Map<string, { name: string; entries: LabEntry[] }>();
+  let activeCulture: LabEntry | null = null;
+  let activeCultureSection: string | null = null;
 
   const ensureGroup = (name: string) => {
     if (!groupsMap.has(name)) {
@@ -503,24 +512,93 @@ function parseInput(input: string): ParsedPayload {
       continue;
     }
 
-    if (looksLikeHeading(line)) {
+    const currentGroup = detectGroup(headings);
+    const isCultureContinuation =
+      activeCulture &&
+      (Boolean(activeCultureSection) || /^COMENTARIO\b/i.test(line) || /^En cistitis\b/i.test(line) ||
+        /^[<>]=?\s*[\d.,]+\s*UFC\/mL$/i.test(line) || /^CEPA\s+PRODUCTORA\b/i.test(line));
+
+    if (looksLikeHeading(line) && !isCultureContinuation) {
       headings.push(line);
       if (headings.length > 8) headings.shift();
       continue;
     }
 
     const detached = parseDetachedUnitOrReferenceLine(rawLine);
-    if (lastEntry && detached) {
+    const isCulturePreambleLine =
+      /^[<>]=?\s*[\d.,]+\s*UFC\/mL$/i.test(line) || /^CEPA\s+PRODUCTORA\b/i.test(line);
+    if (lastEntry && detached && !(activeCulture && (activeCultureSection || isCulturePreambleLine))) {
       if (detached.unit) lastEntry.unit = lastEntry.unit ? `${lastEntry.unit} ${detached.unit}`.trim() : detached.unit;
       if (detached.reference) lastEntry.reference = lastEntry.reference ? `${lastEntry.reference} ${detached.reference}`.trim() : detached.reference;
       continue;
     }
 
-    const group = detectGroup(headings);
+    const group = currentGroup;
+
+    if (isMicrobiologyGroup(group) || activeCulture) {
+      if (/^Sensible$/i.test(line)) {
+        if (activeCulture) {
+          activeCultureSection = 'Sensible';
+          activeCulture.result = `${activeCulture.result}\nSensible`.trim();
+        }
+        continue;
+      }
+      if (/^Sensible\s+con\s+exposici[oó]n\s+incrementada$/i.test(line)) {
+        if (activeCulture) {
+          activeCultureSection = 'Sensible con exposición incrementada';
+          activeCulture.result = `${activeCulture.result}\nSensible con exposición incrementada`.trim();
+        }
+        continue;
+      }
+      if (/^Resistente$/i.test(line)) {
+        if (activeCulture) {
+          activeCultureSection = 'Resistente';
+          activeCulture.result = `${activeCulture.result}\nResistente`.trim();
+        }
+        continue;
+      }
+      if (activeCulture && /^En cistitis\b/i.test(line)) {
+        const noteEntry: LabEntry = {
+          group,
+          name: 'NOTA',
+          flag: '',
+          result: line,
+          unit: '',
+          reference: '',
+          comment: '',
+          confidenceNote: '',
+        };
+        ensureGroup(group).entries.push(noteEntry);
+        lastEntry = noteEntry;
+        activeCultureSection = null;
+        continue;
+      }
+      if (activeCulture && activeCultureSection && line && !/^COMENTARIO\b/i.test(line)) {
+        activeCulture.result = `${activeCulture.result}\n${line}`.trim();
+        continue;
+      }
+    }
+
     const parsedResult = parseResultLine(rawLine, group);
     if (parsedResult) {
+      const parsedNameKey = normalizeForMatch(parsedResult.name);
+      if (
+        activeCulture &&
+        activeCultureSection &&
+        !parsedNameKey.includes('CULTIVO') &&
+        parsedNameKey !== 'COMENTARIO'
+      ) {
+        activeCulture.result = `${activeCulture.result}\n${parsedResult.name}${parsedResult.result ? ` ${parsedResult.result}` : ''}`.trim();
+        continue;
+      }
       ensureGroup(group).entries.push(parsedResult);
       lastEntry = parsedResult;
+      if (normalizeForMatch(parsedResult.name).includes('CULTIVO')) {
+        activeCulture = parsedResult;
+        activeCultureSection = null;
+      } else if (activeCulture && normalizeForMatch(parsedResult.name) === 'COMENTARIO') {
+        activeCultureSection = null;
+      }
       continue;
     }
 
@@ -545,14 +623,6 @@ function canonicalAntibiogramLabel(label: string): string {
   return 'Sensible';
 }
 
-function joinWithY(items: string[]): string {
-  const vals = items.map((x) => x.trim()).filter(Boolean);
-  if (vals.length === 0) return '';
-  if (vals.length === 1) return vals[0];
-  if (vals.length === 2) return `${vals[0]} y ${vals[1]}`;
-  return `${vals.slice(0, -1).join(', ')} y ${vals[vals.length - 1]}`;
-}
-
 function normalizeNarrative(text: string): string {
   let out = text.replace(/\r/g, '').replace(/\s+/g, ' ').trim();
   out = out.replace(/\)\s+Se observan/gi, '). Se observan');
@@ -572,35 +642,40 @@ function formatCultureResult(rawResult: string): string {
 
   if (!lines.some((line) => isMarker(line))) return normalizeNarrative(lines.join(' '));
 
-  let germen = '';
+  const germen = lines[0] || '';
+  const firstMarkerIndex = lines.findIndex((line, index) => index > 0 && isMarker(line));
+  const preamble = lines.slice(1, firstMarkerIndex >= 0 ? firstMarkerIndex : lines.length);
+  const startIndex = firstMarkerIndex >= 0 ? firstMarkerIndex : 1;
+  let recuento = '';
+  const recuentoLine = preamble.find((line) => /^[<>]=?\s*[\d.,]+\s*UFC\/mL$/i.test(line));
+  if (recuentoLine) recuento = recuentoLine.replace(/UFC\/ml/i, 'UFC/mL');
+  const qualifiers = preamble.filter((line) => line !== recuentoLine);
   const sections = new Map<string, string[]>();
   let current: string | null = null;
 
-  for (const line of lines) {
+  for (const line of lines.slice(startIndex)) {
     if (isMarker(line)) {
       current = canonicalAntibiogramLabel(line);
       if (!sections.has(current)) sections.set(current, []);
       continue;
     }
-    if (!current) {
-      germen = germen ? `${germen} ${line}` : line;
-      continue;
-    }
+    if (!current) continue;
     sections.get(current)!.push(line);
   }
 
   const out: string[] = [];
   const germenLine = germen.replace(/\s+/g, ' ').trim();
-  if (germenLine) out.push(germenLine);
+  if (germenLine) out.push(`${germenLine}${recuento ? ` (${recuento})` : ''}.`);
+  qualifiers.forEach((qualifier) => out.push(normalizeNarrative(qualifier)));
 
   for (const label of ['Sensible', 'Sensible con exposición incrementada', 'Resistente'] as const) {
     const atbs = sections.get(label) ?? [];
     if (!atbs.length) continue;
-    const joined = joinWithY(atbs);
+    const joined = atbs.map((item) => item.trim()).filter(Boolean).join(', ');
     if (!joined) continue;
-    if (label === 'Sensible') out.push(`   Sensible a: ${joined}`);
-    else if (label === 'Sensible con exposición incrementada') out.push(`   Sensible con exposición incrementada a ${joined}`);
-    else out.push(`   Resistente a ${joined}.`);
+    if (label === 'Sensible') out.push(`   Sensible a: ${joined}.`);
+    else if (label === 'Sensible con exposición incrementada') out.push(`   Sensible con exposición incrementada a: ${joined}.`);
+    else out.push(`   Resistente a: ${joined}.`);
   }
 
   return out.join('\n');
@@ -657,7 +732,8 @@ function isAlteredEntry(entry: LabEntry): boolean {
 }
 
 function isCommentOnlyEntry(entry: LabEntry): boolean {
-  return normalizeForMatch(entry.name).includes('PREDICCION ITU');
+  const nameKey = normalizeForMatch(entry.name);
+  return nameKey.includes('PREDICCION ITU') || nameKey === 'COMENTARIO' || nameKey === 'NOTA';
 }
 
 function formatCommentForOutput(entry: LabEntry): string {
@@ -679,7 +755,10 @@ function formatEntryLine(entry: LabEntry, includeReference: boolean, includeConf
   if (entry.flag) chunks.push(entry.flag);
   const resultAndUnit = [displayResult, entry.unit].filter(Boolean).join(' ');
   if (resultAndUnit) chunks.push(resultAndUnit);
-  let text = chunks.join(' ').replace(/\s+/g, ' ').trim();
+  let text = chunks.join(' ');
+  text = isMicro ? text.replace(/[ \t]+/g, ' ').trim() : text.replace(/\s+/g, ' ').trim();
+  if (isMicro && normalizeForMatch(entry.name) === 'COMENTARIO') text = `COMENTARIO: ${displayResult}`;
+  if (isMicro && normalizeForMatch(entry.name) === 'NOTA') text = displayResult;
   if (entry.unit) text = text.replace(/\s*\n+\s*/g, ' ').trim();
   if (includeReference && entry.reference) text += ` ${entry.reference}`;
   if (includeComments && entry.comment) text += ` ${formatCommentForOutput(entry)}`;
@@ -754,10 +833,12 @@ function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference:
     if (mode === 'lineas') {
       out.push(group.name.toUpperCase());
       for (const entry of visibleEntries) {
+        if (isCommentOnlyEntry(entry)) out.push('');
         if (useColumns && !isMicrobiologyGroup(entry.group)) {
           out.push(formatEntryLineColumns(entry, includeReference, includeConfidence, includeComments, paramIndent, nameColumnTarget, valueColumnTarget).replace(/\s*\n+\s*/g, ' '));
         } else {
-          out.push(indentMultiline(formatEntryLine(entry, includeReference, includeConfidence, includeComments), paramIndent));
+          const line = formatEntryLine(entry, includeReference, includeConfidence, includeComments);
+          out.push(indentMultiline(line, paramIndent));
         }
       }
       out.push('');
@@ -769,10 +850,14 @@ function buildAnaliticaOutput(input: string, mode: OutputMode, includeReference:
     const joined = regularEntries
       .map((entry, index) => {
         const text = formatEntryLine(entry, includeReference, includeConfidence, includeComments);
-        return index < regularEntries.length - 1 ? text.replace(/\.+$/g, '') : text;
+        const paragraphText = text
+          .replace(/\s*\n+\s*/g, ' ')
+          .replace(/^-\s+/, '');
+        return index < regularEntries.length - 1 ? paragraphText.replace(/\.+$/g, '') : paragraphText;
       })
       .join('; ');
     if (joined) out.push(`- ${group.name.toUpperCase()}: ${joined}`);
+    if (commentOnlyEntries.length && joined) out.push('');
     for (const entry of commentOnlyEntries) {
       out.push(`  ${formatEntryLine(entry, includeReference, includeConfidence, includeComments)}`);
     }
