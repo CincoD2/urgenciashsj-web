@@ -871,12 +871,18 @@ body {
 
 .orion-compact-grid.is-treatment .orion-compact-section {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: 16px;
 }
 
 .orion-compact-grid.is-treatment .orion-compact-title {
   grid-column: 1 / -1;
+}
+
+.orion-cima-status {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12px;
 }
 
 .orion-compact-section {
@@ -1143,7 +1149,7 @@ body {
   }
 
   .orion-compact-grid.is-treatment {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
   .orion-content-section {
@@ -1209,6 +1215,10 @@ body {
 
   .orion-compact-grid,
   .orion-compact-grid.is-treatment {
+    grid-template-columns: 1fr;
+  }
+
+  .orion-compact-grid.is-treatment .orion-compact-section {
     grid-template-columns: 1fr;
   }
 

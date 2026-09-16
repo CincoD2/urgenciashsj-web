@@ -22,6 +22,7 @@ type OrionPreferences = {
   includeComments: boolean;
   onlyAltered: boolean;
   includePosologia: boolean;
+  useActiveIngredients: boolean;
 };
 
 type Regla = {
@@ -186,6 +187,7 @@ function limpiarPosologia(raw: string) {
   s = s.replace(/\bAMPOLLA(S)?\b/gi, 'amp');
   s = s.replace(/\bJERINGA(S)?\b/gi, 'iny');
   s = s.replace(/\bVIAL(ES)?\b/gi, 'vial');
+  s = s.replace(/\bAPLICACI[ÓO]N(ES)?\b/gi, (_, plural) => plural ? 'aplicaciones' : 'aplicación');
   s = s.replace(/\bPULVERIZACI[ÓO]N(ES)?\b/gi, 'inh');
   s = s.replace(/\bCARTUCHO\/PLUMA\b/gi, 'iny');
   s = s.replace(/\b(MONODOSIS|UNIDOSIS|OFTALMICO|OFT[ÁA]LMICA)\b/gi, '');
@@ -222,7 +224,7 @@ function limpiarPosologia(raw: string) {
   return normEspacios(`${qty} ${unit} ${rest}`);
 }
 
-function depurarTratamiento(textoOriginal: string, multilinea: boolean, includePosologia: boolean) {
+function depurarTratamiento(textoOriginal: string, multilinea: boolean, includePosologia: boolean, activeIngredients: Record<string, string | null> = {}) {
   const fechaActual = new Date().toLocaleDateString('es-ES');
   const lineas = (textoOriginal || '').replace(/\r/g, '').split('\n').map((l) => l.trimEnd());
   const items = [];
@@ -253,7 +255,19 @@ function depurarTratamiento(textoOriginal: string, multilinea: boolean, includeP
 
   const itemsLimpios = items
     .map(({ med, poso }) => {
-      const medL = limpiarNombreMedicamento(med);
+      let medL = limpiarNombreMedicamento(med);
+      if (medL && activeIngredients[med]) {
+        let suffix = medL.replace(/^(?:\(FM\)\s*)?\S+/, '').trim();
+        if (/\d/.test(suffix)) suffix = suffix.replace(/^[^\d]+(?=\d)/, '');
+        if (!/\d/.test(suffix)) {
+          const strength = med.match(/\d+(?:[.,]\d+)?\s*(?:MCG|MG|µG|G)\s*(?:\/\s*(?:ML|G))?/i)?.[0];
+          if (strength) suffix = normalizarUnidades(strength);
+        }
+        medL = `${activeIngredients[med].toLocaleUpperCase('es-ES')}${suffix ? ` ${suffix}` : ''}`;
+        if (/UNG[ÜU]ENTO OFT[ÁA]LMICO|POMADA OFT[ÁA]LMICA/i.test(med) && !/UNG[ÜU]ENTO|POMADA/i.test(suffix)) {
+          medL += ' (pomada oftálmica)';
+        }
+      }
       const posoL = limpiarPosologia(poso);
       if (!medL) return null;
       return { med: medL, poso: posoL };
@@ -962,6 +976,10 @@ function OrionUnificadoClient() {
   const [includeComments, setIncludeComments] = useState(true);
   const [onlyAltered, setOnlyAltered] = useState(false);
   const [includePosologia, setIncludePosologia] = useState(true);
+  const [useActiveIngredients, setUseActiveIngredients] = useState(false);
+  const [cimaResults, setCimaResults] = useState<Record<string, { active: string | null; status: 'matched' | 'unmatched' | 'error' }>>({});
+  const [cimaLoading, setCimaLoading] = useState(false);
+  const cimaCacheRef = useRef<Record<string, { active: string | null; status: 'matched' | 'unmatched' | 'error' }>>({});
   const [preferencesMessage, setPreferencesMessage] = useState('');
   const [optionsOpen, setOptionsOpen] = useState(false);
   const hadTextRef = useRef(false);
@@ -974,6 +992,46 @@ function OrionUnificadoClient() {
     () => (resolvedKind === 'tratamiento' && texto.trim() ? extraerMedicamentos(texto) : []),
     [texto, resolvedKind]
   );
+  const selectedMedicineNames = useMemo(
+    () => [...new Set(medicamentos.filter((med) => seleccion[med.id] ?? true).map((med) => med.nombre))],
+    [medicamentos, seleccion]
+  );
+  const selectedMedicineNamesKey = selectedMedicineNames.join('\u0000');
+
+  useEffect(() => {
+    if (!useActiveIngredients || resolvedKind !== 'tratamiento' || !selectedMedicineNamesKey) return;
+    const pending = selectedMedicineNamesKey.split('\u0000').filter((name) => !cimaCacheRef.current[name] || cimaCacheRef.current[name].status === 'error');
+    if (!pending.length) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setCimaLoading(true);
+      try {
+        const response = await fetch('/api/orion-cima', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ names: pending }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error('AEMPS no disponible');
+        const data = await response.json();
+        if (!controller.signal.aborted) {
+          cimaCacheRef.current = { ...cimaCacheRef.current, ...data.results };
+          setCimaResults(cimaCacheRef.current);
+        }
+      } catch {
+        if (!controller.signal.aborted) {
+          cimaCacheRef.current = {
+            ...cimaCacheRef.current,
+            ...Object.fromEntries(pending.map((name) => [name, { active: null, status: 'error' as const }])),
+          };
+          setCimaResults(cimaCacheRef.current);
+        }
+      } finally {
+        if (!controller.signal.aborted) setCimaLoading(false);
+      }
+    }, 400);
+    return () => { window.clearTimeout(timer); controller.abort(); };
+  }, [useActiveIngredients, resolvedKind, selectedMedicineNamesKey]);
   const bloquesAnalitica = useMemo(
     () => (resolvedKind === 'analitica' && texto.trim() ? parseInput(texto).groups.map((group) => group.name) : []),
     [texto, resolvedKind]
@@ -1040,6 +1098,7 @@ function OrionUnificadoClient() {
         if (typeof saved.includeComments === 'boolean') setIncludeComments(saved.includeComments);
         if (typeof saved.onlyAltered === 'boolean') setOnlyAltered(saved.onlyAltered);
         if (typeof saved.includePosologia === 'boolean') setIncludePosologia(saved.includePosologia);
+        if (typeof saved.useActiveIngredients === 'boolean') setUseActiveIngredients(saved.useActiveIngredients);
       } catch {
         try {
           window.localStorage.removeItem(ORION_PREFERENCES_KEY);
@@ -1079,6 +1138,7 @@ function OrionUnificadoClient() {
       includeComments,
       onlyAltered,
       includePosologia,
+      useActiveIngredients,
     };
 
     try {
@@ -1105,6 +1165,7 @@ function OrionUnificadoClient() {
     setIncludeComments(true);
     setOnlyAltered(false);
     setIncludePosologia(true);
+    setUseActiveIngredients(false);
     setPreferencesMessage(storageCleared ? 'Preferencias restablecidas' : 'No se han podido borrar las preferencias guardadas');
   };
 
@@ -1115,14 +1176,19 @@ function OrionUnificadoClient() {
     return activos.map((m) => m.bloque.join('\n')).join('\n');
   }, [texto, medicamentos, seleccion]);
 
+  const activeIngredientNames = useMemo(
+    () => Object.fromEntries(Object.entries(cimaResults).map(([name, result]) => [name, result.active])),
+    [cimaResults]
+  );
+
   const resultado = useMemo(() => {
     if (!texto.trim()) return '';
-    if (resolvedKind === 'tratamiento') return depurarTratamiento(textoTratamientoFiltrado, variasLineas, includePosologia);
+    if (resolvedKind === 'tratamiento') return depurarTratamiento(textoTratamientoFiltrado, variasLineas, includePosologia, useActiveIngredients ? activeIngredientNames : {});
     if (resolvedKind === 'analitica') {
       return buildAnaliticaOutput(texto, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, fontProfile, bloquesAnaliticaIncluidos);
     }
     return '';
-  }, [texto, resolvedKind, textoTratamientoFiltrado, variasLineas, includePosologia, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, bloquesAnaliticaIncluidos]);
+  }, [texto, resolvedKind, textoTratamientoFiltrado, variasLineas, includePosologia, useActiveIngredients, activeIngredientNames, mode, includeReference, includeConfidence, includeRequestLine, includeComments, onlyAltered, useColumns, bloquesAnaliticaIncluidos]);
 
   const detectionBadgeClass =
     detection.detected === 'tratamiento'
@@ -1289,6 +1355,12 @@ function OrionUnificadoClient() {
                   checked={includePosologia}
                   onChange={setIncludePosologia}
                 />
+                <OrionToggle
+                  label="Principios activos"
+                  note="Consultar nombres en AEMPS"
+                  checked={useActiveIngredients}
+                  onChange={setUseActiveIngredients}
+                />
               </section>
             ) : null}
 
@@ -1389,6 +1461,17 @@ function OrionUnificadoClient() {
               </label>
             ))}
           </div>
+          {useActiveIngredients && selectedMedicineNames.length ? (
+            <p className="orion-cima-status" role="status" aria-live="polite">
+              {cimaLoading || selectedMedicineNames.some((name) => !cimaResults[name])
+                ? 'Consultando principios activos en AEMPS…'
+                : selectedMedicineNames.some((name) => cimaResults[name]?.status === 'error')
+                  ? 'No se pudo consultar AEMPS para algunos medicamentos. Se conserva su nombre original; desactiva y reactiva la opción para reintentar.'
+                  : selectedMedicineNames.some((name) => cimaResults[name]?.status !== 'matched')
+                  ? 'Las presentaciones no identificadas con seguridad conservan su nombre original. Revisa el resultado.'
+                  : 'Principios activos contrastados con AEMPS.'}
+            </p>
+          ) : null}
         </section>
       ) : null}
 
