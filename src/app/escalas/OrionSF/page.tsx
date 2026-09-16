@@ -90,6 +90,7 @@ const GROUP_LABELS: Array<{ needle: string; label: string }> = [
   { needle: 'SEROLOGIA DE SIFILIS', label: 'Serología sífilis' },
   { needle: 'LABORATORIO EXTERNO', label: 'Laboratorio externo' },
   { needle: 'DROGAS DE ABUSO', label: 'Drogas de abuso' },
+  { needle: 'FARMACOS', label: 'Fármacos' },
   { needle: 'ORINAS', label: 'Orina' },
   { needle: 'SEDIMENTO', label: 'Orina' },
   { needle: 'ANORMALES', label: 'Orina' },
@@ -373,7 +374,8 @@ function isOptionalCommentLine(line: string): boolean {
   return (
     key.includes('DETERMINACION CUALITATIVA') ||
     key.includes('PARA USO CLINICO') ||
-    key.includes('RESULTADO POSITIVO REQUIERE CONFIRMACION')
+    key.includes('RESULTADO POSITIVO REQUIERE CONFIRMACION') ||
+    key.includes('LIMITE DE LINEALIDAD DEL METODO')
   );
 }
 
@@ -524,6 +526,11 @@ function parseInput(input: string): ParsedPayload {
       continue;
     }
 
+    if (lastEntry && isOptionalCommentLine(line)) {
+      lastEntry.comment = `${lastEntry.comment} ${line}`.trim();
+      continue;
+    }
+
     const detached = parseDetachedUnitOrReferenceLine(rawLine);
     const isCulturePreambleLine =
       /^[<>]=?\s*[\d.,]+\s*UFC\/mL$/i.test(line) || /^CEPA\s+PRODUCTORA\b/i.test(line);
@@ -599,11 +606,6 @@ function parseInput(input: string): ParsedPayload {
       } else if (activeCulture && normalizeForMatch(parsedResult.name) === 'COMENTARIO') {
         activeCultureSection = null;
       }
-      continue;
-    }
-
-    if (lastEntry && isOptionalCommentLine(line)) {
-      lastEntry.comment = `${lastEntry.comment} ${line}`.trim();
       continue;
     }
 
