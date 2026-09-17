@@ -89,11 +89,11 @@ export default function Header() {
     { label: 'Wells – TVP', href: '/escalas/wells-tvp' },
   ];
 
-  const mobileMenuClass = `lg:hidden max-h-[calc(100dvh-4rem)] overflow-y-auto transition-[max-height,opacity] duration-300 ease-out ${
-    open ? 'max-h-[900px] opacity-100' : 'max-h-0 opacity-0'
+  const mobileMenuClass = `lg:hidden overflow-y-auto transition-[max-height,opacity] duration-300 ease-out ${
+    open ? 'max-h-[calc(100dvh-4rem)] opacity-100' : 'max-h-0 opacity-0'
   }`;
-  const toolsMenuClass = `ml-2 grid max-h-[calc(100dvh-12rem)] grid-cols-2 gap-1 overflow-y-auto text-sm transition-[max-height,opacity] duration-300 ease-out ${
-    toolsOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+  const toolsMenuClass = `ml-2 grid grid-cols-2 gap-1 overflow-y-auto text-sm transition-[max-height,opacity] duration-300 ease-out ${
+    toolsOpen ? 'max-h-[calc(100dvh-12rem)] opacity-100' : 'max-h-0 opacity-0'
   }`;
 
   const closeMenus = () => {

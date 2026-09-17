@@ -74,13 +74,13 @@ function TimeStepper({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="text-sm font-semibold text-slate-700">
+    <label className="block min-w-0 text-sm font-semibold text-slate-700">
       {label}
-      <span className="mt-1 flex h-10 items-stretch overflow-hidden rounded-lg border border-[#cbdcdf] bg-white focus-within:border-[#3d7684] focus-within:ring-2 focus-within:ring-[#3d7684]/15">
+      <span className="mt-1 flex h-10 w-full min-w-0 max-w-full items-stretch overflow-hidden rounded-lg border border-[#cbdcdf] bg-white focus-within:border-[#3d7684] focus-within:ring-2 focus-within:ring-[#3d7684]/15">
         <input
           type="time"
           step={900}
-          className="h-full min-w-0 flex-1 border-0 bg-transparent px-3 py-0 text-sm text-slate-800 outline-none"
+          className="h-full w-full min-w-0 flex-1 border-0 bg-transparent px-3 py-0 text-sm text-slate-800 outline-none"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
@@ -285,7 +285,7 @@ export default function GuardiaClient() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="prevent-ios-zoom min-w-0 space-y-6 overflow-x-hidden">
       <header className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8aa0a6]">
           Servicio de Urgencias
@@ -305,8 +305,8 @@ export default function GuardiaClient() {
               número de adjuntos quedan como Palomita.
             </p>
           </div>
-          <div className="mx-auto grid max-w-2xl gap-3 sm:grid-cols-2">
-            <label className="text-sm font-semibold text-slate-700">
+          <div className="mx-auto grid min-w-0 max-w-2xl gap-3 sm:grid-cols-2">
+            <label className="block min-w-0 text-sm font-semibold text-slate-700">
               Residentes
               <textarea
                 className={`${inputClass} mt-1 min-h-32`}
@@ -315,7 +315,7 @@ export default function GuardiaClient() {
                 onChange={(event) => setResidentsText(event.target.value)}
               />
             </label>
-            <label className="text-sm font-semibold text-slate-700">
+            <label className="block min-w-0 text-sm font-semibold text-slate-700">
               Adjuntos
               <textarea
                 className={`${inputClass} mt-1 min-h-32`}
@@ -372,8 +372,8 @@ export default function GuardiaClient() {
               los cambios de hora (verano/invierno).
             </p>
           </div>
-          <div className="mx-auto grid max-w-2xl gap-3 sm:grid-cols-2">
-            <label className="text-sm font-semibold text-slate-700">
+          <div className="mx-auto grid min-w-0 max-w-2xl gap-3 sm:grid-cols-2">
+            <label className="block min-w-0 text-sm font-semibold text-slate-700">
               Fecha de inicio
               <input
                 type="date"
@@ -382,7 +382,7 @@ export default function GuardiaClient() {
                 onChange={(event) => setNightDate(event.target.value)}
               />
             </label>
-            <label className="text-sm font-semibold text-slate-700">
+            <label className="block min-w-0 text-sm font-semibold text-slate-700">
               Número de periodos
               <input
                 type="number"

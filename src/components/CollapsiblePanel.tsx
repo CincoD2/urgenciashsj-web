@@ -12,7 +12,7 @@ export default function CollapsiblePanel({ title, children, defaultOpen = false 
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <section className="self-start overflow-hidden rounded-2xl border border-[#dfe9eb] bg-white shadow-sm">
+    <section className="w-full min-w-0 self-start overflow-hidden rounded-2xl border border-[#dfe9eb] bg-white shadow-sm">
       <button
         type="button"
         className="flex w-full items-center gap-3 border-b border-[#dfe9eb] bg-[#f7fbfc] px-5 py-4 text-left"
