@@ -842,10 +842,19 @@ function AlgorithmWorkbench({
                 const isSelected = currentSelection.includes(item.id);
 
                 return (
-                  <button
+                  <div
                     key={item.id}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
                     onClick={() => toggleDiscriminant(item.id)}
+                    onKeyDown={(event) => {
+                      if (event.target !== event.currentTarget) return;
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        toggleDiscriminant(item.id);
+                      }
+                    }}
                     className={`relative z-0 w-full rounded-2xl border px-4 py-4 text-left shadow-sm transition hover:z-20 focus-within:z-20 ${
                       isGlossaryOpen ? 'z-30' : ''
                     } ${
@@ -875,6 +884,7 @@ function AlgorithmWorkbench({
                       <div
                         data-glossary-popover="true"
                         className="absolute bottom-3 right-3"
+                        onClick={(event) => event.stopPropagation()}
                         onMouseEnter={() => setOpenGlossaryId(item.id)}
                         onMouseLeave={() =>
                           setOpenGlossaryId((prev) => (prev === item.id ? null : prev))
@@ -902,7 +912,7 @@ function AlgorithmWorkbench({
                         </div>
                       </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
