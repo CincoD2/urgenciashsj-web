@@ -1,7 +1,6 @@
 'use client';
 
-import { useMemo, useState, type PointerEvent } from 'react';
-import InformeCopiable from '@/components/InformeCopiable';
+import { useState, type PointerEvent } from 'react';
 
 type AxisCategory = 'normal' | 'izquierda' | 'derecha' | 'extremo';
 
@@ -86,7 +85,11 @@ function ecgPath(amplitude: number) {
 
 function pointForAngle(angle: number, radius: number, center = 210) {
   const radians = (angle * Math.PI) / 180;
-  return { x: center + Math.cos(radians) * radius, y: center + Math.sin(radians) * radius };
+  const round = (value: number) => Math.round(value * 10000) / 10000;
+  return {
+    x: round(center + Math.cos(radians) * radius),
+    y: round(center + Math.sin(radians) * radius),
+  };
 }
 
 function randomAxis(exclude?: number) {
@@ -107,14 +110,9 @@ export default function EjeElectricoEcg() {
   const [quizFinished, setQuizFinished] = useState(false);
   const [finishNotice, setFinishNotice] = useState('');
   const [restartConfirm, setRestartConfirm] = useState(false);
+  const [exitConfirm, setExitConfirm] = useState(false);
 
-  const category = classifyAxis(axis);
   const quizCategory = classifyAxis(quizAxis);
-
-  const report = useMemo(
-    () => `Eje eléctrico del QRS\n\nEje: ${axis > 0 ? '+' : ''}${axis}°\nInterpretación: ${CATEGORY_LABELS[category]}\n\n${axisDescription(category)}`,
-    [axis, category],
-  );
 
   function startQuiz() {
     setMode('quiz');
@@ -126,6 +124,7 @@ export default function EjeElectricoEcg() {
     setQuizFinished(false);
     setFinishNotice('');
     setRestartConfirm(false);
+    setExitConfirm(false);
   }
 
   function answerQuiz(answer: AxisCategory) {
@@ -144,6 +143,7 @@ export default function EjeElectricoEcg() {
     setShowQuizCircle(false);
     setFinishNotice('');
     setRestartConfirm(false);
+    setExitConfirm(false);
     setScore((current) => ({ ...current, total: current.total + 1 }));
   }
 
@@ -166,11 +166,38 @@ export default function EjeElectricoEcg() {
     setQuizFinished(false);
     setFinishNotice('');
     setRestartConfirm(false);
+    setExitConfirm(false);
   }
 
   function requestRestart() {
     setRestartConfirm(true);
     setShowQuizCircle(false);
+  }
+
+  function continueQuiz() {
+    setQuizFinished(false);
+    setQuizAxis(randomAxis(quizAxis));
+    setQuizAnswer(null);
+    setQuizResult(null);
+    setRestartConfirm(false);
+  }
+
+  function handleExploreClick() {
+    if (mode === 'quiz' && !quizFinished && score.total > 0) {
+      setExitConfirm(true);
+      return;
+    }
+    setMode('explorar');
+  }
+
+  function exitPractice() {
+    setMode('explorar');
+    setScore({ correct: 0, total: 0 });
+    setQuizAnswer(null);
+    setQuizResult(null);
+    setQuizFinished(false);
+    setRestartConfirm(false);
+    setExitConfirm(false);
   }
 
   function finishQuiz() {
@@ -219,7 +246,7 @@ export default function EjeElectricoEcg() {
           </p>
         </div>
         <div className="eje-tabs" aria-label="Modo de la herramienta">
-          <button className={mode === 'explorar' ? 'activo' : ''} onClick={() => setMode('explorar')} type="button">Explorar</button>
+          <button className={mode === 'explorar' ? 'activo' : ''} onClick={handleExploreClick} type="button">Explorar</button>
           <button className={mode === 'quiz' ? 'activo' : ''} onClick={startQuiz} type="button">Practicar</button>
         </div>
       </div>
@@ -289,16 +316,16 @@ export default function EjeElectricoEcg() {
               <circle cx="210" cy="210" r="4" fill="#3d7684" />
             </svg>
           </div> : <div className="eje-quiz-panel">
-            {quizFinished ? <div className="eje-quiz-finished">
-              <p className="eje-quiz-kicker">Resultado final</p>
-              <h2>{score.correct}/{score.total} aciertos · {quizPercentage}%</h2>
-              <p className="eje-quiz-verdict">{quizVerdict()}</p>
-              <button className="eje-quiz-restart-main" type="button" onClick={requestRestart}>Reiniciar</button>
-            </div> : restartConfirm ? <div className="eje-quiz-restart-confirm">
+            {restartConfirm ? <div className="eje-quiz-restart-confirm">
               <p className="eje-quiz-kicker">Reiniciar práctica</p>
               <h2>¿Quieres empezar de nuevo?</h2>
               <p>Se perderá la puntuación actual y se generará un nuevo caso.</p>
               <div className="eje-confirm-actions"><button className="eje-action-secondary" type="button" onClick={() => setRestartConfirm(false)}>Volver</button><button className="eje-action-primary" type="button" onClick={restartQuiz}>Reiniciar</button></div>
+            </div> : quizFinished ? <div className="eje-quiz-finished">
+              <p className="eje-quiz-kicker">Resultado final</p>
+              <h2>{score.correct}/{score.total} aciertos · {quizPercentage}%</h2>
+              <p className="eje-quiz-verdict">{quizVerdict()}</p>
+              <div className="eje-result-actions"><button className="eje-quiz-restart-main" type="button" onClick={requestRestart}>Reiniciar</button><button className="eje-action-secondary" type="button" onClick={continueQuiz}>Continuar</button></div>
             </div> : <>
               <div className="eje-quiz-panel-header"><p className="eje-quiz-kicker">Caso de práctica</p><span className="eje-quiz-score">Puntuación <strong>{score.correct}/{score.total}</strong></span></div>
               <h2>¿Qué tipo de eje representa este ECG?</h2>
@@ -357,9 +384,15 @@ export default function EjeElectricoEcg() {
         <div className="eje-info-card"><span className="eje-info-number">03</span><div><h2>Interpretación</h2><p>Usa el resultado como apoyo educativo y confirma siempre el ECG completo.</p></div></div>
       </section>
 
-      {mode === 'explorar' && <InformeCopiable texto={report} />}
-
       <p className="eje-disclaimer">Herramienta educativa. La clasificación del eje debe integrarse con el resto del ECG, la clínica y el contexto del paciente.</p>
+
+      {exitConfirm && <div className="eje-practice-exit-modal" role="dialog" aria-modal="true" aria-label="Salir del modo Práctica" onClick={() => setExitConfirm(false)}>
+        <div className="eje-practice-exit-dialog" onClick={(event) => event.stopPropagation()}>
+          <p className="eje-quiz-kicker">Salir del modo Práctica</p>
+          <h2>Si sales del modo Práctica se reiniciará la puntuación. ¿Estás seguro?</h2>
+          <div className="eje-confirm-actions"><button className="eje-action-secondary" type="button" onClick={exitPractice}>Salir</button><button className="eje-action-primary" type="button" onClick={() => setExitConfirm(false)}>Continuar</button></div>
+        </div>
+      </div>}
     </main>
   );
 }

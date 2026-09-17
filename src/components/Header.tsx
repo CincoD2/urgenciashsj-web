@@ -20,6 +20,7 @@ export default function Header() {
   const [userOpen, setUserOpen] = useState(false);
   const userCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toolsMenuRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const toolsScrollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
@@ -57,6 +58,7 @@ export default function Header() {
     { label: 'CHA2DS2-VA', href: '/escalas/cha2ds2va' },
     { label: 'Contingencia camas urgencias', href: '/escalas/contingencia-camas-urgencias' },
     { label: 'CURB-65', href: '/escalas/curb65' },
+    { label: 'Eje eléctrico del ECG', href: '/escalas/eje-electrico-ecg' },
     { label: 'Fracaso Renal Agudo', href: '/escalas/fra' },
     { label: 'Glasgow', href: '/escalas/glasgow' },
     { label: 'Gradiente A-a O2', href: '/escalas/gradiente-aa-o2' },
@@ -87,10 +89,10 @@ export default function Header() {
     { label: 'Wells – TVP', href: '/escalas/wells-tvp' },
   ];
 
-  const mobileMenuClass = `lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+  const mobileMenuClass = `lg:hidden max-h-[calc(100dvh-4rem)] overflow-y-auto transition-[max-height,opacity] duration-300 ease-out ${
     open ? 'max-h-[900px] opacity-100' : 'max-h-0 opacity-0'
   }`;
-  const toolsMenuClass = `ml-2 grid grid-cols-2 gap-1 text-sm overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+  const toolsMenuClass = `ml-2 grid max-h-[calc(100dvh-12rem)] grid-cols-2 gap-1 overflow-y-auto text-sm transition-[max-height,opacity] duration-300 ease-out ${
     toolsOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
   }`;
 
@@ -163,6 +165,19 @@ export default function Header() {
     }
   }, [toolsOpen]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const closeOnOutsideInteraction = (event: Event) => {
+      if (headerRef.current?.contains(event.target as Node)) return;
+      setOpen(false);
+      setToolsOpen(false);
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideInteraction);
+    return () => document.removeEventListener('pointerdown', closeOnOutsideInteraction);
+  }, [open]);
+
   const closeMenusAndScrollTop = () => {
     closeMenus();
     if (typeof window !== 'undefined') {
@@ -181,6 +196,7 @@ export default function Header() {
 
   return (
     <header
+      ref={headerRef}
       className={`border-b border-[#dfe9eb] sticky top-0 z-50 backdrop-blur-md border-white/40 ${
         isAuthed ? 'bg-[#1f4c57]' : 'bg-white/45'
       }`}
