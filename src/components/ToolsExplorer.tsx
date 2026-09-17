@@ -113,6 +113,7 @@ const TOOL_ICON_BY_ID: Record<string, HealthIconName> = {
   nihss: 'neurology',
   mrs: 'backPain',
   cha2ds2va: 'coronaryCareUnit',
+  'eje-electrico-ecg': 'heartbeat',
   hasbled: 'bloodDrop',
   'timi-scacest': 'heartbeat',
   'timi-scasest': 'heartbeat',

@@ -206,6 +206,12 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
   { slug: 'mrs', category: 'neurologia' },
 
   { slug: 'cha2ds2va', category: 'cardiologia' },
+  {
+    slug: 'eje-electrico-ecg',
+    category: 'cardiologia',
+    featured: true,
+    badge: 'Interactiva',
+  },
   { slug: 'hasbled', category: 'cardiologia' },
   { slug: 'timi-scacest', category: 'cardiologia' },
   { slug: 'timi-scasest', category: 'cardiologia' },

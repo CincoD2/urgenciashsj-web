@@ -92,6 +92,25 @@ export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
     tags: ['fibrilación auricular', 'ictus', 'anticoagulación'],
     keywords: ['cha2ds2', 'riesgo embólico', 'fa'],
   },
+  'eje-electrico-ecg': {
+    title: 'Eje eléctrico del ECG',
+    summary:
+      'Explora el eje del QRS con un círculo interactivo, derivaciones bipolares y casos prácticos en modo quiz.',
+    tags: ['electrocardiograma', 'eje eléctrico', 'cardiología', 'aprendizaje', 'electro', 'ecg', 'ekg', 'formación'],
+    keywords: [
+      'eje qrs',
+      'eje ecg',
+      'eje cardiaco',
+      'eje eléctrico',
+      'electro',
+      'ecg',
+      'ekg',
+      'formación',
+      'desviación izquierda',
+      'desviación derecha',
+      'cuadrantes',
+    ],
+  },
   curb65: {
     title: 'CURB-65',
     summary:
