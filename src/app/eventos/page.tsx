@@ -1,5 +1,5 @@
 const calendarEmbed =
-  "https://www.google.com/calendar/embed?color=%23b90e28&color=%23f691b2&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=6d41e36m9j14i3c1ovrvum1qdihm4d36@import.calendar.google.com&mode=AGENDA";
+  "https://www.google.com/calendar/embed?color=%233b78e7&color=%23b90e28&src=0mg852tsvqgekgud1j3g2ud4rk@group.calendar.google.com&src=nis98jae2c55ge2bjnlilqpf0ps1jel3@import.calendar.google.com&mode=AGENDA";
 
 export default function EventosPage() {
   return (
