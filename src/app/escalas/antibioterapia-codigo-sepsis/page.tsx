@@ -415,8 +415,8 @@ const VANCO_DOSES: Record<
     '50-59': { line: '1250 mg STAT (Dosis inicial) + 750 mg/12 h', protocol: 4 },
     '60-69': { line: '1500 mg STAT (Dosis inicial) + 750 mg/12 h', protocol: 5 },
     '70-79': { line: '1750 mg STAT (Dosis inicial) + 1000 mg/12 h', protocol: 11 },
-    '80-89': { line: '2000 mg STAT (Dosis inicial) + 750 mg/8 h', protocol: 12 },
-    '90-99': { line: '2250 mg STAT (Dosis inicial) + 1000 mg/8 h', protocol: 15 },
+    '80-89': { line: '2000 mg STAT (Dosis inicial) + 1000 mg/12 h', protocol: 12 },
+    '90-99': { line: '2250 mg STAT (Dosis inicial) + 750 mg/8 h', protocol: 15 },
     '>100': { line: '2500 mg STAT (Dosis inicial) + 750 mg/8 h', protocol: 16 },
   },
   '70-90': {
