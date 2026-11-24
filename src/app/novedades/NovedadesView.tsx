@@ -34,7 +34,7 @@ function renderInlineMarkdown(line: string) {
           rel={url.startsWith('http') ? 'noreferrer' : undefined}
           className="underline decoration-[#dfe9eb] underline-offset-4 hover:text-[#2b5d68]"
         >
-          {label}
+          {renderInlineMarkdown(label)}
         </a>
       );
       return;

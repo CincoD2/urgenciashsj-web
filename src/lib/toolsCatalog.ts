@@ -144,6 +144,13 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
 
 const TOOL_DEFINITIONS: ToolDefinition[] = [
   {
+    slug: 'diseccion-aortica',
+    category: 'vascular',
+    secondaryCategories: ['cardiologia'],
+    featured: true,
+    badge: 'Nuevo',
+  },
+  {
     slug: 'contingencia-camas-urgencias',
     category: 'gestion',
     featured: true,
@@ -252,6 +259,7 @@ function resolveTool(definition: ToolDefinition): ToolCatalogItem {
       title,
       summary,
       ...tags,
+      ...(meta?.keywords ?? []),
       definition.category,
       ...(definition.secondaryCategories ?? []),
     ]

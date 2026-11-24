@@ -86,6 +86,7 @@ const CATEGORY_ICON_BY_ID: Record<ToolCategoryId, HealthIconName> = {
 };
 
 const TOOL_ICON_BY_ID: Record<string, HealthIconName> = {
+  'diseccion-aortica': 'bloodVessel',
   OrionSF: 'desktopApp',
   'contingencia-camas-urgencias': 'contingencyBeds',
   'triaje-manchester': 'desktopApp',

@@ -6,6 +6,44 @@ export type ScaleMeta = {
 };
 
 export const SCALE_META_BY_SLUG: Record<string, ScaleMeta> = {
+  'diseccion-aortica': {
+    title: 'Disección aguda de aorta',
+    summary: 'Protocolo interactivo con clasificación Stanford/TEM, ADD-RS, manejo inicial y preparación del traslado a un centro aórtico.',
+    tags: ['aorta', 'vascular', 'urgencias'],
+    keywords: [
+      // Nombres, siglas y variantes de escritura de la patología.
+      'disección aórtica', 'disección de aorta', 'disección aguda de aorta',
+      'disección aórtica aguda', 'disección de aorta aguda',
+      'síndrome aórtico agudo', 'síndromes aórticos agudos', 'sd aórtico agudo',
+      'SAA', 'DAA', 'acute aortic syndrome', 'acute aortic dissection',
+      'aortic dissection', 'código aorta', 'protocolo aorta', 'urgencia aórtica',
+      // Riesgo, clasificación anatómica y hallazgos incluidos en el protocolo.
+      'ADD-RS', 'ADD RS', 'ADDRS', 'Aortic Dissection Detection Risk Score',
+      'escala de riesgo de disección aórtica', 'ADvISED',
+      'Stanford', 'Stanford A', 'Stanford B', 'Stanford tipo A', 'Stanford tipo B',
+      'disección tipo A', 'disección tipo B', 'No-A No-B', 'no A no B',
+      'DeBakey', 'De Bakey', 'Weiss', 'TEM', 'clasificación TEM',
+      'malperfusión', 'flap intimal', 'colgajo intimal', 'luz verdadera', 'luz falsa',
+      'hematoma intramural', 'aorta ascendente', 'aorta descendente', 'arco aórtico',
+      // Pruebas y variantes habituales de sus nombres.
+      'dímero-D', 'dímero D', 'dimerod', 'D-dimer',
+      'angio-TC', 'angio TC', 'angioTAC', 'angio TAC', 'angio-TAC',
+      'angioTC', 'angiotomografía', 'TAC de aorta', 'TC aórtica',
+      'POCUS', 'SPEED', 'ecocardiografía', 'ecografía aórtica',
+      // Tratamiento inicial y coordinación del traslado.
+      'antiimpulso', 'anti-impulso', 'anti impulso', 'terapia antiimpulso',
+      'betabloqueo', 'betabloqueantes', 'esmolol', 'labetalol',
+      'nicardipino', 'nitroprusiato', 'nitroglicerina', 'diltiazem', 'verapamilo',
+      'control de frecuencia cardíaca', 'control de presión arterial',
+      'cirugía cardiovascular', 'cirugía aórtica', 'centro aórtico',
+      'TEVAR', 'traslado medicalizado', 'traslado aórtico',
+      'checklist pretraslado', 'lista de verificación pretraslado',
+      'resumen para el centro receptor',
+      // Atribución y sesión de referencia.
+      'Sanchís', 'Dr Sanchís', 'sesión clínica aorta',
+      'sesión clínica noviembre 2026', '20 noviembre 2026', '20261120',
+    ],
+  },
   'contingencia-camas-urgencias': {
     title: 'Contingencia camas urgencias',
     summary: 'Asistente orientativo para estimar la fase del plan hospitalario ante falta de camas de hospitalización.',

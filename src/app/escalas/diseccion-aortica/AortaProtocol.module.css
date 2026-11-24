@@ -1,0 +1,28 @@
+.headerAction {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #b8d3da;
+  border-radius: 0.5rem;
+  background: #fff;
+  padding: 0.625rem 1rem;
+  color: #2b5d68;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.headerAction:hover,
+.headerAction:focus-visible {
+  border-color: #3d7684;
+  background: #e8f2f4;
+  color: #214a53;
+}
+
+.headerAction:active {
+  background: #dfe9eb;
+}
