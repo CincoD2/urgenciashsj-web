@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 
 import CollapsiblePanel from '@/components/CollapsiblePanel';
+import ResourceSearchHeader from '@/components/ResourceSearchHeader';
 
 type Resident = { id: number | string; name: string; year: 1 | 2 | 3 | 4; trauma: boolean };
 type Pairing = { resident: string; adjunto: string };
@@ -286,16 +287,11 @@ export default function GuardiaClient() {
 
   return (
     <div className="prevent-ios-zoom min-w-0 space-y-6 overflow-x-hidden">
-      <header className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8aa0a6]">
-          Servicio de Urgencias
-        </p>
-        <h1 className="text-3xl font-semibold text-[#1f4c57]">Herramientas para la guardia</h1>
-        <p className="max-w-3xl text-sm text-slate-600">
-          Organización rápida de equipos y descansos durante la guardia. Los resultados son
-          orientativos y deben ajustarse a la organización del servicio.
-        </p>
-      </header>
+      <ResourceSearchHeader
+        title="Herramientas para la guardia"
+        badge="Servicio de Urgencias"
+        description="Organización rápida de equipos y descansos durante la guardia. Los resultados son orientativos y deben ajustarse a la organización del servicio."
+      />
 
       <div className="space-y-6">
         <CollapsiblePanel title="Asignación Nivel 1 residentes–adjuntos">

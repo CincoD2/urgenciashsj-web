@@ -1,6 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ResourceSearchHeader from "@/components/ResourceSearchHeader";
+import HeaderSearchInput from "@/components/HeaderSearchInput";
+import { FilterButton } from "@/components/ui/SiteButton";
 
 import {
   MONTHS,
@@ -140,88 +143,40 @@ export default function HorariosClient({ horarios }: HorariosClientProps) {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8aa0a6]">
-              Servicio de Urgencias
-            </p>
-            <h1 className="text-3xl font-semibold text-[#1f4c57]">Horarios</h1>
-          </div>
-          <div className="rounded-full border border-[#dfe9eb] bg-white/80 px-3 py-1 text-xs font-semibold uppercase text-slate-500 shadow-sm">
-            {filteredYears.length} años
-          </div>
-        </div>
-        <p className="max-w-2xl text-sm text-slate-600">
-          Selecciona un año y abre el PDF del mes correspondiente.
-          <span className="font-semibold">HORARIOS</span> de esta página.
-        </p>
-      </header>
+      <ResourceSearchHeader
+        title="Horarios"
+        badge="Servicio de Urgencias"
+        description="Busca por año o mes, selecciona un año y abre el PDF del mes correspondiente."
+        stats={
+          <>
+            <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{horarios.length} años</span>
+            <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{horarios.reduce((total, item) => total + MONTHS.filter((month) => item.months[month]?.url).length, 0)} horarios mensuales</span>
+            {query.trim() && <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{filteredYears.length} años encontrados</span>}
+          </>
+        }
+      >
+        <HeaderSearchInput
+          id="horarios-search"
+          label="Buscar horarios"
+          placeholder="Buscar por año o mes (p. ej., 2026, marzo)"
+          value={query}
+          onChange={setQuery}
+        />
+      </ResourceSearchHeader>
 
-      <div className="rounded-2xl border border-[#dfe9eb] bg-gradient-to-br from-white via-[#f6f9fa] to-[#e7f0f2] p-4 shadow-sm">
-        <div className="buscador-wrapper buscador-dietas">
-          <span className="buscador-icon" aria-hidden>
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-5-5" />
-            </svg>
-          </span>
-          <input
-            type="text"
-            placeholder="Buscar por año o mes (ej. 2025, marzo)"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="buscador-input"
-          />
-          {query && (
-            <button
-              type="button"
-              className="buscador-clear"
-              onClick={() => setQuery("")}
-              aria-label="Limpiar"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M6 6l12 12" />
-                <path d="M18 6l-12 12" />
-              </svg>
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-wrap gap-2 pt-2">
-          {filteredYears.map((item) => {
-            const isActive = item.year === active?.year;
-            return (
-              <button
-                key={item.year}
-                type="button"
-                onClick={() => setActiveYear(item.year)}
-                aria-current={isActive ? "page" : undefined}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                  isActive
-                    ? "border-[#1f4c57] bg-[#1f4c57] text-white shadow-md"
-                    : "border-[#dfe9eb] bg-white text-[#1f4c57] hover:border-[#1f4c57]/60 hover:bg-[#e7f0f2]"
-                }`}
-              >
-                {item.year}
-              </button>
-            );
-          })}
-        </div>
+      <div className="flex flex-wrap gap-2" aria-label="Seleccionar año">
+        {filteredYears.map((item) => (
+          <FilterButton
+            key={item.year}
+            active={item.year === active?.year}
+            filtering={Boolean(query.trim())}
+            count={MONTHS.filter((month) => item.months[month]?.url).length}
+            onClick={() => setActiveYear(item.year)}
+            aria-label={`${item.year}, ${MONTHS.filter((month) => item.months[month]?.url).length} horarios mensuales`}
+          >
+            {item.year}
+          </FilterButton>
+        ))}
       </div>
 
       {filteredYears.length ? (

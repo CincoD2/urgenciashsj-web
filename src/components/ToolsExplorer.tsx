@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { FilterButton, SiteButton } from '@/components/ui/SiteButton';
+import HeaderSearchInput from '@/components/HeaderSearchInput';
 import { useState } from 'react';
 
 import {
@@ -14,15 +16,6 @@ import {
 } from '@/lib/toolsCatalog';
 
 type FilterId = 'all' | 'featured' | ToolCategoryId;
-
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </svg>
-  );
-}
 
 function ArrowIcon() {
   return (
@@ -636,13 +629,13 @@ export default function ToolsExplorer() {
           <p className="mt-2 text-sm leading-6 text-[#61767c]">
             Ajusta la búsqueda o cambia el filtro para volver a mostrar herramientas.
           </p>
-          <button
+          <SiteButton
             type="button"
             onClick={clearFilters}
-            className="mt-5 inline-flex rounded-full border border-[#cfe0e4] bg-white px-4 py-2 text-sm font-semibold text-[#2b5d68] transition hover:border-[#bcd2d8] hover:bg-[#f5fafb]"
+            className="mt-5"
           >
             Limpiar filtros
-          </button>
+          </SiteButton>
         </div>
       )}
     </section>
@@ -736,19 +729,13 @@ export default function ToolsExplorer() {
               </p>
             </div>
 
-            <label className="block max-w-3xl">
-              <span className="sr-only">Buscar herramienta</span>
-              <span className="flex items-center gap-3 rounded-[1.2rem] border border-white/70 bg-white/80 px-4 py-3 text-[#6a7f85] shadow-[0_12px_30px_rgba(20,37,45,0.08)] backdrop-blur-sm">
-                <SearchIcon />
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Buscar por nombre, utilidad o etiqueta"
-                  className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-[#8aa0a6]"
-                />
-              </span>
-            </label>
+            <HeaderSearchInput
+              id="herramientas-search"
+              label="Buscar herramienta"
+              placeholder="Buscar por nombre, utilidad o etiqueta"
+              value={query}
+              onChange={setQuery}
+            />
 
             <div className="flex flex-wrap gap-2 text-xs text-[#587077] sm:text-sm">
               <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">
@@ -767,42 +754,11 @@ export default function ToolsExplorer() {
 
       <section className="space-y-4">
         <div className="flex flex-wrap gap-2">
-          {filterOptions.map((filter) => {
-            const active = activeFilter === filter.id;
-            const hasResults = filter.count > 0;
-
-            return (
-              <button
-                key={filter.id}
-                type="button"
-                onClick={() => setActiveFilter(filter.id)}
-                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  active
-                    ? 'border-[#2b5d68] bg-[#2b5d68] text-white shadow-[0_10px_24px_rgba(43,93,104,0.18)]'
-                    : isFiltering
-                      ? hasResults
-                        ? 'border-[#c7dbe0] bg-[#f5fafb] text-[#355962] shadow-[0_6px_18px_rgba(20,37,45,0.05)] hover:border-[#a9c8cf] hover:bg-white'
-                        : 'border-[#e5ecee] bg-white/75 text-[#9aaeb3] opacity-60 hover:border-[#d8e4e7] hover:bg-white/90'
-                      : 'border-[#d7e5e8] bg-white text-[#49646b] hover:border-[#b8d0d6] hover:bg-[#f5fafb]'
-                }`}
-              >
-                <span>{filter.label}</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs ${
-                    active
-                      ? 'bg-white/18 text-white'
-                      : isFiltering
-                        ? hasResults
-                          ? 'bg-[#dcecf0] text-[#355962]'
-                          : 'bg-[#eff4f5] text-[#8ca1a6]'
-                        : 'bg-[#edf5f7] text-[#557278]'
-                  }`}
-                >
-                  {filter.count}
-                </span>
-              </button>
-            );
-          })}
+          {filterOptions.map((filter) => (
+            <FilterButton key={filter.id} active={activeFilter === filter.id} filtering={isFiltering} count={filter.count} onClick={() => setActiveFilter(filter.id)}>
+              {filter.label}
+            </FilterButton>
+          ))}
         </div>
 
         {isFiltering ? (
@@ -832,13 +788,13 @@ export default function ToolsExplorer() {
                   .
                 </p>
               </div>
-              <button
+              <SiteButton
                 type="button"
                 onClick={clearFilters}
-                className="inline-flex rounded-full border border-[#cfe0e4] bg-white px-4 py-2 text-sm font-semibold text-[#2b5d68] transition hover:border-[#bcd2d8] hover:bg-[#f5fafb]"
+
               >
                 Limpiar filtros
-              </button>
+              </SiteButton>
             </div>
           </div>
         ) : null}

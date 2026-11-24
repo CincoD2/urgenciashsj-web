@@ -181,7 +181,7 @@
     "id": "MAPA",
     "titulo": "MAPA",
     "ruta": "/dietas_recom/MAPA.txt",
-    "tags": ["recomendacion", "cardiovascular"],
+    "tags": ["recomendacion", "cardiovascular", "HTA", "hipertensión", "hipertensos", "tensión arterial", "presión arterial", "control domiciliario", "monitorización ambulatoria"],
     "sistemas": ["cardiovascular"]
   },
   {
@@ -297,21 +297,21 @@
     "id": "eco_fast",
     "titulo": "Ecografía Clínica EFAST",
     "ruta": "/dietas_recom/eco_fast.txt",
-    "tags": ["macro", "eco", "efast", "ecofast", "politrauma", "abdomen"],
+    "tags": ["macro", "eco", "efast", "ecofast", "politrauma", "abdomen", "pocus"],
     "sistemas": ["trauma", "cirugía", "Ecografía"]
   },
   {
     "id": "eco_pulmon",
     "titulo": "Ecografía Clínica Pulmonar",
     "ruta": "/dietas_recom/eco_pulmon.txt",
-    "tags": ["macro", "EAP", "eco", "EFAST", "BLUE", "sliding", "neumotórax"],
+    "tags": ["macro", "EAP", "eco", "EFAST", "BLUE", "sliding", "neumotórax", "pocus"],
     "sistemas": ["trauma", "cardiovascular", "Ecografía", "neumología"]
   },
   {
     "id": "eco_renovesical",
     "titulo": "Ecografía Clínica Renovesical",
     "ruta": "/dietas_recom/eco_renovesical.txt",
-    "tags": ["macro", "eco", "Vejiga", "hidronefrosis", "ectasia", "cru", "anuria", "abdomen"],
+    "tags": ["macro", "eco", "Vejiga", "hidronefrosis", "ectasia", "cru", "anuria", "abdomen", "pocus"],
     "sistemas": ["nefrourológico", "nefrológico", "Ecografía"]
   },
   {

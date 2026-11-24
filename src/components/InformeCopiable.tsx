@@ -27,7 +27,7 @@ export default function InformeCopiable({ texto }: { texto?: string | null }) {
         setTimeout(() => setCopiado(false), 1500);
         return;
       }
-    } catch (e) {
+    } catch {
       // seguimos al fallback
     }
 

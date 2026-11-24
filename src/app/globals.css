@@ -76,6 +76,14 @@ a:hover {
   color: #9ca3af;
 }
 
+/* El buscador ya incluye su propio botón para borrar la consulta. */
+.buscador-input::-webkit-search-cancel-button,
+.header-search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
 .buscador-wrapper:focus-within {
   border-color: #3d7684;
   box-shadow: 0 0 0 3px rgba(61, 118, 132, 0.15);

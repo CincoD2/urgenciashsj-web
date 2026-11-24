@@ -1,6 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+
+import HeaderSearchInput from '@/components/HeaderSearchInput';
+import ResourceSearchHeader from '@/components/ResourceSearchHeader';
 
 import { InternalSiteIcon, IntranetIcon } from '@/components/LinkIndicators';
 import { trackEvent } from '@/lib/analytics';
@@ -57,7 +60,7 @@ function cellToString(cell: GvizCell): string {
   return (cell.f ?? cell.v ?? '').toString();
 }
 
-export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: string; gid?: string }) {
+export default function ProtocolosTabla({ sheetId, gid = '0', accessInfo }: { sheetId: string; gid?: string; accessInfo?: ReactNode }) {
   const [q, setQ] = useState('');
   const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -148,32 +151,14 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
 
   return (
     <div className="space-y-3">
-      <div className="buscador-wrapper">
-        <span className="buscador-icon" aria-hidden>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M20 20l-3.5-3.5" />
-          </svg>
-        </span>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Busca palabras clave..."
-          className="buscador-input"
-        />
-        {q ? (
-          <button
-            type="button"
-            onClick={() => setQ('')}
-            className="buscador-clear"
-            aria-label="Borrar búsqueda"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M6 6l12 12M18 6l-12 12" />
-            </svg>
-          </button>
-        ) : null}
-      </div>
+      <ResourceSearchHeader title="Protocolos" badge="Protocolos clínicos" description="Busca por especialidad, título o palabras clave para encontrar el protocolo que necesitas."
+        accessInfo={accessInfo}
+        stats={<> <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{rows.length} protocolos</span>
+            <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{new Set(rows.map((row) => row.especialidad).filter(Boolean)).size} especialidades</span>
+            {q.trim() && <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{filtered.length} resultados</span>} </>}
+      >
+        <HeaderSearchInput id="protocolos-search" label="Buscar protocolos" placeholder="Buscar por especialidad, título o palabra clave" value={q} onChange={setQ} />
+      </ResourceSearchHeader>
 
       {error && (
         <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm">
@@ -198,7 +183,7 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
                   </span>
                 </button>
               </th>
-              <th className="px-3 py-3 text-left w-[35%]">
+              <th className="px-3 py-3 text-left w-[75%]">
                 <button
                   type="button"
                   className="inline-flex items-center gap-2 font-semibold"
@@ -211,7 +196,6 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
                   </span>
                 </button>
               </th>
-              <th className="px-3 py-3 text-left w-[40%] hidden sm:table-cell">Tags</th>
               <th className="px-3 py-3 text-center w-[5%] hidden sm:table-cell">Link</th>
             </tr>
           </thead>
@@ -261,7 +245,6 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
                     ) : null}
                   </span>
                 </td>
-                <td className="px-3 py-3 italic hidden sm:table-cell">{r.tags}</td>
                 <td className="px-3 py-3 text-center hidden sm:table-cell">
                   {r.link ? (
                     isIntranetLink(r.link) ? (
@@ -292,7 +275,7 @@ export default function ProtocolosTabla({ sheetId, gid = '0' }: { sheetId: strin
 
             {filtered.length === 0 && (
               <tr>
-                <td className="px-3 py-4 text-sm text-slate-500" colSpan={4}>
+                <td className="px-3 py-4 text-sm text-slate-500" colSpan={3}>
                   Sin resultados
                 </td>
               </tr>

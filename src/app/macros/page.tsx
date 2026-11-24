@@ -3,21 +3,11 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import InformeCopiable from "@/components/InformeCopiable";
-
-type ItemCatalogo = {
-  id: string;
-  titulo: string;
-  ruta: string;
-  tags?: string[];
-  sistemas?: string[];
-};
-
-function norm(s = "") {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
+import ResourceSearchHeader from "@/components/ResourceSearchHeader";
+import HeaderSearchInput from "@/components/HeaderSearchInput";
+import { FilterButton, SiteButton } from "@/components/ui/SiteButton";
+import { matchesMacroSearch, normalizeMacroSearch as norm, type MacroCatalogItem as ItemCatalogo } from "@/lib/macroSearch";
+import styles from "./Macros.module.css";
 
 function DietasContenido() {
   const searchParams = useSearchParams();
@@ -29,15 +19,22 @@ function DietasContenido() {
   const [seleccion, setSeleccion] = useState<ItemCatalogo | null>(null);
   const [texto, setTexto] = useState("");
   const [cargando, setCargando] = useState(false);
-  const prevQ = useRef("");
+  const requestId = useRef(0);
+  const viewerRef = useRef<HTMLHeadingElement>(null);
+  const [errorTexto, setErrorTexto] = useState(false);
+  const [catalogoEstado, setCatalogoEstado] = useState("cargando");
 
   useEffect(() => {
-    fetch("/dietas_recom/index.json")
-      .then((r) => r.json())
-      .then((data: unknown) =>
-        setCatalogo(Array.isArray(data) ? (data as ItemCatalogo[]) : [])
-      )
-      .catch(() => setCatalogo([]));
+    fetch("/api/macros")
+      .then((r) => {
+        if (!r.ok) throw new Error("catalogo");
+        return r.json();
+      })
+      .then((data: unknown) => {
+        setCatalogo(Array.isArray(data) ? (data as ItemCatalogo[]) : []);
+        setCatalogoEstado("listo");
+      })
+      .catch(() => setCatalogoEstado("error"));
   }, []);
 
   const filtrados = useMemo(() => {
@@ -47,48 +44,33 @@ function DietasContenido() {
       : catalogo;
     if (!nq) return base;
 
-    return base.filter((it) => {
-      const hay = norm(
-        `${it.titulo || ""} ${(it.tags || []).join(" ")} ${(it.sistemas || []).join(" ")}`
-      );
-      return hay.includes(nq);
-    });
+    return base.filter((it) => matchesMacroSearch(it, nq));
   }, [catalogo, q, fSistema]);
 
   const sistemas = useMemo(() => {
     const set = new Set<string>();
-    filtrados.forEach((it) => {
+    catalogo.forEach((it) => {
       (it.sistemas || []).forEach((t) => set.add(t));
     });
-    return Array.from(set).sort();
-  }, [filtrados]);
-
-  const agrupados = useMemo(() => {
-    const grupos: Record<string, ItemCatalogo[]> = {};
-    sistemas.forEach((s) => {
-      const items = filtrados.filter((it) => (it.sistemas || []).includes(s));
-      if (items.length) grupos[s] = items;
-    });
-    const sinSistema = filtrados.filter((it) => !(it.sistemas || []).length);
-    if (sinSistema.length) {
-      grupos.otros = sinSistema;
-    }
-    return grupos;
-  }, [filtrados, sistemas]);
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
+  }, [catalogo]);
 
   const cargar = useCallback(async (it: ItemCatalogo) => {
+    const currentRequest = ++requestId.current;
     setSeleccion(it);
+    setErrorTexto(false);
     setCargando(true);
     setTexto("");
 
     try {
       const r = await fetch(it.ruta, { cache: "no-store" });
+      if (!r.ok) throw new Error("texto");
       const t = await r.text();
-      setTexto(t.trim());
+      if (currentRequest === requestId.current) setTexto(t.trim());
     } catch {
-      setTexto("No se pudo cargar el texto.");
+      if (currentRequest === requestId.current) setErrorTexto(true);
     } finally {
-      setCargando(false);
+      if (currentRequest === requestId.current) setCargando(false);
     }
   }, []);
 
@@ -110,121 +92,111 @@ function DietasContenido() {
   }, [catalogo, selectedId, seleccion?.id, cargar]);
 
   useEffect(() => {
-    const hadQuery = prevQ.current.trim().length > 0;
-    const hasQuery = q.trim().length > 0;
-    prevQ.current = q;
-    if (!hadQuery || hasQuery) return;
-    if (!seleccion && !texto && !cargando) return;
+    if (seleccion && window.matchMedia("(max-width: 1023px)").matches) {
+      viewerRef.current?.focus();
+      viewerRef.current?.scrollIntoView({ block: "start" });
+    }
+  }, [seleccion]);
+
+  function volver() {
+    ++requestId.current;
+    clearSelectedId();
     setSeleccion(null);
     setTexto("");
     setCargando(false);
-  }, [q, seleccion, texto, cargando]);
+    setErrorTexto(false);
+    window.requestAnimationFrame(() => document.getElementById("macros-search")?.focus());
+  }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Macros</h1>
-      <div className="buscador-wrapper buscador-dietas">
-        <span className="buscador-icon" aria-hidden>
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 841.889 595.281"
-            xmlSpace="preserve"
-          >
-            <path
-              fill="currentColor"
-              d="M699.567,542.207L557.889,394.854c36.428-43.304,56.387-97.789,56.387-154.51
-	C614.276,107.82,506.455,0,373.932,0C241.407,0,133.587,107.82,133.587,240.344c0,132.523,107.82,240.344,240.345,240.344
-	c49.751,0,97.161-15.006,137.695-43.491l142.754,148.47c5.967,6.196,13.992,9.614,22.593,9.614c8.141,0,15.862-3.104,21.725-8.747
-	C711.155,574.549,711.552,554.673,699.567,542.207z M373.931,62.699c97.956,0,177.646,79.689,177.646,177.646
-	S471.887,417.99,373.932,417.99c-97.956,0-177.646-79.689-177.646-177.646S275.976,62.699,373.931,62.699z"
-            />
-          </svg>
-        </span>
-        <input
-          type="text"
-          placeholder="Buscar… (p. ej., blanda, gastro, DM)"
+    <div className={styles.page}>
+      <div className={seleccion ? styles.hideOnMobile : undefined}>
+      <ResourceSearchHeader
+        title="Macros"
+        badge="Textos clínicos"
+        description="Busca por título o palabras clave, o filtra por sistema, para encontrar y copiar el texto que necesitas."
+        stats={
+          <>
+            <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{catalogo.length} macros</span>
+            <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{new Set(catalogo.flatMap((item) => item.sistemas || [])).size} sistemas</span>
+            {(q.trim() || fSistema) && <span className="rounded-full border border-white/80 bg-white/75 px-3 py-1 backdrop-blur-sm">{filtrados.length} resultados</span>}
+          </>
+        }
+      >
+        <HeaderSearchInput
+          id="macros-search"
+          label="Buscar macros"
+          placeholder="Buscar por título, sistema o palabra clave"
           value={q}
-          onChange={(e) => setQ(e.target.value)}
-          className="buscador-input"
+          onChange={setQ}
         />
-        {q && (
-          <button type="button" className="buscador-clear" onClick={() => setQ("")}>
-            Limpiar
-          </button>
-        )}
+      </ResourceSearchHeader>
       </div>
 
-      <div className="filtro-grupo">
-        <span className="filtro-titulo">Sistema</span>
-        <div className="filtro-botones">
-          <button
-            className={`filtro-btn ${!fSistema ? "activo" : ""}`}
-            onClick={() => {
-              setFSistema("");
-              setQ("");
-              setSeleccion(null);
-              setTexto("");
-              setCargando(false);
-            }}
+      <section className={`${styles.filters} ${seleccion ? styles.hideOnMobile : ""}`} aria-label="Filtrar macros por sistema">
+        <div className={styles.filterHeading}>
+          <SiteButton
+            style={{ visibility: q || fSistema ? "visible" : "hidden" }}
+            disabled={!q && !fSistema}
+            tabIndex={q || fSistema ? 0 : -1}
+            onClick={() => { setQ(""); setFSistema(""); }}
           >
-            Todos
-          </button>
+            Limpiar filtros
+          </SiteButton>
+        </div>
+        <div className={styles.filterButtons}>
+          <FilterButton active={!fSistema} filtering={Boolean(q.trim() || fSistema)} count={catalogo.length} onClick={() => setFSistema("")}>Todos</FilterButton>
           {sistemas.map((s) => (
-            <button
-              key={s}
-              className={`filtro-btn ${fSistema === s ? "activo" : ""}`}
-              onClick={() => setFSistema(fSistema === s ? "" : s)}
-            >
+            <FilterButton key={s} active={fSistema === s} filtering={Boolean(q.trim() || fSistema)} count={catalogo.filter((it) => it.sistemas?.includes(s)).length} onClick={() => setFSistema(fSistema === s ? "" : s)}>
               {s.charAt(0).toUpperCase() + s.slice(1)}
-            </button>
+            </FilterButton>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="dietas-layout">
-        <div className="dietas-lista">
-          {Object.keys(agrupados).map((grupo) => (
-            <div key={grupo} className="dietas-grupo">
-              <div className="dietas-grupo-titulo">
-                {grupo === "otros" ? "Otros" : grupo.charAt(0).toUpperCase() + grupo.slice(1)}
+      <div className={styles.workspace}>
+        <section className={`${styles.catalogue} ${seleccion ? styles.hideOnMobile : ""}`} aria-label="Catálogo de macros">
+          <div className={styles.catalogueHeading}>
+            <h2>Textos disponibles</h2>
+            <span aria-live="polite">{filtrados.length} resultados</span>
+          </div>
+          <div className={styles.list}>
+            {[...filtrados].sort((a, b) => a.titulo.localeCompare(b.titulo, "es")).map((it) => (
+              <button key={it.id} type="button" className={styles.item} aria-pressed={seleccion?.id === it.id} onClick={() => { clearSelectedId(); void cargar(it); }}>
+                <span className={styles.itemTitle}>{it.titulo}</span>
+                <span className={styles.itemMeta}>{(it.sistemas || []).join(" · ") || "General"}</span>
+                {seleccion?.id === it.id && <span className={styles.selectedMark} aria-hidden="true">✓</span>}
+              </button>
+            ))}
+            {catalogoEstado === "cargando" && <p className={styles.listMessage} role="status">Cargando macros…</p>}
+            {catalogoEstado === "error" && <p className={styles.listMessage} role="alert">No se pudo cargar el catálogo. Recarga la página para volver a intentarlo.</p>}
+            {catalogoEstado === "listo" && !filtrados.length && <div className={styles.listMessage}><h3>No hay coincidencias</h3><p>Prueba con otra palabra o selecciona otro sistema.</p><SiteButton onClick={() => { setQ(""); setFSistema(""); }}>Ver todas las macros</SiteButton></div>}
+          </div>
+        </section>
+
+        <section className={`${styles.viewer} ${!seleccion ? styles.emptyOnMobile : ""}`} aria-label="Contenido de la macro" aria-busy={cargando}>
+          {seleccion ? (
+            <>
+              <div className={styles.viewerHeading}>
+                <SiteButton className={styles.back} onClick={volver}>Volver a resultados</SiteButton>
+                <p className={styles.eyebrow}>Texto para copiar</p>
+                <h2 ref={viewerRef} tabIndex={-1}>{seleccion.titulo}</h2>
+                <p className={styles.itemMeta}>{(seleccion.sistemas || []).join(" · ")}</p>
               </div>
-              {agrupados[grupo].map((it) => (
-                <button
-                  key={it.id}
-                  type="button"
-                  className={`selector-btn dietas-item ${seleccion?.id === it.id ? "activo" : ""}`}
-                  onClick={() => {
-                    clearSelectedId();
-                    void cargar(it);
-                  }}
-                  title={(it.tags || []).join(", ")}
-                >
-                  {it.titulo}
-                </button>
-              ))}
-            </div>
-          ))}
-
-          {!filtrados.length && <div className="muted">Sin resultados</div>}
-        </div>
-
-        <div className="dietas-visor">
-          {seleccion?.titulo ? (
-            <div className="muted" style={{ marginBottom: 8 }}>
-              {cargando ? "Cargando…" : seleccion.titulo}
-            </div>
+              {cargando && <p className={styles.listMessage} role="status">Cargando texto…</p>}
+              {errorTexto && <div className={styles.listMessage} role="alert"><p>No se pudo cargar el texto.</p><SiteButton onClick={() => void cargar(seleccion)}>Volver a intentar</SiteButton></div>}
+              {!cargando && !errorTexto && texto && <div className={styles.document}><InformeCopiable key={seleccion.id} texto={texto} /></div>}
+              {!cargando && !errorTexto && !texto && <p className={styles.listMessage}>Esta macro no contiene texto.</p>}
+            </>
           ) : (
-            <div className="muted" style={{ marginBottom: 8 }}>
-              Selecciona un texto
+            <div className={styles.empty}>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><path d="M14 3v6h6M8 13h8M8 17h5" /></svg>
+              <h2>Selecciona una macro</h2>
+              <p>Consulta el texto y cópialo para incorporarlo a tu informe.</p>
+              <span>Busca por nombre o explora los sistemas del catálogo.</span>
             </div>
           )}
-
-          {texto ? <InformeCopiable texto={texto} /> : null}
-        </div>
+        </section>
       </div>
     </div>
   );
