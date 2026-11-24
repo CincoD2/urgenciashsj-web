@@ -9,6 +9,7 @@ import { signOut, useSession } from 'next-auth/react';
 
 import { ChangePasswordState, changePassword } from '@/app/change-password/actions';
 import { LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from '@/lib/sessionKeys';
+import { TOOLS_MENU } from '@/lib/toolsCatalog';
 
 import SearchModal from './SearchModal';
 
@@ -42,52 +43,6 @@ export default function Header() {
   const toolsLinkClass = isAuthed
     ? 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs !text-white hover:bg-white/10 xl:px-2 xl:text-sm'
     : 'inline-flex items-center gap-1 rounded px-1.5 py-1 text-xs text-[#2b5d68] hover:bg-[#dfe9eb]/60 xl:px-2 xl:text-sm';
-
-  const fixedTools = [
-    { label: 'Orion Smart Formatter', href: '/escalas/OrionSF' },
-    { label: 'Inhaladores', href: '/inhaladores' },
-    { label: 'StandyCalc® (beta)', href: '/escalas/standycalc' },
-  ];
-
-  const alphabeticalTools = [
-    { label: 'Anion GAP', href: '/escalas/anion-gap' },
-    { label: 'ATB NAC', href: '/escalas/antibioterapia-nac' },
-    { label: 'ATB Código Sepsis', href: '/escalas/antibioterapia-codigo-sepsis' },
-    { label: 'BISAP', href: '/escalas/bisap' },
-    { label: 'Blatchford', href: '/escalas/blatchford' },
-    { label: 'CHA2DS2-VA', href: '/escalas/cha2ds2va' },
-    { label: 'Contingencia camas urgencias', href: '/escalas/contingencia-camas-urgencias' },
-    { label: 'CURB-65', href: '/escalas/curb65' },
-    { label: 'Eje eléctrico del ECG', href: '/escalas/eje-electrico-ecg' },
-    { label: 'Fracaso Renal Agudo', href: '/escalas/fra' },
-    { label: 'Glasgow', href: '/escalas/glasgow' },
-    { label: 'Gradiente A-a O2', href: '/escalas/gradiente-aa-o2' },
-    { label: 'HAS-BLED', href: '/escalas/hasbled' },
-    { label: 'Hipernatremia', href: '/escalas/hiperNa' },
-    { label: 'Hiponatremia', href: '/escalas/hiponatremia' },
-    { label: 'IDSA/ATS', href: '/escalas/idsa' },
-    { label: 'Insulinización', href: '/escalas/insulinizacion' },
-    { label: 'Líquidos biológicos', href: '/escalas/liquidos-biologicos' },
-    { label: 'NEWS-2', href: '/escalas/news-2' },
-    { label: 'NIHSS', href: '/escalas/nihss' },
-    { label: 'PaFi', href: '/escalas/pafi' },
-    { label: 'Padua (TEV)', href: '/escalas/padua' },
-    { label: 'PES Score', href: '/escalas/pes' },
-    { label: 'PSI', href: '/escalas/psi' },
-    { label: 'qSOFA', href: '/escalas/qsofa' },
-    { label: 'Rankin modificada (mRS)', href: '/escalas/mrs' },
-    { label: 'SaFi', href: '/escalas/safi' },
-    { label: 'SIRS', href: '/escalas/sirs' },
-    { label: 'SOFA', href: '/escalas/sofa' },
-    { label: 'TAm (PAM)', href: '/escalas/tam' },
-    { label: 'TIMI SCACEST', href: '/escalas/timi-scacest' },
-    { label: 'TIMI SCASEST', href: '/escalas/timi-scasest' },
-    { label: 'Triaje Manchester', href: '/escalas/triaje-manchester' },
-    { label: 'UBEs', href: '/escalas/ube' },
-    { label: 'Urea-BUN', href: '/escalas/urea-bun' },
-    { label: 'Waterfall', href: '/escalas/waterfall' },
-    { label: 'Wells – TVP', href: '/escalas/wells-tvp' },
-  ];
 
   const mobileMenuClass = `lg:hidden overflow-y-auto transition-[max-height,opacity] duration-300 ease-out ${
     open ? 'max-h-[calc(100dvh-4rem)] opacity-100' : 'max-h-0 opacity-0'
@@ -419,24 +374,14 @@ export default function Header() {
                 className="max-h-[50vh] columns-3 gap-3 overflow-y-auto pr-2 [column-fill:auto] [background-image:linear-gradient(to_right,transparent_0,transparent_calc(33.333%-1px),rgb(226_232_240)_calc(33.333%-1px),rgb(226_232_240)_33.333%,transparent_33.333%,transparent_calc(66.666%-1px),rgb(226_232_240)_calc(66.666%-1px),rgb(226_232_240)_66.666%,transparent_66.666%)] [background-size:100%_100%] [background-repeat:no-repeat] lg:max-h-[50vh]"
                 onScroll={updateToolsScrollState}
               >
-                {fixedTools.map((tool) => (
+                {TOOLS_MENU.map((tool) => (
                   <Link
                     key={tool.href}
                     className="mb-1 block break-inside-avoid rounded px-3 py-2 text-sm leading-tight hover:bg-slate-100"
                     href={tool.href}
                     onClick={closeMenus}
                   >
-                    {tool.label}
-                  </Link>
-                ))}
-                {alphabeticalTools.map((tool) => (
-                  <Link
-                    key={tool.href}
-                    className="mb-1 block break-inside-avoid rounded px-3 py-2 text-sm leading-tight hover:bg-slate-100"
-                    href={tool.href}
-                    onClick={closeMenus}
-                  >
-                    {tool.label}
+                    {tool.title}
                   </Link>
                 ))}
               </div>
@@ -638,7 +583,7 @@ export default function Header() {
               </button>
 
               <div className={toolsMenuClass}>
-                {fixedTools.map((tool) => (
+                {TOOLS_MENU.map((tool) => (
                   <Link
                     key={tool.href}
                     className="rounded px-2 py-1 hover:bg-slate-100"
@@ -648,20 +593,7 @@ export default function Header() {
                       closeMenusAndScrollTop();
                     }}
                   >
-                    {tool.label}
-                  </Link>
-                ))}
-                {alphabeticalTools.map((tool) => (
-                  <Link
-                    key={tool.href}
-                    className="rounded px-2 py-1 hover:bg-slate-100"
-                    href={tool.href}
-                    onClick={() => {
-                      setToolsOpen(false);
-                      closeMenusAndScrollTop();
-                    }}
-                  >
-                    {tool.label}
+                    {tool.title}
                   </Link>
                 ))}
               </div>

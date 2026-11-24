@@ -270,6 +270,21 @@ function resolveTool(definition: ToolDefinition): ToolCatalogItem {
 
 export const TOOLS_CATALOG: ToolCatalogItem[] = TOOL_DEFINITIONS.map(resolveTool);
 
+// El desplegable y la página se alimentan del mismo catálogo.
+// Solo se fija el orden de los accesos habituales; el resto se ordena por título.
+const MENU_PINNED_HREFS = ['/escalas/OrionSF', '/inhaladores', '/escalas/standycalc'];
+
+export const TOOLS_MENU = [...TOOLS_CATALOG].sort((a, b) => {
+  const aPinned = MENU_PINNED_HREFS.indexOf(a.href);
+  const bPinned = MENU_PINNED_HREFS.indexOf(b.href);
+  if (aPinned !== -1 || bPinned !== -1) {
+    if (aPinned === -1) return 1;
+    if (bPinned === -1) return -1;
+    return aPinned - bPinned;
+  }
+  return a.title.localeCompare(b.title, 'es', { sensitivity: 'base', numeric: true });
+});
+
 export const FEATURED_TOOLS = TOOLS_CATALOG.filter((tool) => tool.featured);
 
 export function getCategoryById(categoryId: ToolCategoryId) {
