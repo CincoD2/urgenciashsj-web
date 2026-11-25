@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import ResourceSearchHeader from "@/components/ResourceSearchHeader";
 import HeaderSearchInput from "@/components/HeaderSearchInput";
 import { FilterButton } from "@/components/ui/SiteButton";
+import TurnoRodado2027 from './TurnoRodado2027';
 
 import {
   MONTHS,
@@ -266,6 +267,7 @@ export default function HorariosClient({ horarios }: HorariosClientProps) {
               },
             )}
           </div>
+          {active?.year === 2027 && <TurnoRodado2027 />}
         </section>
       ) : (
         <div className="rounded-lg border border-dashed border-[#dfe9eb] bg-[#f8fafc] px-4 py-6 text-sm text-slate-500">

@@ -60,6 +60,27 @@ Run external links weekly report manually:
 
 ## Getting Started
 
+### Turno rodado 2027
+
+`/horarios` includes an annual rota section under the 2027 monthly PDFs, even
+when no monthly 2027 files have been published. Assets are in
+`public/horarios/2027`: the approved PDF, six individual ICS files.
+
+Run `python3 scripts/generate-turno-2027.py` to regenerate the ICS files
+(Python 3.9+ with Europe/Madrid timezone data). The script verifies the weekly
+offset, holiday staffing, the March 25 exception and daylight-saving changes.
+The approved PDF is maintained separately; any future rota edits must also be
+reflected in the PDF before publishing.
+
+`POST /api/horarios/2027/mail` sends the selected group as an attachment using
+the existing `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and optional
+`CONTACT_FROM_EMAIL` configuration. It accepts only a single destination,
+checks the request origin and limits requests per IP in the existing in-memory
+rate limiter (per server instance). If reCAPTCHA is configured, use both
+`NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY`; the action is
+`turno_2027_mail`. No mailing-list or database record is created for recipients.
+Without SMTP, downloads remain available and the form reports unavailability.
+
 First, run the development server:
 
 ```bash

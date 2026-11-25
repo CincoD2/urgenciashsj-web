@@ -11,6 +11,7 @@ const withMDX = createMDX({
 const nextConfig: NextConfig = {
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
   outputFileTracingIncludes: {
+    '/api/horarios/2027/mail': ['./public/horarios/2027/*.ics'],
     '/api/parte-jefatura': ['./node_modules/@sparticuz/chromium/bin/**'],
     '/api/parte-jefatura/mail': ['./node_modules/@sparticuz/chromium/bin/**'],
   },
