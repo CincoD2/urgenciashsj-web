@@ -156,18 +156,19 @@ export default function TurnoRodado2027() {
         <p className="max-w-3xl text-sm leading-relaxed text-slate-700">
           Distribución 2027 desde el 11 de enero al 23 de diciembre de 2027. La rueda se repite cada
           6 semanas (42 días), con una semana de desfase entre los seis grupos. NO SE INCLUYEN LOS
-          REFUERZOS (R).El damero y los calendarios{' '}
-          <button
-            type="button"
-            onClick={() => {
+          REFUERZOS (R). El damero y los calendarios{' '}
+          <a
+            href="#distribucion-festivos"
+            onClick={event => {
+              event.preventDefault();
               setHolidaysOpen(true);
               holidays.current?.showModal();
             }}
             aria-haspopup="dialog"
-            className="cursor-pointer rounded-sm font-medium text-[#1f4c57] underline decoration-[#8baeb5] underline-offset-4 hover:decoration-[#1f4c57] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f4c57]"
+            className="inline cursor-pointer rounded-sm text-left align-baseline font-medium text-[#1f4c57] underline decoration-[#8baeb5] underline-offset-4 hover:decoration-[#1f4c57] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f4c57]"
           >
             incluyen las asignaciones especiales de los festivos
-          </button>
+          </a>
           .
         </p>
         <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-700">
@@ -203,18 +204,19 @@ export default function TurnoRodado2027() {
       <div className="space-y-3">
         <p className="text-sm leading-relaxed text-slate-600">
           Añade los turnos de tu grupo a tu calendario. Antes de descargar o solicitar el archivo,{' '}
-          <button
-            type="button"
+          <a
+            href="#instrucciones-importar"
             aria-haspopup="dialog"
-            onClick={() => {
+            onClick={event => {
+              event.preventDefault();
               setInstructionsOpen(true);
               instructions.current?.showModal();
             }}
-            className="cursor-pointer rounded-sm font-medium text-[#1f4c57] underline decoration-[#8baeb5] underline-offset-4 hover:decoration-[#1f4c57] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f4c57]"
+            className="inline cursor-pointer rounded-sm text-left align-baseline font-medium text-[#1f4c57] underline decoration-[#8baeb5] underline-offset-4 hover:decoration-[#1f4c57] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f4c57]"
           >
             consulta las instrucciones para importar el calendario de tu grupo en tu Android, iPhone
             o Mac
-          </button>
+          </a>
           .
         </p>
       </div>
@@ -232,24 +234,24 @@ export default function TurnoRodado2027() {
                   <p className="text-sm text-slate-500">{counts[g - 1]} turnos programados</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
                 <a
                   href={`${base}/urgencias-2027-grupo-${g}.ics`}
                   download
                   aria-label={`Descargar ICS del grupo ${g}`}
-                  className={`${linkClass} gap-2`}
+                  className={`${linkClass} gap-2 max-sm:gap-1.5 max-sm:px-2`}
                 >
                   <Icon kind="download" />
-                  Descargar .ics
+                  <span className="sm:hidden">Descargar</span><span className="hidden sm:inline">Descargar .ics</span>
                 </a>
                 <button
                   type="button"
                   onClick={() => openMail(g)}
                   aria-label={`Enviar por correo el grupo ${g}`}
-                  className={`${linkClass} gap-2`}
+                  className={`${linkClass} gap-2 max-sm:gap-1.5 max-sm:px-2`}
                 >
                   <Icon kind="mail" />
-                  Enviar por mail
+                  <span className="sm:hidden">Enviar</span><span className="hidden sm:inline">Enviar por mail</span>
                 </button>
               </div>
             </li>

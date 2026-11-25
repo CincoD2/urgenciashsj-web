@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { turno2027Email } from '@/lib/turno2027Email';
 import { getRateLimitStatus, recordRateLimitFailure } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs';
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       from,
       to: { address: email, name: '' },
       subject: `Turno rodado Urgencias 2027 · Grupo ${group}`,
-      text: 'Adjuntamos el calendario solicitado del turno rodado de Urgencias, del 11 de enero al 23 de diciembre de 2027, con los festivos incluidos.\n\niPhone: abre este mensaje en Mail de Apple, toca el adjunto ICS y utiliza Añadir todos si aparece.\nMac: Calendario > Archivo > Importar.\nAndroid: importa el archivo desde Google Calendar en un ordenador (Configuración > Importar y exportar) y sincroniza la misma cuenta en el móvil.\n\nElige un calendario separado para tus turnos e importa cada archivo una sola vez para evitar duplicados. Los archivos no se actualizan automáticamente. N y TN finalizan a las 23:59.\n\nUrgenciasHSJ',
+      ...turno2027Email(group, process.env.NEXTAUTH_URL || 'https://urgenciashsj.es'),
       attachments,
     });
     return NextResponse.json({ ok: true });
